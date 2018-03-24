@@ -77,7 +77,8 @@ tokens = [
 	'RIGHT_DBLQUOTES'
 ]
 
-tokens = tokens + p_reservadas.values()
+#tokens = tokens + p_reservadas.values()
+tokens += p_reservadas.values()
 
 #expresiones regulares tokens
 t_SEMICOLON = r'\;'
