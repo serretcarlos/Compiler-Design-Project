@@ -2,108 +2,109 @@ import ply.lex as lex
 import sys
 
 p_reservadas = {
-	'program' : 'PROGRAM',
-	'main' : 'MAIN',
-	'true' : 'TRUE',
-	'false' : 'FALSE',
-	'while' : 'WHILE',
-	'if' : 'IF',
-	'else' : 'ELSE',
-	'elseif' : 'ELSEIF',
-	'cread' : 'CREAD',
-	'cwrite' : 'CWRITE',
-	'void' : 'VOID',
-	'return' : 'RETURN',
-	'int' : 'INT',
-	'float' : 'FLOAT',
-	'bool' : 'BOOL',
-	'string' : 'STRING',
-	'list' : 'LIST'
+	'program' : 'program',
+	'main' : 'main',
+	'true' : 'true',
+	'false' : 'false',
+	'while' : 'while',
+	'if' : 'if',
+	'else' : 'else',
+	'elseif' : 'elseif',
+	'cread' : 'cread',
+	'cwrite' : 'cwrite',
+	'void' : 'void',
+	'return' : 'return',
+	'int' : 'int',
+	'float' : 'float',
+	'bool' : 'bool',
+	'string' : 'string',
+	'list' : 'list'
 }
 
 tokens = [
-	'ASIGNACION',
-	'BOOLEANA',
-	'CICLO',
-	'CONDICION',
-	'CONSTANTE',
-	'CUERPO',
-	'CUERPOFUNC',
-	'CUERPORETORNO',
-	'ESCRITURA',
-	'ESTATUTO',
-	'EXP',
-	'EXPRESION',
-	'FACTOR',
-	'FUNC',
-	'LECTURA',
-	'LISTA',
-	'LLAMADA',
-	'LLAMADAF',
-	'NUMERICA',
-	'PROGRAMA',
-	'RETORNO',
-	'STRINGS',
-	'TERMINO',
-	'TIPO',
-	'VARS',
-	'VOIDFUNC',
-	'ID',
-	'SEMICOLON',
-	'COMMA',
+#	'ASIGNACION',
+#	'BOOLEANA',
+#	'CICLO',
+#	'CONDICION',
+#	'CONSTANTE',
+#	'CUERPO',
+#	'CUERPOFUNC',
+#	'CUERPORETORNO',
+#	'ESCRITURA',
+#	'ESTATUTO',
+#	'EXP',
+#	'EXPRESION',
+#	'FACTOR',
+#	'FUNC',
+#	'LECTURA',
+#	'LISTA',
+#	'LLAMADA',
+#	'LLAMADAF',
+#	'NUMERICA',
+#	'PROGRAMA',
+#	'RETORNO',
+#	'STRINGS',
+#	'TERMINO',
+#	'TIPO',
+#	'VARS',
+#	'VOIDFUNC',
+	'id',
+	'semicolon',
+	'comma',
 	'cteInt',
 	'cteFloat',
 	'cteString',
-	'PLUS',
-	'MINUS',
-	'MULTIPLY',
-	'DIVIDE',
-	'EQUALS',# '='
-	'LT',# less than
-	'GT',# greater than
-	'LE',# less than or equal to
-	'GE',# greater than or equal to
-	'NE',# not equal to '!='
-	'ET',# eqaul to '=='
-	'AND',# &&
-	'OR',# ||
-	'LEFT_PAR',
-	'RIGHT_PAR',
-	'LEFT_SB',
-	'RIGHT_SB',
-	'LEFT_CB',
-	'RIGHT_CB',
-	'LEFT_DBLQUOTES',
-	'RIGHT_DBLQUOTES'
+	'plus',
+	'minus',
+	'multiply',
+	'divide',
+	'equals',# '='
+	'lt',# less than
+	'gt',# greater than
+	'le',# less than or equal to
+	'ge',# greater than or equal to
+	'ne',# not equal to '!='
+	'not',# not
+	'et',# equal to '=='
+	'and',# &&
+	'or',# ||
+	'left_par',
+	'right_par',
+	'left_sb',
+	'right_sb',
+	'left_cb',
+	'right_cb',
+	'left_dblquotes',
+	'right_dblquotes'
 ]
 
-#tokens = tokens + p_reservadas.values()
 tokens += p_reservadas.values()
 
 #expresiones regulares tokens
-t_SEMICOLON = r'\;'
-t_COMMA = r'\,'
-t_PLUS = r'\+'
-t_MINUS = r'\-'
-t_MULTIPLY = r'\*'
-t_DIVIDE = r'\/'
-t_EQUALS = r'='
-t_LT = r'\<'
-t_GT = r'\>'
-t_LE = r'\<='
-t_GE = r'\>='
-t_NE = r'!='
-t_ET = r'=='
-t_AND = r'&&'
-t_OR = r'\|\|'
-t_LEFT_PAR = r'\('
-t_RIGHT_PAR = r'\)'
-t_LEFT_SB = r'\['
-t_RIGHT_SB = r'\]'
-t_LEFT_CB = r'\{'
-t_RIGHT_CB = r'\}'
-t_LEFT_DBLQUOTES = r'"'
-t_RIGHT_DBLQUOTES = r'."'
+t_semicolon = r'\;'
+t_comma = r'\,'
+t_plus = r'\+'
+t_minus = r'\-'
+t_multiply = r'\*'
+t_divide = r'\/'
+t_equals = r'='
+t_lt = r'\<'
+t_gt = r'\>'
+t_le = r'\<='
+t_ge = r'\>='
+t_ne = r'!='
+t_not = r'!'
+t_et = r'=='
+t_and = r'&&'
+t_or = r'\|\|'
+t_left_par = r'\('
+t_right_par = r'\)'
+t_left_sb = r'\['
+t_right_sb = r'\]'
+t_left_cb = r'\{'
+t_right_cb = r'\}'
+t_left_dblquotes = r'"'
+t_right_dblquotes = r'."'
 t_ignore = ' \t'
 
 def t_cteFloat(t):
@@ -118,6 +119,7 @@ def t_cteInt(t):
 
 def t_cteString(t):
 	r'\".*\"'
+	#t.type = p_reservadas.get(t.value, 'cte_string')
 	t.value = string(t.value)
 	return t
 
