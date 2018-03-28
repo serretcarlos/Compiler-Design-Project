@@ -18,7 +18,8 @@ p_reservadas = {
 	'float' : 'float',
 	'bool' : 'bool',
 	'string' : 'string',
-	'list' : 'list'
+	'list' : 'list',
+	'var' : 'var'
 }
 
 tokens = [
