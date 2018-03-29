@@ -1,4 +1,5 @@
 import CSP_lex
+import sys
 tokens = CSP_lex.tokens
 import ply.yacc as yacc
 
@@ -6,6 +7,7 @@ def p_PROGRAMA(p):
     '''
     PROGRAMA : program id semicolon PROGRAMA_VARS PROGRAMA_FUNC main CUERPO
     '''
+    print('ok')
 
 def p_PROGRAMA_VARS(p):
     '''
@@ -141,7 +143,7 @@ def p_CUERPORETORNO_CF_AUX(p):
 
 def p_RETORNO(p):
     '''
-    RETORNO : return EXP
+    RETORNO : return EXP semicolon
     '''
 
 def p_FUNC(p):
@@ -354,11 +356,33 @@ def p_empty(p):
     '''
     empty :
     '''
+    pass
+
+def p_error(p):
+    if p:
+        print("Error de Sintaxis en '%s'" % p)
+    else:
+        print("Error de Sintaxis en EOF")
+
 
 
 
 yacc.yacc();
-data = '''1+1'''
+
+
+data = """program compilador; 
+          var int a; 
+          int perro(int a)
+          { 
+          var int h, c; 
+          if (c){
+          h = c;
+          }
+          return c; 
+          } 
+          main {}
+          """
 yacc.parse(data)
+
 
 

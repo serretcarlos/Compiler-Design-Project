@@ -1,7 +1,7 @@
 import ply.lex as lex
 import sys
 
-p_reservadas = {
+palabras_reservadas = {
 	'program' : 'program',
 	'main' : 'main',
 	'true' : 'true',
@@ -79,7 +79,7 @@ tokens = [
 	'right_dblquotes'
 ]
 
-tokens += p_reservadas.values()
+tokens += palabras_reservadas.values()
 
 #expresiones regulares tokens
 t_semicolon = r'\;'
@@ -120,17 +120,21 @@ def t_cteInt(t):
 
 def t_cteString(t):
 	r'\".*\"'
-	#t.type = p_reservadas.get(t.value, 'cte_string')
-	t.value = string(t.value)
+	t.type = palabras_reservadas.get(t.value, 'cte_string')
 	return t
 
-def t_ID(t):
+def t_id(t):
 	r'[a-zA-Z_][a-zA-Z_0-9]*'
-	t.type = 'ID'
+	if t.value in palabras_reservadas:
+		t.type = palabras_reservadas[t.value]
 	return t
+
+def t_newline(t):
+	r'\n'
+	t.lexer.lineno += len(t.value)
 
 def t_error(t):
-	print("Caracteres ilegales")
+	print("Caracteres ilegales '%s'" % t.value[0])
 	t.lexer.skip(1)
 
 lexer = lex.lex()
