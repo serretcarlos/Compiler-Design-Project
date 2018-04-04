@@ -3,11 +3,42 @@ import sys
 tokens = CSP_lex.tokens
 import ply.yacc as yacc
 
+scope = 'global'
+dicFunciones = {}
+dicVarGlobales = {}
+dicVarLocales = {}
+parametros = []
+tipoActual = None
+funcActual = None
+tipoDatoStruct = None
+idFunc = None
+idVar = None
+cteLista = None
+structAnt = None
+
+
 def p_PROGRAMA(p):
     '''
-    PROGRAMA : program id semicolon PROGRAMA_VARS PROGRAMA_FUNC main CUERPO
+    PROGRAMA : program id semicolon PROGRAMA_VARS cambiarScope PROGRAMA_FUNC main CUERPO
     '''
     print('ok')
+    print("tabla de funciones: %s" % dicFunciones)
+    print(" \n\n")
+    print("Tabla de variables globales: %s" % dicVarGlobales)
+    print(" \n\n")
+    print("Tabla de variables en main: %s" % dicVarLocales)
+
+def p_cambiarScope(p):
+    '''
+    cambiarScope : empty
+    '''
+    global scope
+    if scope == 'global':
+        scope = 'local'
+    elif scope == 'local':
+        scope = 'global'
+
+
 
 def p_PROGRAMA_VARS(p):
     '''
@@ -46,33 +77,83 @@ def p_VARS_LIST_VAR(p):
 
 def p_VARS_LIST(p):
     '''
-    VARS_LIST : list TIPO VARS_LIST_AUX semicolon
+    VARS_LIST : list hacerLista TIPO VARS_LIST_AUX semicolon
     '''
+
+def p_hacerLista(p):
+    '''
+    hacerLista : empty
+    '''
+    global tipoDatoStruct
+    tipoDatoStruct = 'list'
 
 def p_VARS_LIST_AUX(p):
     '''
-    VARS_LIST_AUX : id left_sb cteInt right_sb
-                  | VARS_LIST_AUX comma id left_sb cteInt right_sb
+    VARS_LIST_AUX : id agregarId left_sb cteInt agregarCteLista right_sb agregarDicVar
+                  | VARS_LIST_AUX comma id agregarId left_sb cteInt agregarCteLista right_sb agregarDicVar
     '''
+
+def p_agregarId(p):
+    '''
+    agregarId : empty
+    '''
+    global idVar
+    idVar = p[-1]
+
+def p_agregarCteLista(p):
+    '''
+    agregarCteLista : empty
+    '''
+    global cteLista
+    cteLista = p[-1]
+
+def p_agregarDicVar(p):
+    '''
+    agregarDicVar : empty
+    '''
+    global scope
+    global idVar
+    global cteLista
+    global tipoActual
+    global tipoDatoStruct
+
+    if scope == 'global':
+        AgregarDicVarGlobal(idVar, tipoActual, tipoDatoStruct, cteLista)
+    else:
+        AgregarDicVarLocal(idVar, tipoActual, tipoDatoStruct, cteLista)
+
 
 def p_VARS_VAR(p):
     '''
-    VARS_VAR : var TIPO VARS_VAR_AUX semicolon
+    VARS_VAR : var hacerVar TIPO VARS_VAR_AUX semicolon
     '''
+def p_hacerVar(p):
+    '''
+    hacerVar : empty
+    '''
+    global tipoDatoStruct
+    tipoDatoStruct = p[-1]
 
 def p_VARS_VAR_AUX(p):
     '''
-    VARS_VAR_AUX : id
-                 | VARS_VAR_AUX comma id
+    VARS_VAR_AUX : id agregarId agregarDicVar
+                 | VARS_VAR_AUX comma id agregarId agregarDicVar
     '''
 
 def p_TIPO(p):
     '''
-    TIPO : int
-         | float
-         | bool
-         | string
+    TIPO : int cambioTipoActual
+         | float cambioTipoActual
+         | bool cambioTipoActual
+         | string cambioTipoActual
     '''
+
+def p_cambioTipoActual(p):
+    '''
+    cambioTipoActual : empty
+    '''
+    global tipoActual
+    tipoActual = p[-1]
 
 def p_CUERPO(p):
     '''
@@ -148,25 +229,70 @@ def p_RETORNO(p):
 
 def p_FUNC(p):
     '''
-    FUNC : TIPO id left_par FUNC_PARA right_par CUERPORETORNO
-         | VOIDFUNC
+    FUNC : TIPO cambioFuncActual id agregarIdFunc left_par FUNC_PARA right_par CUERPORETORNO cambiarScope
+         | VOIDFUNC cambiarScope
     '''
+    global idFunc
+    global funcActual
+    global parametros
+
+    AgregarDicFunc(idFunc, funcActual, parametros)
+
+    dicVarLocales.clear()
+    parametros = []
+
+def p_cambioFuncActual(p):
+    '''
+    cambioFuncActual : empty
+    '''
+    global funcActual
+    global tipoActual
+    funcActual = tipoActual
+
+def p_agregarIdFunc(p):
+    '''
+    agregarIdFunc : empty
+    '''
+    global idFunc
+    idFunc = p[-1]
 
 def p_FUNC_PARA(p):
     '''
-    FUNC_PARA : TIPO id
-              | FUNC_PARA comma TIPO id
+    FUNC_PARA : TIPO id agregarParametro
+              | FUNC_PARA comma TIPO id agregarParametro
     '''
+
+def p_agregarParametro(p):
+    '''
+    agregarParametro : empty
+    '''
+    global parametros
+    global tipoActual
+    global dicVarLocales
+    idParametro = p[-1]
+
+    AgregarDicVarLocal(idParametro, tipoActual, 'var', None)
+    parametros.append(dicVarLocales[idParametro])
+
 
 def p_VOIDFUNC(p):
     '''
-    VOIDFUNC : void id left_par VOIDFUNC_PARA right_par left_cb CUERPOFUNC right_cb
+    VOIDFUNC : void hacerVoid id agregarIdFunc left_par VOIDFUNC_PARA right_par left_cb CUERPOFUNC right_cb
     '''
+
+def p_hacerVoid(p):
+    '''
+    hacerVoid : empty
+    '''
+    global funcActual
+    funcActual = p[-1]
+
+
 
 def p_VOIDFUNC_PARA(p):
     '''
-    VOIDFUNC_PARA : TIPO id
-                  | VOIDFUNC_PARA comma TIPO id
+    VOIDFUNC_PARA : TIPO id agregarParametro
+                  | VOIDFUNC_PARA comma TIPO id agregarParametro
     '''
 
 def p_ESTATUTO(p):
@@ -365,7 +491,45 @@ def p_error(p):
         print("Error de Sintaxis en EOF")
 
 
+def AgregarDicVarGlobal(IdVar, TipoActual, TipoDatoStruct, CteLista):
+    global dicVarGlobales
 
+    if TipoDatoStruct == 'list':
+        if IdVar in dicVarGlobales.keys():
+            print("Error, ya existe la lista!")
+        else:
+            diccLista = {}
+            dicVarGlobales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':CteLista, 'lista':diccLista}
+    else:
+        if IdVar in dicVarGlobales.keys():
+            print("Error, ya existe la variable!")
+        else:
+            dicVarGlobales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':None, 'lista':None}
+
+
+def AgregarDicVarLocal(IdVar, TipoActual, TipoDatoStruct, CteLista):
+    global dicVarLocales
+
+    if TipoDatoStruct == 'list':
+        if IdVar in dicVarLocales.keys():
+            print("Error, ya existe la lista!")
+        else:
+            diccLista = {}
+            dicVarLocales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':CteLista, 'lista':diccLista}
+    else:
+        if IdVar in dicVarLocales.keys():
+            print("Error, ya existe la variable!")
+        else:
+            dicVarLocales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':None, 'lista':None}
+
+
+def AgregarDicFunc(IdFunc, FuncActual, Parametros):
+    global dicFunciones
+
+    if IdFunc in dicFunciones.keys():
+        print("Error, ya existia esa funcion")
+    else:
+        dicFunciones[IdFunc] = {'id':IdFunc, 'tipo':FuncActual, 'pars':Parametros}
 
 yacc.yacc();
 
@@ -380,7 +544,10 @@ data = """program compilador;
           }
           return c; 
           } 
-          main {}
+          main 
+          {
+          list int hola[4];
+          }
           """
 yacc.parse(data)
 
