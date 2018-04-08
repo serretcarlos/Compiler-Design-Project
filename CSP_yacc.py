@@ -322,25 +322,115 @@ def p_ESTATUTO(p):
 
 def p_CONDICION(p):
     '''
-    CONDICION : if CONDICION_ELSEIF CONDICION_ELSE 
+    CONDICION : if CONDICION_AUX
     '''
 
-def p_CONDICION_ELSEIF(p):
+def p_CONDICION_AUX(p):
     '''
-    CONDICION_ELSEIF : left_par EXPRESION right_par CUERPO
-                     | CONDICION_ELSEIF elseif left_par EXPRESION right_par CUERPO
+    CONDICION_AUX : left_par EXPRESION nt_checarBool right_par CUERPO ELSE_ELIF nt_pushSalto
+    '''
+def p_ELSE_ELIF(p):
+    '''
+    ELSE_ELIF : ELSE
+              | ELIF
+              | empty
     '''
 
-def p_CONDICION_ELSE(p):
+def p_ELSE(p):
     '''
-    CONDICION_ELSE : else CUERPO
-                   | empty
+    ELSE : else nt_pushElse CUERPO
     '''
+
+def p_ELIF(p):
+    '''
+    ELIF : elseif nt_pushElse CONDICION_AUX
+    '''
+
+
+
+def p_nt_checarBool(p):
+    '''
+    nt_checarBool : empty
+    '''
+    global pTipos
+    global pilaO
+    global quadCont
+    global dicQuadruplos
+    global pSaltos
+
+    if pTipos:
+        for elm in pTipos:
+            print(elm)
+        tipo = pTipos.pop()
+        if tipo == 'bool':
+            result = pilaO.pop()
+            dicQuadruplos[quadCont]={'operador': 'GoToF', 'izq': None, 'der': result, 'res': None}
+            pSaltos.append(quadCont)
+            quadCont += 1
+        else:
+            print("Error, la expresion no se evaluo como un booleano!")
+            exit()
+    else:
+        print("Error, la pila de tipos esta vacia!")
+        exit()
+
+def p_nt_pushSalto(p):
+    '''
+    nt_pushSalto : empty
+    '''
+    global pSaltos
+    global quadCont
+    global dicQuadruplos
+
+    if pSaltos:
+        end = pSaltos.pop()
+        print(end)
+        dicQuadruplos[end]['res'] = quadCont
+
+def p_nt_pushElse(p):
+    '''
+    nt_pushElse : empty
+    '''
+    global pSaltos
+    global quadCont
+    global dicQuadruplos
+
+    if pSaltos:
+        dicQuadruplos[quadCont]={'operador': 'GoTo', 'izq': None, 'der': None, 'res': None}
+        false = pSaltos.pop()
+        pSaltos.append(quadCont)
+        quadCont += 1
+        dicQuadruplos[false]['res'] = quadCont
+
+
 
 def p_CICLO(p):
     '''
-    CICLO : while left_par EXPRESION right_par CUERPO
+    CICLO : while nt_saltoLoop left_par EXPRESION nt_checarBool right_par CUERPO nt_pushLoop
     '''
+
+def p_nt_saltoLoop(p):
+    '''
+    nt_saltoLoop : empty
+    '''
+    global quadCont
+    global pSaltos
+
+    pSaltos.append(quadCont)
+
+def p_nt_pushLoop(p):
+    '''
+    nt_pushLoop : empty
+    '''
+    global quadCont
+    global dicQuadruplos
+    global pSaltos
+
+    end = pSaltos.pop()
+    ret = pSaltos.pop()
+    dicQuadruplos[quadCont]={'operador': 'GoTo', 'izq': None, 'der': None, 'res': ret}
+    quadCont += 1
+    dicQuadruplos[end]['res']=quadCont
 
 def p_LECTURA(p):
     '''
@@ -370,7 +460,6 @@ def p_nt_leer(p):
     else:
         print("Error, la variable '"+ varLeer + "' no se ha declarado!")
         exit()
-
 
 
 def p_ESCRITURA(p):
@@ -874,15 +963,6 @@ yacc.yacc();
 
 
 data = """program compilador; 
-          var int a; 
-          int perro(int a)
-          { 
-          var int h, c; 
-          if (c){
-          h = c;
-          }
-          return c; 
-          } 
           main 
           {
           var string alpha;
@@ -892,9 +972,14 @@ data = """program compilador;
           z = true;
           x =1;
           y =2;
-          z = x>y;
-          if(!(x<y || z)){}
-          cwrite(z);
+          z = x<y;
+          while(z){
+          x = x + 1;
+          y = y * x;
+          if( x >= 100){
+          z = false;
+          }
+          }
           }
           """
 yacc.parse(data)
