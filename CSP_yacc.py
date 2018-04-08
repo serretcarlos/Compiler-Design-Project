@@ -1,4 +1,5 @@
 import CSP_lex
+from CSP_Cubo import *
 import sys
 tokens = CSP_lex.tokens
 import ply.yacc as yacc
@@ -7,6 +8,7 @@ scope = 'global'
 dicFunciones = {}
 dicVarGlobales = {}
 dicVarLocales = {}
+dicQuadruplos = {}
 parametros = []
 tipoActual = None
 funcActual = None
@@ -15,11 +17,18 @@ idFunc = None
 idVar = None
 cteLista = None
 structAnt = None
+pOper = []
+pilaO = []
+pTipos = []
+pSaltos = []
+tCont = 0
+quadCont = 0
+sigNum = None
 
 
 def p_PROGRAMA(p):
     '''
-    PROGRAMA : program id semicolon PROGRAMA_VARS cambiarScope PROGRAMA_FUNC main CUERPO
+    PROGRAMA : program id semicolon PROGRAMA_VARS nt_cambiarScope PROGRAMA_FUNC main nt_ambienteMain CUERPO
     '''
     print('ok')
     print("tabla de funciones: %s" % dicFunciones)
@@ -27,10 +36,12 @@ def p_PROGRAMA(p):
     print("Tabla de variables globales: %s" % dicVarGlobales)
     print(" \n\n")
     print("Tabla de variables en main: %s" % dicVarLocales)
+    print(" \n\n")
+    print("Cuadruplos: %s" % dicQuadruplos)
 
-def p_cambiarScope(p):
+def p_nt_cambiarScope(p):
     '''
-    cambiarScope : empty
+    nt_cambiarScope : empty
     '''
     global scope
     if scope == 'global':
@@ -38,6 +49,10 @@ def p_cambiarScope(p):
     elif scope == 'local':
         scope = 'global'
 
+def p_nt_ambienteMain(p):
+    '''
+    nt_ambienteMain : nt_cambiarScope
+    '''
 
 
 def p_PROGRAMA_VARS(p):
@@ -77,39 +92,39 @@ def p_VARS_LIST_VAR(p):
 
 def p_VARS_LIST(p):
     '''
-    VARS_LIST : list hacerLista TIPO VARS_LIST_AUX semicolon
+    VARS_LIST : list nt_hacerLista TIPO VARS_LIST_AUX semicolon
     '''
 
-def p_hacerLista(p):
+def p_nt_hacerLista(p):
     '''
-    hacerLista : empty
+    nt_hacerLista : empty
     '''
     global tipoDatoStruct
     tipoDatoStruct = 'list'
 
 def p_VARS_LIST_AUX(p):
     '''
-    VARS_LIST_AUX : id agregarId left_sb cteInt agregarCteLista right_sb agregarDicVar
-                  | VARS_LIST_AUX comma id agregarId left_sb cteInt agregarCteLista right_sb agregarDicVar
+    VARS_LIST_AUX : id nt_agregarId left_sb cteInt nt_agregarCteLista right_sb nt_agregarDicVar
+                  | VARS_LIST_AUX comma id nt_agregarId left_sb cteInt nt_agregarCteLista right_sb nt_agregarDicVar
     '''
 
-def p_agregarId(p):
+def p_nt_agregarId(p):
     '''
-    agregarId : empty
+    nt_agregarId : empty
     '''
     global idVar
     idVar = p[-1]
 
-def p_agregarCteLista(p):
+def p_nt_agregarCteLista(p):
     '''
-    agregarCteLista : empty
+    nt_agregarCteLista : empty
     '''
     global cteLista
     cteLista = p[-1]
 
-def p_agregarDicVar(p):
+def p_nt_agregarDicVar(p):
     '''
-    agregarDicVar : empty
+    nt_agregarDicVar : empty
     '''
     global scope
     global idVar
@@ -125,32 +140,32 @@ def p_agregarDicVar(p):
 
 def p_VARS_VAR(p):
     '''
-    VARS_VAR : var hacerVar TIPO VARS_VAR_AUX semicolon
+    VARS_VAR : var nt_hacerVar TIPO VARS_VAR_AUX semicolon
     '''
-def p_hacerVar(p):
+def p_nt_hacerVar(p):
     '''
-    hacerVar : empty
+    nt_hacerVar : empty
     '''
     global tipoDatoStruct
     tipoDatoStruct = p[-1]
 
 def p_VARS_VAR_AUX(p):
     '''
-    VARS_VAR_AUX : id agregarId agregarDicVar
-                 | VARS_VAR_AUX comma id agregarId agregarDicVar
+    VARS_VAR_AUX : id nt_agregarId nt_agregarDicVar
+                 | VARS_VAR_AUX comma id nt_agregarId nt_agregarDicVar
     '''
 
 def p_TIPO(p):
     '''
-    TIPO : int cambioTipoActual
-         | float cambioTipoActual
-         | bool cambioTipoActual
-         | string cambioTipoActual
+    TIPO : int nt_cambioTipoActual
+         | float nt_cambioTipoActual
+         | bool nt_cambioTipoActual
+         | string nt_cambioTipoActual
     '''
 
-def p_cambioTipoActual(p):
+def p_nt_cambioTipoActual(p):
     '''
-    cambioTipoActual : empty
+    nt_cambioTipoActual : empty
     '''
     global tipoActual
     tipoActual = p[-1]
@@ -202,7 +217,7 @@ def p_CUERPOFUNC_ESTATUTO(p):
                         | empty
     '''
 
-######## ALOMEJOR NO VAMOS A UTILIZAR ESTA ########
+# -------------ALOMEJOR NO VAMOS A UTILIZAR ESTA --------------------
 def p_CUERPORETORNO(p):
     '''
     CUERPORETORNO : left_cb CUERPORETORNO_AUX right_cb
@@ -220,7 +235,7 @@ def p_CUERPORETORNO_CF_AUX(p):
                          | empty
     '''
 
-######## TERMINA PARTE QUE ALOMJER SE OMITE ########
+#-------------- TERMINA PARTE QUE ALOMJER SE OMITE ----------------
 
 def p_RETORNO(p):
     '''
@@ -229,8 +244,8 @@ def p_RETORNO(p):
 
 def p_FUNC(p):
     '''
-    FUNC : TIPO cambioFuncActual id agregarIdFunc left_par FUNC_PARA right_par CUERPORETORNO cambiarScope
-         | VOIDFUNC cambiarScope
+    FUNC : TIPO nt_cambioFuncActual id nt_agregarIdFunc left_par FUNC_PARA right_par CUERPORETORNO nt_cambiarScope
+         | VOIDFUNC nt_cambiarScope
     '''
     global idFunc
     global funcActual
@@ -241,30 +256,30 @@ def p_FUNC(p):
     dicVarLocales.clear()
     parametros = []
 
-def p_cambioFuncActual(p):
+def p_nt_cambioFuncActual(p):
     '''
-    cambioFuncActual : empty
+    nt_cambioFuncActual : empty
     '''
     global funcActual
     global tipoActual
     funcActual = tipoActual
 
-def p_agregarIdFunc(p):
+def p_nt_agregarIdFunc(p):
     '''
-    agregarIdFunc : empty
+    nt_agregarIdFunc : empty
     '''
     global idFunc
     idFunc = p[-1]
 
 def p_FUNC_PARA(p):
     '''
-    FUNC_PARA : TIPO id agregarParametro
-              | FUNC_PARA comma TIPO id agregarParametro
+    FUNC_PARA : TIPO id nt_agregarParametro
+              | FUNC_PARA comma TIPO id nt_agregarParametro
     '''
 
-def p_agregarParametro(p):
+def p_nt_agregarParametro(p):
     '''
-    agregarParametro : empty
+    nt_agregarParametro : empty
     '''
     global parametros
     global tipoActual
@@ -277,12 +292,12 @@ def p_agregarParametro(p):
 
 def p_VOIDFUNC(p):
     '''
-    VOIDFUNC : void hacerVoid id agregarIdFunc left_par VOIDFUNC_PARA right_par left_cb CUERPOFUNC right_cb
+    VOIDFUNC : void nt_hacerVoid id nt_agregarIdFunc left_par VOIDFUNC_PARA right_par left_cb CUERPOFUNC right_cb
     '''
 
-def p_hacerVoid(p):
+def p_nt_hacerVoid(p):
     '''
-    hacerVoid : empty
+    nt_hacerVoid : empty
     '''
     global funcActual
     funcActual = p[-1]
@@ -291,8 +306,8 @@ def p_hacerVoid(p):
 
 def p_VOIDFUNC_PARA(p):
     '''
-    VOIDFUNC_PARA : TIPO id agregarParametro
-                  | VOIDFUNC_PARA comma TIPO id agregarParametro
+    VOIDFUNC_PARA : TIPO id nt_agregarParametro
+                  | VOIDFUNC_PARA comma TIPO id nt_agregarParametro
     '''
 
 def p_ESTATUTO(p):
@@ -329,13 +344,55 @@ def p_CICLO(p):
 
 def p_LECTURA(p):
     '''
-    LECTURA : cread left_par id right_par semicolon
+    LECTURA : cread left_par id nt_leer right_par semicolon
     '''
+
+#-------------- FUNCIONALIDAD INPUT LISTAS?? ----------------
+def p_nt_leer(p):
+    '''
+    nt_leer : empty
+    '''
+    global dicVarGlobales
+    global dicVarLocales
+    global quadCont
+    global dicQuadruplos
+
+    varLeer = p[-1]
+
+    if varLeer in dicVarGlobales.keys():
+        result = dicVarGlobales[varLeer]['id']
+        dicQuadruplos[quadCont]={'operador': 'cread', 'izq': None, 'der': None, 'res': result}
+        quadCont += 1
+    elif varLeer in dicVarLocales.keys():
+        result = dicVarLocales[varLeer]['id']
+        dicQuadruplos[quadCont]={'operador': 'cread', 'izq': None, 'der': None, 'res': result}
+        quadCont += 1
+    else:
+        print("Error, la variable '"+ varLeer + "' no se ha declarado!")
+        exit()
+
+
 
 def p_ESCRITURA(p):
     '''
-    ESCRITURA : cwrite left_par EXPRESION right_par semicolon
+    ESCRITURA : cwrite left_par EXPRESION nt_escribir right_par semicolon
     '''
+
+def p_nt_escribir(p):
+    '''
+    nt_escribir : empty
+    '''
+    global pilaO
+    global quadCont
+    global dicQuadruplos
+
+    if pilaO:
+        escritura = pilaO.pop()
+        dicQuadruplos[quadCont]={'operador': 'cwrite', 'izq': None, 'der': escritura, 'res': None}
+        quadCont += 1
+    else:
+        print("Error, no se evaluo bien la expresion que se quiso imprimir!")
+
 
 def p_LLAMADA(p):
     '''
@@ -350,18 +407,66 @@ def p_LLAMADA_EXPRESION(p):
 
 def p_EXPRESION (p):
     '''
-    EXPRESION : EXPRESION_NOT EXPRESIONLOGICA EXPRESION_B
+    EXPRESION : EXPRESION_NOT EXPRESIONLOGICA nt_checaAndOrNot EXPRESION_B
     '''
+
+def p_nt_checaAndOrNot(p):
+    '''
+    nt_checaAndOrNot : empty
+    '''
+    global pOper
+    global pilaO
+    global tCont
+    global quadCont
+    global dicQuadruplos
+
+    if pOper:
+        operator = pOper.pop()
+
+        if operator == '&&' or operator == '||':
+            right_operand = pilaO.pop()
+            right_type = pTipos.pop()
+            left_operand = pilaO.pop()
+            left_type = pTipos.pop()
+            result_type = buscarCubo(left_type, right_type, operator)
+            if result_type != 'error':
+                result = 't' + str(tCont)
+                tCont += 1
+                dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': result}
+                quadCont += 1
+                pilaO.append(result)
+                pTipos.append(result_type)
+            else:
+                print("Error, los tipos de datos de las variables '" + left_operand +"' y '"+ right_operand + "' son incompatibles!" )
+                exit()
+        elif operator == '!':
+            right_operand = pilaO.pop()
+            right_type = pTipos.pop()
+
+            if right_type == 'bool':
+                result = 't' + str(tCont)
+                tCont += 1
+                dicQuadruplos[quadCont]={'operador': operator, 'izq': None, 'der': right_operand, 'res': result}
+                quadCont += 1
+                pilaO.append(result)
+                pTipos.append('bool')
+            else:
+                print("La expresion que se va a negar no se evalua como un booleano")
+                exit()
+
+        else:
+            pOper.append(operator)
 
 def p_EXPRESION_NOT (p):
     '''
-    EXPRESION_NOT : not
+    EXPRESION_NOT : not nt_pushPOper
                 | empty
     '''
+
 def p_EXPRESION_B (p):
 	'''
-	EXPRESION_B : and EXPRESION_NOT EXPRESIONLOGICA
-	           | or EXPRESION_NOT EXPRESIONLOGICA
+	EXPRESION_B : and nt_pushPOper EXPRESION
+	           | or nt_pushPOper EXPRESION
 			   | empty
 	'''
 
@@ -372,43 +477,142 @@ def p_EXPRESIONLOGICA(p):
 
 def p_EXPRESIONLOGICA_AUX(p):
     '''
-    EXPRESIONLOGICA_AUX : lt EXP
-                        | gt EXP
-                        | ne EXP
-                        | ge EXP
-                        | le EXP
-                        | et EXP
+    EXPRESIONLOGICA_AUX : lt nt_pushPOper EXP nt_checarRelop
+                        | gt nt_pushPOper EXP nt_checarRelop
+                        | ne nt_pushPOper EXP nt_checarRelop
+                        | ge nt_pushPOper EXP nt_checarRelop
+                        | le nt_pushPOper EXP nt_checarRelop
+                        | et nt_pushPOper EXP nt_checarRelop
                         | empty
     '''
 
+def p_nt_checarRelop(p):
+    '''
+    nt_checarRelop : empty
+    '''
+    global pOper
+    global pilaO
+    global tCont
+    global quadCont
+    global dicQuadruplos
+
+    if pOper:
+        operator = pOper.pop()
+
+        if operator == '>' or operator == '<' or operator == '!=' or operator == '>=' or operator == '<=':
+            right_operand = pilaO.pop()
+            right_type = pTipos.pop()
+            left_operand = pilaO.pop()
+            left_type = pTipos.pop()
+            result_type = buscarCubo(left_type, right_type, operator)
+            if result_type != 'error':
+                result = 't' + str(tCont)
+                tCont += 1
+                dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': result}
+                quadCont += 1
+                pilaO.append(result)
+                pTipos.append(result_type)
+            else:
+                print("Error, los tipos de datos de las variables '" + left_operand +"' y '"+ right_operand + "' son incompatibles!" )
+                exit()
+        else:
+            pOper.append(operator)
+
 def p_EXP(p):
     '''
-    EXP : TERMINO EXP_AUX
+    EXP : TERMINO nt_checar_sumas EXP_AUX
     '''
+
+def p_nt_checar_sumas(p):
+    '''
+    nt_checar_sumas : empty
+    '''
+    global pOper
+    global pilaO
+    global tCont
+    global quadCont
+    global dicQuadruplos
+
+    if pOper:
+        operator = pOper.pop()
+
+        if operator == '+' or operator == '-':
+            right_operand = pilaO.pop()
+            right_type = pTipos.pop()
+            left_operand = pilaO.pop()
+            left_type = pTipos.pop()
+            result_type = buscarCubo(left_type, right_type, operator)
+            if result_type != 'error':
+                result = 't' + str(tCont)
+                tCont += 1
+                dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': result}
+                quadCont += 1
+                pilaO.append(result)
+                pTipos.append(result_type)
+            else:
+                print("Error, los tipos de datos de las variables '" + left_operand +"' y '"+ right_operand + "' son incompatibles!" )
+                exit()
+        else:
+            pOper.append(operator)
+
+
 
 def p_EXP_AUX(p):
     '''
-    EXP_AUX : plus EXP
-            | minus EXP
+    EXP_AUX : plus nt_pushPOper EXP
+            | minus nt_pushPOper EXP
             | empty
     '''
 
 
 def p_TERMINO(p):
     '''
-    TERMINO : FACTOR TERMINO_AUX
+    TERMINO : FACTOR nt_checar_multis TERMINO_AUX
     '''
+
+def p_nt_checar_multis(p):
+    '''
+    nt_checar_multis : empty
+    '''
+    global pOper
+    global pilaO
+    global tCont
+    global quadCont
+    global dicQuadruplos
+
+    if pOper:
+        operator = pOper.pop()
+
+        if operator == '*' or operator == '/':
+            right_operand = pilaO.pop()
+            right_type = pTipos.pop()
+            left_operand = pilaO.pop()
+            left_type = pTipos.pop()
+            result_type = buscarCubo(left_type, right_type, operator)
+            if result_type != 'error':
+                result = 't' + str(tCont)
+                tCont += 1
+                dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': result}
+                quadCont += 1
+                pilaO.append(result)
+                pTipos.append(result_type)
+            else:
+                print("Error, los tipos de datos de las variables '" + left_operand +"' y '"+ right_operand + "'' son incompatibles!" )
+                exit()
+        else:
+            pOper.append(operator)
+
 
 def p_TERMINO_AUX(p):
     '''
-    TERMINO_AUX : multiply TERMINO
-                | divide TERMINO
+    TERMINO_AUX : multiply nt_pushPOper TERMINO
+                | divide nt_pushPOper TERMINO
                 | empty
     '''
 
 def p_FACTOR(p):
     '''
-    FACTOR : left_par EXPRESION right_par
+    FACTOR : left_par nt_pushPOper EXPRESION right_par nt_popPOper
             | CONSTANTE
             | LISTA
             | FACTOR_AUX
@@ -416,7 +620,7 @@ def p_FACTOR(p):
 
 def p_FACTOR_AUX(p):
     '''
-    FACTOR_AUX : id
+    FACTOR_AUX : id nt_pushPilaO
                 | id LLAMADA_F
     '''
 
@@ -443,40 +647,168 @@ def p_CONSTANTE(p):
               | STRINGS
     '''
 
+
 def p_NUMERICA(p):
     '''
     NUMERICA : NUMERICA_AUX
-             | plus NUMERICA_AUX
-             | minus NUMERICA_AUX
+             | plus nt_sigMas NUMERICA_AUX
+             | minus nt_sigMenos NUMERICA_AUX
     '''
+
+def p_nt_sigMas(p):
+    '''
+    nt_sigMas : empty
+    '''
+    global sigNum
+    sigNum = '+'
+
+def p_nt_sigMenos(p):
+    '''
+    nt_sigMenos : empty
+    '''
+    global sigNum
+    sigNum = '-'
 
 def p_NUMERICA_AUX(p):
     '''
-    NUMERICA_AUX : cteInt
-                 | cteFloat
+    NUMERICA_AUX : cteInt nt_pushInt
+                 | cteFloat nt_pushFloat
     '''
+
+#_----------ALOMEJOR SE TIENE QUE REVISAR ESTO--------------
+def p_nt_pushInt(p):
+    '''
+    nt_pushInt : empty
+    '''
+    global pilaO
+    global pTipos
+    global sigNum
+
+    if sigNum == None:
+        pilaO.append(p[-1])
+    elif sigNum == '-':
+        num = p[-1] * -1
+        pilaO.append(num)
+        sigNum = None
+    else:
+        pilaO.append(p[-1])
+        sigNum = None
+    pTipos.append('int')
+
+def p_nt_pushFloat(p):
+    '''
+    nt_pushFloat : empty
+    '''
+    global pilaO
+    global pTipos
+    global sigNum
+
+    if sigNum == None:
+        pilaO.append(p[-1])
+    elif sigNum == '-':
+        num = p[-1] * -1
+        pilaO.append(num)
+        sigNum = None
+    else:
+        pilaO.append(p[-1])
+        sigNum = None
+    pTipos.append('float')
 
 def p_BOOLEANA(p):
     '''
     BOOLEANA : true
              | false
     '''
+    global pilaO
+    global pTipos
+
+    pilaO.append(p[1])
+    pTipos.append('bool')
 
 def p_STRINGS(p):
     '''
     STRINGS : cteString
     '''
+    global pilaO
+    global pTipos
+
+    pilaO.append(p[1])
+    pTipos.append('string')
 
 def p_ASIGNACION(p):
     '''
-    ASIGNACION : ASIGNACION_AUX equals EXPRESION semicolon
+    ASIGNACION : ASIGNACION_AUX equals nt_pushPOper EXPRESION nt_checaEquals semicolon
     '''
+
+def p_nt_checaEquals(p):
+    '''
+    nt_checaEquals : empty
+    '''
+    global pOper
+    global pilaO
+    global tCont
+    global quadCont
+    global dicQuadruplos
+
+    if pOper:
+        operator = pOper.pop()
+
+        if operator == '=':
+            right_operand = pilaO.pop()
+            right_type = pTipos.pop()
+            left_operand = pilaO.pop()
+            left_type = pTipos.pop()
+            result_type = buscarCubo(left_type, right_type, operator)
+            if result_type != 'error':
+                dicQuadruplos[quadCont]={'operador': operator, 'izq': None, 'der': right_operand, 'res': left_operand}
+                quadCont += 1
+            else:
+                print("Error, los tipos de datos de las variables '" + left_operand +"' y '"+ right_operand + "'' son incompatibles!" )
+                exit()
+        else:
+            pOper.append(operator)
 
 def p_ASIGNACION_AUX(p):
     '''
-    ASIGNACION_AUX : id
+    ASIGNACION_AUX : id nt_pushPilaO
                    | LISTA
     '''
+
+def p_nt_pushPilaO(p):
+    '''
+    nt_pushPilaO : empty
+    '''
+    global dicVarGlobales
+    global dicVarLocales
+    global pilaO
+    global pTipos
+
+    simbolo = p[-1]
+    if simbolo in dicVarGlobales.keys():
+        pilaO.append(dicVarGlobales[simbolo]['id'])
+        pTipos.append(dicVarGlobales[simbolo]['tipo'])
+    elif simbolo in dicVarLocales.keys():
+        pilaO.append(dicVarLocales[simbolo]['id'])
+        pTipos.append(dicVarLocales[simbolo]['tipo'])
+    else:
+        print("Error, la variable '" + simbolo + "'' no existe!")
+        exit()
+
+def p_nt_pushPOper(p):
+    '''
+    nt_pushPOper : empty
+    '''
+    global pOper
+
+    simbolo = p[-1]
+    pOper.append(simbolo)
+
+def p_nt_popPOper(p):
+    '''
+    nt_popPOper : empty
+    '''
+    global pOper
+    simbolo = pOper.pop()
 
 def p_empty(p):
     '''
@@ -487,8 +819,10 @@ def p_empty(p):
 def p_error(p):
     if p:
         print("Error de Sintaxis en '%s'" % p)
+        exit()
     else:
         print("Error de Sintaxis en EOF")
+        exit()
 
 
 def AgregarDicVarGlobal(IdVar, TipoActual, TipoDatoStruct, CteLista):
@@ -496,13 +830,15 @@ def AgregarDicVarGlobal(IdVar, TipoActual, TipoDatoStruct, CteLista):
 
     if TipoDatoStruct == 'list':
         if IdVar in dicVarGlobales.keys():
-            print("Error, ya existe la lista!")
+            print("Error, ya existe la lista global '"+ IdVar+"'!")
+            exit()
         else:
             diccLista = {}
             dicVarGlobales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':CteLista, 'lista':diccLista}
     else:
         if IdVar in dicVarGlobales.keys():
-            print("Error, ya existe la variable!")
+            print("Error, ya existe la variable global '" + IdVar + "'!")
+            exit()
         else:
             dicVarGlobales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':None, 'lista':None}
 
@@ -512,13 +848,15 @@ def AgregarDicVarLocal(IdVar, TipoActual, TipoDatoStruct, CteLista):
 
     if TipoDatoStruct == 'list':
         if IdVar in dicVarLocales.keys():
-            print("Error, ya existe la lista!")
+            print("Error, ya existe la lista '" + IdVar + "'!")
+            exit()
         else:
             diccLista = {}
             dicVarLocales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':CteLista, 'lista':diccLista}
     else:
         if IdVar in dicVarLocales.keys():
-            print("Error, ya existe la variable!")
+            print("Error, ya existe la variable '" + IdVar + "'!")
+            exit()
         else:
             dicVarLocales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':None, 'lista':None}
 
@@ -527,7 +865,8 @@ def AgregarDicFunc(IdFunc, FuncActual, Parametros):
     global dicFunciones
 
     if IdFunc in dicFunciones.keys():
-        print("Error, ya existia esa funcion")
+        print("Error, ya existe la funcion '" + IdFunc +"'!")
+        exit()
     else:
         dicFunciones[IdFunc] = {'id':IdFunc, 'tipo':FuncActual, 'pars':Parametros}
 
@@ -546,7 +885,16 @@ data = """program compilador;
           } 
           main 
           {
-          list int hola[4];
+          var string alpha;
+          alpha = "WHATDAFUK";
+          var int x,y;
+          var bool z;
+          z = true;
+          x =1;
+          y =2;
+          z = x>y;
+          if(!(x<y || z)){}
+          cwrite(z);
           }
           """
 yacc.parse(data)

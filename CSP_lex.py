@@ -120,7 +120,7 @@ def t_cteInt(t):
 
 def t_cteString(t):
 	r'\".*\"'
-	t.type = palabras_reservadas.get(t.value, 'cte_string')
+	t.value = str(t.value)
 	return t
 
 def t_id(t):
