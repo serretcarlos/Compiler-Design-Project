@@ -15,6 +15,7 @@ tipoActual = None
 funcActual = None
 tipoDatoStruct = None
 idFunc = None
+funcCall = None
 idVar = None
 cteLista = None
 structAnt = None
@@ -25,6 +26,7 @@ pSaltos = []
 tCont = 0
 quadCont = 0
 funcQuad = None
+paramCont = 0
 sigNum = None
 #Contadores para calcular espacio en memoria parametros y variables
 
@@ -323,25 +325,6 @@ def p_nt_pushEndsub(p):
     quadCont += 1
 
 
-def p_test_print(p):
-    '''
-    test_print : empty
-    '''
-    global dicVarLocales
-    global idFunc
-    global parametros
-    #print('\nVariables locales de funcion %s: %s \n' % (idFunc, dicVarLocales))
-    for a in dicVarLocales:
-        print(a, dicVarLocales[a])
-    print('Parametros de %s: %s \n' % (idFunc, parametros))
-    locales = dict(dicVarLocales)
-    for a in parametros:
-        #print(a['id'])
-        if a in locales.keys():
-            locales.pop(a)
-    print('Declarados de funcion %s : %s \n' % (idFunc, locales))
-    #print('Var locales sin parametros de %s: %s' % (idFunc, local))
-
 def p_nt_cambioFuncActual(p):
     '''
     nt_cambioFuncActual : empty
@@ -569,13 +552,19 @@ def p_nt_escribir(p):
 
 def p_LLAMADA(p):
     '''
-    LLAMADA : left_par LLAMADA_EXPRESION right_par semicolon
+    LLAMADA : id nt_verificaFuncId left_par nt_startERA LLAMADA_EXPRESION nt_verificaUltimo right_par semicolon nt_pushGoSub
     '''
 
 def p_LLAMADA_EXPRESION(p):
     '''
-    LLAMADA_EXPRESION : EXPRESION
-                      | LLAMADA_EXPRESION comma EXPRESION
+    LLAMADA_EXPRESION : LLAMADA_EXPRESION_AUX
+                      | empty
+    '''
+
+def p_LLAMADA_EXPRESION_AUX(p):
+    '''
+    LLAMADA_EXPRESION_AUX : EXPRESION nt_verifyArgType
+                      | LLAMADA_EXPRESION_AUX comma nt_paramPP EXPRESION nt_verifyArgType
     '''
 
 def p_EXPRESION (p):
@@ -803,19 +792,116 @@ def p_FACTOR(p):
 def p_FACTOR_AUX(p):
     '''
     FACTOR_AUX : id nt_pushPilaO
-                | id LLAMADA_F
+                | id nt_verificaFuncId LLAMADA_F
     '''
+
+def p_nt_verificaFuncId(p):
+    '''
+    nt_verificaFuncId : empty
+    '''
+    global dicFunciones
+    global funcCall
+
+    nombre = p[-1]
+
+    if nombre not in dicFunciones.keys():
+        print("Error, no existe la funcion %s!" % nombre)
+        exit()
+    else:
+        funcCall = nombre
 
 def p_LLAMADAF(p):
     '''
-    LLAMADA_F : left_par EXPRESION LLAMADAF_AUX right_par
+    LLAMADA_F : left_par nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_pushGoSub
     '''
 
 def p_LLAMADAF_AUX(p):
     '''
-    LLAMADAF_AUX : comma EXPRESION LLAMADAF_AUX
-                    | empty
+    LLAMADAF_AUX : LLAMADAF_AUX2
+                 | empty
     '''
+
+def p_LLAMADAF_AUX2(p):
+    '''
+    LLAMADAF_AUX2 : EXPRESION nt_verifyArgType
+                  | LLAMADAF_AUX2 comma nt_paramPP EXPRESION nt_verifyArgType
+    '''
+
+def p_nt_paramPP(p):
+    '''
+    nt_paramPP : empty
+    '''
+    global paramCont 
+    paramCont += 1
+
+def p_nt_startERA(p):
+    '''
+    nt_startERA : empty
+    '''
+    global funcCall
+    global dicQuadruplos
+    global quadCont
+    global paramCont
+
+    dicQuadruplos[quadCont]={'operador': 'ERA', 'izq': None, 'der': None, 'res':funcCall}
+    quadCont += 1
+    paramCont = 0
+
+def p_nt_verifyArgType(p):
+    '''
+    nt_verifyArgType : empty
+    '''
+    global paramCont
+    global dicFunciones
+    global dicQuadruplos
+    global quadCont
+    global funcCall
+    global pilaO
+    global pTipos
+
+    if paramCont < len(dicFunciones[funcCall]['pars']):
+        argument = pilaO.pop()
+        argumentType = pTipos.pop()
+        compParam = dicFunciones[funcCall]['pars'][paramCont]
+
+        if argumentType == dicFunciones[funcCall]['vars'][compParam]['tipo']:
+            arg = 'param' + str(paramCont)
+            dicQuadruplos[quadCont] = {'operador':'Param', 'izq': argument, 'der': None, 'res': arg}
+            quadCont += 1
+        else:
+            print("Error, el parametro numero '%s' en la llamada de la funcion '%s' no es del tipo '%s'." % (paramCont+1, funcCall, dicFunciones[funcCall]['vars'][compParam]['tipo']))
+            exit()
+    else:
+        print("no entre")
+
+def p_nt_verificaUltimo(p):
+    '''
+    nt_verificaUltimo : empty
+    '''
+    global paramCont
+    global dicFunciones
+    global funcCall
+
+    tamPar = len(dicFunciones[funcCall]['pars'])-1
+    if paramCont < tamPar:
+        print("Error, parametros insuficientes en llamada de funcion %s" % funcCall)
+        exit()
+    elif paramCont > tamPar:
+        print("Error, parametros de mas en llamada de funcion %s" % funcCall)
+        exit()
+
+def p_nt_pushGoSub(p):
+    '''
+    nt_pushGoSub : empty
+    '''
+    global dicQuadruplos
+    global quadCont
+    global funcCall
+    global dicFunciones
+
+    initAddress = dicFunciones[funcCall]['inicio']
+    dicQuadruplos[quadCont]={'operador': 'GoSub', 'izq': funcCall, 'der': None, 'res':initAddress}
+    quadCont += 1
 
 def p_LISTA(p):
     '''
@@ -1096,10 +1182,17 @@ data = """program compilador;
           a = z;
           return z;
           }
+          string tres(int z, float a, bool T){
+          var string hola;
+          return hola;
+          }
           float dos(int que, int pedo){
           var float a;
           a = que - pedo;
           return a;
+          }
+          void cuatro( int a){
+          G1 = G1 + 1;
           }
           main 
           {
@@ -1108,10 +1201,11 @@ data = """program compilador;
           var int x,y;
           var bool z;
           var float h;
-          h =1.5;
+          x = uno(y,y,h);
           z = true;
           x = h;
           y =2;
+          cuatro(x);
           z = x<y;
           while(z){
           x = x + 1;
