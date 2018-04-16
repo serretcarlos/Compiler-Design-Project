@@ -8,6 +8,7 @@ scope = 'global'
 dicFunciones = {}
 dicVarGlobales = {}
 dicVarLocales = {}
+dicTemporales = {}
 dicQuadruplos = {}
 parametros = []
 tipoActual = None
@@ -30,11 +31,9 @@ sigNum = None
 
 def p_PROGRAMA(p):
     '''
-    PROGRAMA : program id semicolon PROGRAMA_VARS nt_cambiarScope PROGRAMA_FUNC nt_cambiarScope main nt_ambienteMain CUERPO
+    PROGRAMA : program id nt_pushJmpMain semicolon PROGRAMA_VARS nt_cambiarScope PROGRAMA_FUNC nt_cambiarScope main nt_ambienteMain CUERPO
     '''
     print('ok\n')
-    #print("tabla de funciones: %s" % dicFunciones)
-    print(dicFunciones)
     print("Tabla de funciones: ")
     for a in dicFunciones:
         print('Funcion %s : ' % a)
@@ -47,12 +46,21 @@ def p_PROGRAMA(p):
         print("\t vars :")
         for b in dicFunciones[a]['vars']:
             print("\t\t %s" % dicFunciones[a]['vars'][b])
+        print('\t Temps: %s' % dicFunciones[a]['temps'])
         print('\t cantVar: %s' % dicFunciones[a]['cantVar'])
             
     print(" \n\n")
-    print("Tabla de variables globales: %s" % dicVarGlobales)
+    print("Tabla de variables globales: ")
+    for a in dicVarGlobales:
+        print("%s : %s" % (a, dicVarGlobales[a]))
     print(" \n\n")
-    print("Tabla de variables en main: %s" % dicVarLocales)
+    print("Tabla de variables en main: ")
+    for a in dicVarLocales:
+        print("%s : %s" % (a, dicVarLocales[a]))
+    print(" \n\n")
+    print("Temporales en el main: ")
+    for a in dicTemporales:
+        print(dicTemporales[a])
     print(" \n\n")
     print("Cuadruplos:")
     for a in dicQuadruplos:
@@ -72,7 +80,20 @@ def p_nt_ambienteMain(p):
     '''
     nt_ambienteMain : nt_cambiarScope
     '''
+    global dicQuadruplos
+    global quadCont
 
+    dicQuadruplos[0]['res'] = quadCont
+
+def p_nt_pushJmpMain(p):
+    '''
+    nt_pushJmpMain : empty
+    '''
+    global dicQuadruplos
+    global quadCont
+
+    dicQuadruplos[quadCont]={'operador': 'GoTo', 'izq': None, 'der': None, 'res': None}
+    quadCont += 1
 
 def p_PROGRAMA_VARS(p):
     '''
@@ -279,11 +300,16 @@ def p_FUNC(p):
     global parametros
     global dicVarLocales
     global funcQuad
+    global dicTemporales
 
-    dict1 = dict(dicVarLocales)
-    AgregarDicFunc(idFunc, funcActual, parametros, dict1, funcQuad)
+    dLocales = dict(dicVarLocales)
+    dTemps = dict(dicTemporales)
+
+    AgregarDicFunc(idFunc, funcActual, parametros, dLocales, funcQuad, dTemps)
 
     dicVarLocales.clear()
+    dicTemporales.clear()
+    tCont=0
     parametros = []
 
 def p_nt_pushEndsub(p):
@@ -566,6 +592,7 @@ def p_nt_checaAndOrNot(p):
     global tCont
     global quadCont
     global dicQuadruplos
+    global dicTemporales
 
     if pOper:
         operator = pOper.pop()
@@ -578,6 +605,7 @@ def p_nt_checaAndOrNot(p):
             result_type = buscarCubo(left_type, right_type, operator)
             if result_type != 'error':
                 result = 't' + str(tCont)
+                dicTemporales[tCont]={'id':result, 'tipo': result_type}
                 tCont += 1
                 dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': result}
                 quadCont += 1
@@ -592,6 +620,7 @@ def p_nt_checaAndOrNot(p):
 
             if right_type == 'bool':
                 result = 't' + str(tCont)
+                dicTemporales[tCont]={'id':result, 'tipo': right_type}
                 tCont += 1
                 dicQuadruplos[quadCont]={'operador': operator, 'izq': None, 'der': right_operand, 'res': result}
                 quadCont += 1
@@ -642,6 +671,7 @@ def p_nt_checarRelop(p):
     global tCont
     global quadCont
     global dicQuadruplos
+    global dicTemporales
 
     if pOper:
         operator = pOper.pop()
@@ -654,6 +684,7 @@ def p_nt_checarRelop(p):
             result_type = buscarCubo(left_type, right_type, operator)
             if result_type != 'error':
                 result = 't' + str(tCont)
+                dicTemporales[tCont]={'id':result, 'tipo': result_type}
                 tCont += 1
                 dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': result}
                 quadCont += 1
@@ -679,6 +710,7 @@ def p_nt_checar_sumas(p):
     global tCont
     global quadCont
     global dicQuadruplos
+    global dicTemporales
 
     if pOper:
         operator = pOper.pop()
@@ -691,6 +723,7 @@ def p_nt_checar_sumas(p):
             result_type = buscarCubo(left_type, right_type, operator)
             if result_type != 'error':
                 result = 't' + str(tCont)
+                dicTemporales[tCont]={'id': result, 'tipo': result_type}
                 tCont += 1
                 dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': result}
                 quadCont += 1
@@ -726,6 +759,7 @@ def p_nt_checar_multis(p):
     global tCont
     global quadCont
     global dicQuadruplos
+    global dicTemporales
 
     if pOper:
         operator = pOper.pop()
@@ -738,6 +772,7 @@ def p_nt_checar_multis(p):
             result_type = buscarCubo(left_type, right_type, operator)
             if result_type != 'error':
                 result = 't' + str(tCont)
+                dicTemporales[tCont]={'id': result, 'tipo': result_type}
                 tCont += 1
                 dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': result}
                 quadCont += 1
@@ -893,7 +928,6 @@ def p_nt_checaEquals(p):
     '''
     global pOper
     global pilaO
-    global tCont
     global quadCont
     global dicQuadruplos
 
@@ -1008,44 +1042,44 @@ def AgregarDicVarLocal(IdVar, TipoActual, TipoDatoStruct, CteLista):
             dicVarLocales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':None, 'lista':None}
 
 
-def AgregarDicFunc(IdFunc, FuncActual, Parametros, Vars, Inicio):
+def AgregarDicFunc(IdFunc, FuncActual, Parametros, Vars, Inicio, Temps):
     global dicFunciones
 
     if IdFunc in dicFunciones.keys():
         print("Error, ya existe la funcion '" + IdFunc +"'!")
         exit()
     else:
-        dicFunciones[IdFunc] = {'id':IdFunc, 'tipo':FuncActual, 'inicio':Inicio, 'pars':Parametros, 'vars': Vars, 'cantVar':calcularTam(Parametros, Vars) }
+        dicFunciones[IdFunc] = {'id':IdFunc, 'tipo':FuncActual, 'inicio':Inicio, 'pars':Parametros, 'vars': Vars, 'cantVar':calcularTam(Vars, Temps), 'temps': Temps }
 
-def calcularTam(Parametros, Vars):
-    dicTam = {'iP':0, 'fP':0, 'sP':0, 'bP':0, 'i':0, 'f':0, 's':0, 'b':0}
+def calcularTam(Vars, Temps):
+    dicTam = {'i':0, 'f':0, 's':0, 'b':0, 'iT':0, 'fT':0, 'sT':0, 'bT':0}
 
-    print("VARIABLES==========%s" % Vars)
     for a in Vars:
         tipo = Vars[a]['tipo']
-        nVar = Vars[a]['id']
-        if nVar in Parametros:
-            if tipo == 'int':
-                dicTam['iP'] += 1
-            elif tipo == 'float':
-                dicTam['fP'] += 1
-            elif tipo == 'string':
-                dicTam['sP'] += 1
-            elif tipo == 'bool':
-                dicTam['bP'] += 1
-            else:
-                print("El tipo no esta declarado")
+        if tipo == 'int':
+            dicTam['i'] += 1
+        elif tipo == 'float':
+            dicTam['f'] += 1
+        elif tipo == 'string':
+            dicTam['s'] += 1
+        elif tipo == 'bool':
+            dicTam['b'] += 1
         else:
-            if tipo == 'int':
-                dicTam['i'] += 1
-            elif tipo == 'float':
-                dicTam['f'] += 1
-            elif tipo == 'string':
-                dicTam['s'] += 1
-            elif tipo == 'bool':
-                dicTam['b'] += 1
-            else:
-                print("El tipo no esta declarado")
+            print("El tipo no esta declarado!")
+
+    for a in Temps:
+        tipo = Temps[a]['tipo']
+        if tipo == 'int':
+            dicTam['iT'] += 1
+        elif tipo == 'float':
+            dicTam['fT'] += 1
+        elif tipo == 'string':
+            dicTam['sT'] += 1
+        elif tipo == 'bool':
+            dicTam['bT'] += 1
+        else:
+            print("El temporal no tiene tipo!")
+
     return dicTam
 
 
@@ -1073,8 +1107,10 @@ data = """program compilador;
           alpha = "WHAT iS GOINF ON";
           var int x,y;
           var bool z;
+          var float h;
+          h =1.5;
           z = true;
-          x =1;
+          x = h;
           y =2;
           z = x<y;
           while(z){
