@@ -23,21 +23,40 @@ pTipos = []
 pSaltos = []
 tCont = 0
 quadCont = 0
+funcQuad = None
 sigNum = None
+#Contadores para calcular espacio en memoria parametros y variables
 
 
 def p_PROGRAMA(p):
     '''
-    PROGRAMA : program id semicolon PROGRAMA_VARS nt_cambiarScope PROGRAMA_FUNC main nt_ambienteMain CUERPO
+    PROGRAMA : program id semicolon PROGRAMA_VARS nt_cambiarScope PROGRAMA_FUNC nt_cambiarScope main nt_ambienteMain CUERPO
     '''
-    print('ok')
-    print("tabla de funciones: %s" % dicFunciones)
+    print('ok\n')
+    #print("tabla de funciones: %s" % dicFunciones)
+    print(dicFunciones)
+    print("Tabla de funciones: ")
+    for a in dicFunciones:
+        print('Funcion %s : ' % a)
+        print("\t id : %s" % dicFunciones[a]['id'])
+        print("\t tipo : %s" % dicFunciones[a]['tipo'])
+        print("\t inicio : %s" % dicFunciones[a]['inicio'])
+        print('\t pars :')
+        for b in dicFunciones[a]['pars']:
+            print('\t\t %s' % b)
+        print("\t vars :")
+        for b in dicFunciones[a]['vars']:
+            print("\t\t %s" % dicFunciones[a]['vars'][b])
+        print('\t cantVar: %s' % dicFunciones[a]['cantVar'])
+            
     print(" \n\n")
     print("Tabla de variables globales: %s" % dicVarGlobales)
     print(" \n\n")
     print("Tabla de variables en main: %s" % dicVarLocales)
     print(" \n\n")
-    print("Cuadruplos: %s" % dicQuadruplos)
+    print("Cuadruplos:")
+    for a in dicQuadruplos:
+        print("%s: %s" % (a, dicQuadruplos[a]))
 
 def p_nt_cambiarScope(p):
     '''
@@ -201,13 +220,21 @@ def p_CUERPOFUNC(p):
 
 def p_CUERPOFUNC_AUX(p):
     '''
-    CUERPOFUNC_AUX : CUERPOFUNC_VARS CUERPOFUNC_ESTATUTO
-                   | CUERPOFUNC_AUX CUERPOFUNC_VARS CUERPOFUNC_ESTATUTO
+    CUERPOFUNC_AUX : CUERPOFUNC_VARS nt_funcInicio CUERPOFUNC_ESTATUTO
+                   | CUERPOFUNC_AUX CUERPOFUNC_VARS nt_funcInicio CUERPOFUNC_ESTATUTO
     '''
+def p_nt_funcInicio(p):
+    '''
+    nt_funcInicio : empty
+    '''
+    global funcQuad
+    global quadCont
+
+    funcQuad = quadCont
 
 def p_CUERPOFUNC_VARS(p):
     '''
-    CUERPOFUNC_VARS : VARS
+    CUERPOFUNC_VARS : VARS 
                     | empty
     '''
 
@@ -244,17 +271,50 @@ def p_RETORNO(p):
 
 def p_FUNC(p):
     '''
-    FUNC : TIPO nt_cambioFuncActual id nt_agregarIdFunc left_par FUNC_PARA right_par CUERPORETORNO nt_cambiarScope
-         | VOIDFUNC nt_cambiarScope
+    FUNC : TIPO nt_cambioFuncActual id nt_agregarIdFunc left_par FUNC_PARA right_par CUERPORETORNO nt_pushEndsub
+         | VOIDFUNC nt_pushEndsub
     '''
     global idFunc
     global funcActual
     global parametros
+    global dicVarLocales
+    global funcQuad
 
-    AgregarDicFunc(idFunc, funcActual, parametros)
+    dict1 = dict(dicVarLocales)
+    AgregarDicFunc(idFunc, funcActual, parametros, dict1, funcQuad)
 
     dicVarLocales.clear()
     parametros = []
+
+def p_nt_pushEndsub(p):
+    '''
+    nt_pushEndsub : empty
+    '''
+    global quadCont
+    global dicQuadruplos
+
+    dicQuadruplos[quadCont]={'operador': 'EndSub', 'izq': None, 'der': None, 'res': None}
+    quadCont += 1
+
+
+def p_test_print(p):
+    '''
+    test_print : empty
+    '''
+    global dicVarLocales
+    global idFunc
+    global parametros
+    #print('\nVariables locales de funcion %s: %s \n' % (idFunc, dicVarLocales))
+    for a in dicVarLocales:
+        print(a, dicVarLocales[a])
+    print('Parametros de %s: %s \n' % (idFunc, parametros))
+    locales = dict(dicVarLocales)
+    for a in parametros:
+        #print(a['id'])
+        if a in locales.keys():
+            locales.pop(a)
+    print('Declarados de funcion %s : %s \n' % (idFunc, locales))
+    #print('Var locales sin parametros de %s: %s' % (idFunc, local))
 
 def p_nt_cambioFuncActual(p):
     '''
@@ -275,6 +335,7 @@ def p_FUNC_PARA(p):
     '''
     FUNC_PARA : TIPO id nt_agregarParametro
               | FUNC_PARA comma TIPO id nt_agregarParametro
+              | empty
     '''
 
 def p_nt_agregarParametro(p):
@@ -287,7 +348,7 @@ def p_nt_agregarParametro(p):
     idParametro = p[-1]
 
     AgregarDicVarLocal(idParametro, tipoActual, 'var', None)
-    parametros.append(dicVarLocales[idParametro])
+    parametros.append(idParametro)
 
 
 def p_VOIDFUNC(p):
@@ -359,8 +420,6 @@ def p_nt_checarBool(p):
     global pSaltos
 
     if pTipos:
-        for elm in pTipos:
-            print(elm)
         tipo = pTipos.pop()
         if tipo == 'bool':
             result = pilaO.pop()
@@ -384,7 +443,6 @@ def p_nt_pushSalto(p):
 
     if pSaltos:
         end = pSaltos.pop()
-        print(end)
         dicQuadruplos[end]['res'] = quadCont
 
 def p_nt_pushElse(p):
@@ -950,23 +1008,69 @@ def AgregarDicVarLocal(IdVar, TipoActual, TipoDatoStruct, CteLista):
             dicVarLocales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':None, 'lista':None}
 
 
-def AgregarDicFunc(IdFunc, FuncActual, Parametros):
+def AgregarDicFunc(IdFunc, FuncActual, Parametros, Vars, Inicio):
     global dicFunciones
 
     if IdFunc in dicFunciones.keys():
         print("Error, ya existe la funcion '" + IdFunc +"'!")
         exit()
     else:
-        dicFunciones[IdFunc] = {'id':IdFunc, 'tipo':FuncActual, 'pars':Parametros}
+        dicFunciones[IdFunc] = {'id':IdFunc, 'tipo':FuncActual, 'inicio':Inicio, 'pars':Parametros, 'vars': Vars, 'cantVar':calcularTam(Parametros, Vars) }
+
+def calcularTam(Parametros, Vars):
+    dicTam = {'iP':0, 'fP':0, 'sP':0, 'bP':0, 'i':0, 'f':0, 's':0, 'b':0}
+
+    print("VARIABLES==========%s" % Vars)
+    for a in Vars:
+        tipo = Vars[a]['tipo']
+        nVar = Vars[a]['id']
+        if nVar in Parametros:
+            if tipo == 'int':
+                dicTam['iP'] += 1
+            elif tipo == 'float':
+                dicTam['fP'] += 1
+            elif tipo == 'string':
+                dicTam['sP'] += 1
+            elif tipo == 'bool':
+                dicTam['bP'] += 1
+            else:
+                print("El tipo no esta declarado")
+        else:
+            if tipo == 'int':
+                dicTam['i'] += 1
+            elif tipo == 'float':
+                dicTam['f'] += 1
+            elif tipo == 'string':
+                dicTam['s'] += 1
+            elif tipo == 'bool':
+                dicTam['b'] += 1
+            else:
+                print("El tipo no esta declarado")
+    return dicTam
+
 
 yacc.yacc();
 
 
+
 data = """program compilador; 
+          var float G1, G2, G3;
+          int uno(int b, int a, float c){
+          var int z;
+          z = b;
+          b = a;
+          a = z;
+          return z;
+          }
+          float dos(int que, int pedo){
+          var float a;
+          a = que - pedo;
+          return a;
+          }
           main 
           {
           var string alpha;
-          alpha = "WHATDAFUK";
+          alpha = "WHAT iS GOINF ON";
           var int x,y;
           var bool z;
           z = true;
@@ -982,6 +1086,7 @@ data = """program compilador;
           }
           }
           """
+
 yacc.parse(data)
 
 
