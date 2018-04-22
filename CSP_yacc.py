@@ -9,6 +9,7 @@ dicFunciones = {}
 dicVarGlobales = {}
 dicVarLocales = {}
 dicTemporales = {}
+dicConstantes = {}
 dicQuadruplos = {}
 parametros = []
 tipoActual = None
@@ -28,8 +29,35 @@ quadCont = 0
 funcQuad = None
 paramCont = 0
 sigNum = None
-#Contadores para calcular espacio en memoria parametros y variables
 
+#memoria variables globales
+
+dicMemorias = {
+    'global': {
+        'int': {1000: 0},
+        'float': {2000: 0},
+        'string': {3000: 0},
+        'bool': {4000: 0}
+    },
+    'local': {
+        'int': {5000: 0},
+        'float': {7000: 0},
+        'string': {9000: 0},
+        'bool': {11000: 0}
+    },
+    'temp': {
+        'int': {13000: 0},
+        'float': {15000: 0},
+        'string': {17000: 0},
+        'bool': {19000: 0}
+    },
+    'const': {
+        'int': {21000: 0},
+        'float': {23000: 0},
+        'string': {25000: 0},
+        'bool': {27000: 0}
+    }
+}
 
 def p_PROGRAMA(p):
     '''
@@ -62,7 +90,11 @@ def p_PROGRAMA(p):
     print(" \n\n")
     print("Temporales en el main: ")
     for a in dicTemporales:
-        print(dicTemporales[a])
+        print(a, dicTemporales[a])
+    print(" \n\n")
+    print("Tabla de Constantes Usados")
+    for a in dicConstantes:
+        print(a, dicConstantes[a])
     print(" \n\n")
     print("Cuadruplos:")
     for a in dicQuadruplos:
@@ -173,17 +205,26 @@ def p_nt_agregarDicVar(p):
     global cteLista
     global tipoActual
     global tipoDatoStruct
+    global dicMemorias
 
     if scope == 'global':
-        AgregarDicVarGlobal(idVar, tipoActual, tipoDatoStruct, cteLista)
-    else:
-        AgregarDicVarLocal(idVar, tipoActual, tipoDatoStruct, cteLista)
+        llave = list(dicMemorias[scope][tipoActual].keys())[0]
+        dirmem = dicMemorias[scope][tipoActual][llave]+llave
+        dicMemorias[scope][tipoActual][llave] += 1
 
+        AgregarDicVarGlobal(idVar, tipoActual, tipoDatoStruct, cteLista, dirmem)
+    else:
+        llave = list(dicMemorias[scope][tipoActual].keys())[0]
+        dirmem = dicMemorias[scope][tipoActual][llave]+llave
+        dicMemorias[scope][tipoActual][llave] += 1
+
+        AgregarDicVarLocal(idVar, tipoActual, tipoDatoStruct, cteLista, dirmem)
 
 def p_VARS_VAR(p):
     '''
     VARS_VAR : var nt_hacerVar TIPO VARS_VAR_AUX semicolon
     '''
+
 def p_nt_hacerVar(p):
     '''
     nt_hacerVar : empty
@@ -221,7 +262,6 @@ def p_CUERPO_AUX(p):
     '''
     CUERPO_AUX : CUERPO_VARS CUERPO_ESTATUTO
                | CUERPO_AUX CUERPO_VARS CUERPO_ESTATUTO
-
     '''
 
 def p_CUERPO_VARS(p):
@@ -289,8 +329,42 @@ def p_CUERPORETORNO_CF_AUX(p):
 
 def p_RETORNO(p):
     '''
-    RETORNO : return EXP semicolon
+    RETORNO : return EXP nt_checaRet semicolon
     '''
+
+def p_nt_checaRet(p):
+    '''
+    nt_checaRet : empty
+    '''
+    global pilaO
+    global pTipos
+    global funcActual
+
+    global dicQuadruplos
+    global quadCont
+
+    lastT = pTipos.pop()
+    lastO = pilaO.pop()
+    '''if lastO in dicVarLocales.keys():
+        tipoLastO = dicVarLocales[lastO]['tipo']
+    elif lastO in dicVarGlobales.keys():
+        tipoLastO = dicVarGlobales[lastO]['tipo']
+    elif lastO in dicVarConstantes.keys():
+        tipoLastO = dicVarConstantes[lastO]['tipo']
+    elif lastO in dicTemporales.keys():
+        tipoLastO = dicTemporales[lastO]['tipo']
+    else:
+        print("Error, el valor que se va a retornar no existe!")
+        exit()'''
+
+    if lastT != funcActual:
+        print("Error, el tipo del valor de retorno no es igual al de la funcion!")
+        exit()
+    else:
+        dicQuadruplos[quadCont]={'operador': 'Return', 'izq': lastO, 'der': None, 'res': None}
+        quadCont += 1
+        pilaO.append(lastO)
+        pTipos.append(lastT)
 
 def p_FUNC(p):
     '''
@@ -303,16 +377,30 @@ def p_FUNC(p):
     global dicVarLocales
     global funcQuad
     global dicTemporales
+    global dicMemorias
+    global tCont
 
     dLocales = dict(dicVarLocales)
     dTemps = dict(dicTemporales)
 
     AgregarDicFunc(idFunc, funcActual, parametros, dLocales, funcQuad, dTemps)
 
+    
     dicVarLocales.clear()
     dicTemporales.clear()
-    tCont=0
+    tCont = 0;
+
     parametros = []
+    dicMemorias['local']['int'][5000] = 0
+    dicMemorias['local']['float'][7000] = 0
+    dicMemorias['local']['string'][9000] = 0
+    dicMemorias['local']['bool'][11000] = 0
+
+    dicMemorias['temp']['int'][13000] = 0
+    dicMemorias['temp']['float'][15000] = 0
+    dicMemorias['temp']['string'][17000] = 0
+    dicMemorias['temp']['bool'][19000] = 0
+
 
 def p_nt_pushEndsub(p):
     '''
@@ -323,7 +411,6 @@ def p_nt_pushEndsub(p):
 
     dicQuadruplos[quadCont]={'operador': 'EndSub', 'izq': None, 'der': None, 'res': None}
     quadCont += 1
-
 
 def p_nt_cambioFuncActual(p):
     '''
@@ -354,9 +441,15 @@ def p_nt_agregarParametro(p):
     global parametros
     global tipoActual
     global dicVarLocales
-    idParametro = p[-1]
+    global dicMemorias
+    global scope
 
-    AgregarDicVarLocal(idParametro, tipoActual, 'var', None)
+    idParametro = p[-1]
+    llave = list(dicMemorias[scope][tipoActual].keys())[0]
+    dirmem = dicMemorias[scope][tipoActual][llave]+llave
+    dicMemorias[scope][tipoActual][llave] += 1
+
+    AgregarDicVarLocal(idParametro, tipoActual, 'var', None, dirmem)
     parametros.append(idParametro)
 
 
@@ -371,7 +464,6 @@ def p_nt_hacerVoid(p):
     '''
     global funcActual
     funcActual = p[-1]
-
 
 
 def p_VOIDFUNC_PARA(p):
@@ -415,8 +507,6 @@ def p_ELIF(p):
     '''
     ELIF : elseif nt_pushElse CONDICION_AUX
     '''
-
-
 
 def p_nt_checarBool(p):
     '''
@@ -582,6 +672,7 @@ def p_nt_checaAndOrNot(p):
     global quadCont
     global dicQuadruplos
     global dicTemporales
+    global dicMemorias
 
     if pOper:
         operator = pOper.pop()
@@ -593,8 +684,11 @@ def p_nt_checaAndOrNot(p):
             left_type = pTipos.pop()
             result_type = buscarCubo(left_type, right_type, operator)
             if result_type != 'error':
+                llave = list(dicMemorias['temp'][result_type].keys())[0]
+                dirmem = dicMemorias['temp'][result_type][llave]+llave
+                dicMemorias['temp'][result_type][llave] += 1
                 result = 't' + str(tCont)
-                dicTemporales[tCont]={'id':result, 'tipo': result_type}
+                dicTemporales[tCont]={'id':result, 'tipo': result_type, 'dir':dirmem}
                 tCont += 1
                 dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': result}
                 quadCont += 1
@@ -608,8 +702,11 @@ def p_nt_checaAndOrNot(p):
             right_type = pTipos.pop()
 
             if right_type == 'bool':
+                llave = list(dicMemorias['temp'][result_type].keys())[0]
+                dirmem = dicMemorias['temp'][result_type][llave]+llave
+                dicMemorias['temp'][result_type][llave] += 1
                 result = 't' + str(tCont)
-                dicTemporales[tCont]={'id':result, 'tipo': right_type}
+                dicTemporales[tCont]={'id':result, 'tipo': right_type, 'dir': dirmem}
                 tCont += 1
                 dicQuadruplos[quadCont]={'operador': operator, 'izq': None, 'der': right_operand, 'res': result}
                 quadCont += 1
@@ -672,8 +769,11 @@ def p_nt_checarRelop(p):
             left_type = pTipos.pop()
             result_type = buscarCubo(left_type, right_type, operator)
             if result_type != 'error':
+                llave = list(dicMemorias['temp'][result_type].keys())[0]
+                dirmem = dicMemorias['temp'][result_type][llave]+llave
+                dicMemorias['temp'][result_type][llave] += 1
                 result = 't' + str(tCont)
-                dicTemporales[tCont]={'id':result, 'tipo': result_type}
+                dicTemporales[tCont]={'id':result, 'tipo': result_type, 'dir': dirmem}
                 tCont += 1
                 dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': result}
                 quadCont += 1
@@ -711,8 +811,11 @@ def p_nt_checar_sumas(p):
             left_type = pTipos.pop()
             result_type = buscarCubo(left_type, right_type, operator)
             if result_type != 'error':
+                llave = list(dicMemorias['temp'][result_type].keys())[0]
+                dirmem = dicMemorias['temp'][result_type][llave]+llave
+                dicMemorias['temp'][result_type][llave] += 1
                 result = 't' + str(tCont)
-                dicTemporales[tCont]={'id': result, 'tipo': result_type}
+                dicTemporales[tCont]={'id': result, 'tipo': result_type, 'dir': dirmem}
                 tCont += 1
                 dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': result}
                 quadCont += 1
@@ -760,8 +863,11 @@ def p_nt_checar_multis(p):
             left_type = pTipos.pop()
             result_type = buscarCubo(left_type, right_type, operator)
             if result_type != 'error':
+                llave = list(dicMemorias['temp'][result_type].keys())[0]
+                dirmem = dicMemorias['temp'][result_type][llave]+llave
+                dicMemorias['temp'][result_type][llave] += 1
                 result = 't' + str(tCont)
-                dicTemporales[tCont]={'id': result, 'tipo': result_type}
+                dicTemporales[tCont]={'id': result, 'tipo': result_type, 'dir': dirmem}
                 tCont += 1
                 dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': result}
                 quadCont += 1
@@ -951,14 +1057,23 @@ def p_nt_pushInt(p):
     global pilaO
     global pTipos
     global sigNum
+    global dicConstantes
+    global dicMemorias
+
+    llave = list(dicMemorias['const']['int'].keys())[0]
+    dirmem = dicMemorias['const']['int'][llave]+llave
+    dicMemorias['const']['int'][llave] += 1
 
     if sigNum == None:
+        dicConstantes[dirmem] = {'val': p[-1], 'tipo': 'int', 'dir': dirmem}
         pilaO.append(p[-1])
     elif sigNum == '-':
         num = p[-1] * -1
+        dicConstantes[dirmem] = {'val': num, 'tipo': 'int', 'dir': dirmem}
         pilaO.append(num)
         sigNum = None
     else:
+        dicConstantes[dirmem] = {'val': p[-1], 'tipo': 'int', 'dir': dirmem}
         pilaO.append(p[-1])
         sigNum = None
     pTipos.append('int')
@@ -970,14 +1085,23 @@ def p_nt_pushFloat(p):
     global pilaO
     global pTipos
     global sigNum
+    global dicConstantes
+    global dicMemorias
+
+    llave = list(dicMemorias['const']['float'].keys())[0]
+    dirmem = dicMemorias['const']['float'][llave]+llave
+    dicMemorias['const']['float'][llave] += 1
 
     if sigNum == None:
+        dicConstantes[dirmem] = {'val': p[-1], 'tipo': 'float', 'dir': dirmem}
         pilaO.append(p[-1])
     elif sigNum == '-':
         num = p[-1] * -1
+        dicConstantes[dirmem] = {'val': num, 'tipo': 'float', 'dir': dirmem}
         pilaO.append(num)
         sigNum = None
     else:
+        dicConstantes[dirmem] = {'val': p[-1], 'tipo': 'float', 'dir': dirmem}
         pilaO.append(p[-1])
         sigNum = None
     pTipos.append('float')
@@ -989,7 +1113,14 @@ def p_BOOLEANA(p):
     '''
     global pilaO
     global pTipos
+    global dicConstantes
+    global dicMemorias
 
+    llave = list(dicMemorias['const']['bool'].keys())[0]
+    dirmem = dicMemorias['const']['bool'][llave]+llave
+    dicMemorias['const']['bool'][llave] += 1
+
+    dicConstantes[dirmem] = {'val': p[1], 'tipo': 'bool', 'dir': dirmem}
     pilaO.append(p[1])
     pTipos.append('bool')
 
@@ -999,7 +1130,14 @@ def p_STRINGS(p):
     '''
     global pilaO
     global pTipos
+    global dicConstantes
+    global dicMemorias
 
+    llave = list(dicMemorias['const']['string'].keys())[0]
+    dirmem = dicMemorias['const']['string'][llave]+llave
+    dicMemorias['const']['string'][llave] += 1
+
+    dicConstantes[dirmem] = {'val': p[1], 'tipo': 'string', 'dir': dirmem}
     pilaO.append(p[1])
     pTipos.append('string')
 
@@ -1092,7 +1230,7 @@ def p_error(p):
         exit()
 
 
-def AgregarDicVarGlobal(IdVar, TipoActual, TipoDatoStruct, CteLista):
+def AgregarDicVarGlobal(IdVar, TipoActual, TipoDatoStruct, CteLista, dirmem):
     global dicVarGlobales
 
     if TipoDatoStruct == 'list':
@@ -1101,16 +1239,16 @@ def AgregarDicVarGlobal(IdVar, TipoActual, TipoDatoStruct, CteLista):
             exit()
         else:
             diccLista = {}
-            dicVarGlobales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':CteLista, 'lista':diccLista}
+            dicVarGlobales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':CteLista, 'lista':diccLista, 'dir':dirmem}
     else:
         if IdVar in dicVarGlobales.keys():
             print("Error, ya existe la variable global '" + IdVar + "'!")
             exit()
         else:
-            dicVarGlobales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':None, 'lista':None}
+            dicVarGlobales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':None, 'lista':None, 'dir':dirmem}
 
 
-def AgregarDicVarLocal(IdVar, TipoActual, TipoDatoStruct, CteLista):
+def AgregarDicVarLocal(IdVar, TipoActual, TipoDatoStruct, CteLista, dirmem):
     global dicVarLocales
 
     if TipoDatoStruct == 'list':
@@ -1119,13 +1257,13 @@ def AgregarDicVarLocal(IdVar, TipoActual, TipoDatoStruct, CteLista):
             exit()
         else:
             diccLista = {}
-            dicVarLocales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':CteLista, 'lista':diccLista}
+            dicVarLocales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':CteLista, 'lista':diccLista, 'dir': dirmem}
     else:
         if IdVar in dicVarLocales.keys():
             print("Error, ya existe la variable '" + IdVar + "'!")
             exit()
         else:
-            dicVarLocales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':None, 'lista':None}
+            dicVarLocales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':None, 'lista':None, 'dir': dirmem}
 
 
 def AgregarDicFunc(IdFunc, FuncActual, Parametros, Vars, Inicio, Temps):
@@ -1178,7 +1316,7 @@ data = """program compilador;
           int uno(int b, int a, float c){
           var int z;
           z = b;
-          b = a;
+          b = a + a - z;
           a = z;
           return z;
           }
@@ -1191,8 +1329,11 @@ data = """program compilador;
           a = que - pedo;
           return a;
           }
-          void cuatro( int a){
+          float cuatro( int a){
+          var float h;
+          h = 1;
           G1 = G1 + 1;
+          return h;
           }
           main 
           {
@@ -1201,11 +1342,11 @@ data = """program compilador;
           var int x,y;
           var bool z;
           var float h;
-          x = uno(y,y,h);
+          x = uno(1+1,x,4.5);
           z = true;
           x = h;
           y =2;
-          cuatro(x);
+          h=cuatro(100*5+1/3);
           z = x<y;
           while(z){
           x = x + 1;
