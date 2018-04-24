@@ -1,6 +1,5 @@
 import CSP_lex
 from CSP_Cubo import *
-from MaquinaVirtual import *
 import sys
 tokens = CSP_lex.tokens
 import ply.yacc as yacc
@@ -30,7 +29,6 @@ quadCont = 0
 funcQuad = None
 paramCont = 0
 sigNum = None
-idPrograma = None
 
 #memoria variables globales
 
@@ -63,7 +61,7 @@ dicMemorias = {
 
 def p_PROGRAMA(p):
     '''
-    PROGRAMA : program id nt_pushJmpMain semicolon PROGRAMA_VARS nt_cambiarScope PROGRAMA_FUNC nt_cambiarScope main nt_ambienteMain CUERPO nt_endQuad
+    PROGRAMA : program id nt_pushJmpMain semicolon PROGRAMA_VARS nt_cambiarScope PROGRAMA_FUNC nt_cambiarScope main nt_ambienteMain CUERPO
     '''
     print('ok\n')
     print("Tabla de funciones: ")
@@ -73,8 +71,9 @@ def p_PROGRAMA(p):
         print("\t tipo : %s" % dicFunciones[a]['tipo'])
         print("\t inicio : %s" % dicFunciones[a]['inicio'])
         print("\t dirRet : %s" % dicFunciones[a]['dirRet'])
-        print('\t pars : %s' % dicFunciones[a]['pars'])
-
+        print('\t pars :')
+        for b in dicFunciones[a]['pars']:
+            print('\t\t %s' % b)
         print("\t vars :")
         for b in dicFunciones[a]['vars']:
             print("\t\t %s" % dicFunciones[a]['vars'][b])
@@ -121,25 +120,13 @@ def p_nt_ambienteMain(p):
 
     dicQuadruplos[0]['res'] = quadCont
 
-def p_nt_endQuad(p):
-    '''
-    nt_endQuad : empty
-    '''
-    global quadCont
-    global dicQuadruplos
-
-    dicQuadruplos[quadCont]={'operador': 'END', 'izq': None, 'der': None, 'res':None}
-    quadCont += 1
-
 def p_nt_pushJmpMain(p):
     '''
     nt_pushJmpMain : empty
     '''
     global dicQuadruplos
     global quadCont
-    global idPrograma
 
-    idPrograma = p[-1]
     dicQuadruplos[quadCont]={'operador': 'GoTo', 'izq': None, 'der': None, 'res': None}
     quadCont += 1
 
@@ -397,10 +384,16 @@ def p_FUNC(p):
     dLocales = dict(dicVarLocales)
     dTemps = dict(dicTemporales)
 
+    if funcActual != 'void':
+        llave = list(dicMemorias['global'][funcActual].keys())[0]
+        dirmem = dicMemorias['global'][funcActual][llave]+llave
+        dicMemorias['global'][funcActual][llave] += 1
+        idRet = "ret" + idFunc
+        AgregarDicVarGlobal(idRet, funcActual, 'var', None, dirmem)
+    else:
+        dirmem = None
 
-    AgregarDicFunc2(idFunc, dLocales, funcQuad-1, dTemps)
-
-    #AgregarDicFunc(idFunc, funcActual, parametros, dLocales, funcQuad, dTemps, dirmem)
+    AgregarDicFunc(idFunc, funcActual, parametros, dLocales, funcQuad, dTemps, dirmem)
 
     
     dicVarLocales.clear()
@@ -435,36 +428,14 @@ def p_nt_cambioFuncActual(p):
     '''
     global funcActual
     global tipoActual
-
     funcActual = tipoActual
-
-
 
 def p_nt_agregarIdFunc(p):
     '''
     nt_agregarIdFunc : empty
     '''
     global idFunc
-    global dicFunciones
-    global funcActual
-    global dicVarGlobales
-    global dicMemorias
-    global quadCont
-
     idFunc = p[-1]
-    if idFunc in dicFunciones.keys():
-        print("Error, ya existe la funcion '" + idFunc + "'!")
-        exit()
-    else:
-        if funcActual != 'void':
-            llave = list(dicMemorias['global'][funcActual].keys())[0]
-            dirmem = dicMemorias['global'][funcActual][llave]+llave
-            dicMemorias['global'][funcActual][llave] += 1
-            idRet = 'ret' + idFunc
-            AgregarDicVarGlobal(idRet, funcActual, 'var',None, dirmem)
-        else:
-            dirmem = None
-        dicFunciones[idFunc] = {'id':idFunc, 'tipo':funcActual, 'inicio':quadCont, 'pars':None, 'vars': None, 'cantVar':None, 'temps': None, 'dirRet': dirmem }
 
 def p_FUNC_PARA(p):
     '''
@@ -472,13 +443,6 @@ def p_FUNC_PARA(p):
               | FUNC_PARA comma TIPO id nt_agregarParametro
               | empty
     '''
-    global idFunc
-    global dicFunciones
-    global parametros
-
-    dicFunciones[idFunc]['pars'] = parametros
-
-
 
 def p_nt_agregarParametro(p):
     '''
@@ -496,7 +460,7 @@ def p_nt_agregarParametro(p):
     dicMemorias[scope][tipoActual][llave] += 1
 
     AgregarDicVarLocal(idParametro, tipoActual, 'var', None, dirmem)
-    parametros.append({'id': idParametro, 'tipo': tipoActual})
+    parametros.append(idParametro)
 
 
 def p_VOIDFUNC(p):
@@ -654,11 +618,11 @@ def p_nt_leer(p):
     varLeer = p[-1]
 
     if varLeer in dicVarGlobales.keys():
-        result = dicVarGlobales[varLeer]['dir']
+        result = dicVarGlobales[varLeer]['id']
         dicQuadruplos[quadCont]={'operador': 'cread', 'izq': None, 'der': None, 'res': result}
         quadCont += 1
     elif varLeer in dicVarLocales.keys():
-        result = dicVarLocales[varLeer]['dir']
+        result = dicVarLocales[varLeer]['id']
         dicQuadruplos[quadCont]={'operador': 'cread', 'izq': None, 'der': None, 'res': result}
         quadCont += 1
     else:
@@ -689,7 +653,7 @@ def p_nt_escribir(p):
 
 def p_LLAMADA(p):
     '''
-    LLAMADA : id nt_verificaFuncId left_par nt_pushPOper nt_startERA LLAMADA_EXPRESION nt_verificaUltimo right_par nt_popPOper semicolon nt_pushGoSub
+    LLAMADA : id nt_verificaFuncId left_par nt_startERA LLAMADA_EXPRESION nt_verificaUltimo right_par semicolon nt_pushGoSub
     '''
 
 def p_LLAMADA_EXPRESION(p):
@@ -737,9 +701,9 @@ def p_nt_checaAndOrNot(p):
                 result = 't' + str(tCont)
                 dicTemporales[tCont]={'id':result, 'tipo': result_type, 'dir':dirmem}
                 tCont += 1
-                dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': dirmem}
+                dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': result}
                 quadCont += 1
-                pilaO.append(dirmem)
+                pilaO.append(result)
                 pTipos.append(result_type)
             else:
                 print("Error, los tipos de datos de las variables '" + left_operand +"' y '"+ right_operand + "' son incompatibles!" )
@@ -755,9 +719,9 @@ def p_nt_checaAndOrNot(p):
                 result = 't' + str(tCont)
                 dicTemporales[tCont]={'id':result, 'tipo': right_type, 'dir': dirmem}
                 tCont += 1
-                dicQuadruplos[quadCont]={'operador': operator, 'izq': None, 'der': right_operand, 'res': dirmem}
+                dicQuadruplos[quadCont]={'operador': operator, 'izq': None, 'der': right_operand, 'res': result}
                 quadCont += 1
-                pilaO.append(dirmem)
+                pilaO.append(result)
                 pTipos.append('bool')
             else:
                 print("La expresion que se va a negar no se evalua como un booleano")
@@ -822,9 +786,9 @@ def p_nt_checarRelop(p):
                 result = 't' + str(tCont)
                 dicTemporales[tCont]={'id':result, 'tipo': result_type, 'dir': dirmem}
                 tCont += 1
-                dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': dirmem}
+                dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': result}
                 quadCont += 1
-                pilaO.append(dirmem)
+                pilaO.append(result)
                 pTipos.append(result_type)
             else:
                 print("Error, los tipos de datos de las variables '" + left_operand +"' y '"+ right_operand + "' son incompatibles!" )
@@ -864,9 +828,9 @@ def p_nt_checar_sumas(p):
                 result = 't' + str(tCont)
                 dicTemporales[tCont]={'id': result, 'tipo': result_type, 'dir': dirmem}
                 tCont += 1
-                dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': dirmem}
+                dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': result}
                 quadCont += 1
-                pilaO.append(dirmem)
+                pilaO.append(result)
                 pTipos.append(result_type)
             else:
                 print("Error, los tipos de datos de las variables '" + left_operand +"' y '"+ right_operand + "' son incompatibles!" )
@@ -916,9 +880,9 @@ def p_nt_checar_multis(p):
                 result = 't' + str(tCont)
                 dicTemporales[tCont]={'id': result, 'tipo': result_type, 'dir': dirmem}
                 tCont += 1
-                dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': dirmem}
+                dicQuadruplos[quadCont]={'operador': operator, 'izq': left_operand, 'der': right_operand, 'res': result}
                 quadCont += 1
-                pilaO.append(dirmem)
+                pilaO.append(result)
                 pTipos.append(result_type)
             else:
                 print("Error, los tipos de datos de las variables '" + left_operand +"' y '"+ right_operand + "'' son incompatibles!" )
@@ -954,23 +918,18 @@ def p_nt_verificaFuncId(p):
     '''
     global dicFunciones
     global funcCall
-    global idFunc
 
     nombre = p[-1]
 
-
     if nombre not in dicFunciones.keys():
-        if nombre == idFunc:
-            funcCall = nombre
-        else:
-            print("Error, no existe la funcion %s!" % nombre)
-            exit()
+        print("Error, no existe la funcion %s!" % nombre)
+        exit()
     else:
         funcCall = nombre
 
 def p_LLAMADAF(p):
     '''
-    LLAMADA_F : left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet
+    LLAMADA_F : left_par nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_pushGoSub nt_asignarRet
     '''
 
 def p_LLAMADAF_AUX(p):
@@ -1020,14 +979,14 @@ def p_nt_verifyArgType(p):
     if paramCont < len(dicFunciones[funcCall]['pars']):
         argument = pilaO.pop()
         argumentType = pTipos.pop()
-        compParam = dicFunciones[funcCall]['pars'][paramCont]['tipo']
+        compParam = dicFunciones[funcCall]['pars'][paramCont]
 
-        if argumentType == compParam:
+        if argumentType == dicFunciones[funcCall]['vars'][compParam]['tipo']:
             arg = 'param' + str(paramCont)
             dicQuadruplos[quadCont] = {'operador':'Param', 'izq': argument, 'der': None, 'res': arg}
             quadCont += 1
         else:
-            print("Error, el parametro numero '%s' en la llamada de la funcion '%s' no es del tipo '%s'." % (paramCont+1, funcCall, argumentType))
+            print("Error, el parametro numero '%s' en la llamada de la funcion '%s' no es del tipo '%s'." % (paramCont+1, funcCall, dicFunciones[funcCall]['vars'][compParam]['tipo']))
             exit()
     else:
         print("no entre")
@@ -1083,9 +1042,9 @@ def p_nt_asignarRet(p):
     result =  't' + str(tCont)
     dicTemporales[tCont]={'id':result, 'tipo':tipo, 'dir':dirmem}
     tCont += 1
-    dicQuadruplos[quadCont]={'operador': '=', 'izq': None, 'der': dirRet, 'res': dirmem}
+    dicQuadruplos[quadCont]={'operador': '=', 'izq': funcCall, 'der': None, 'res': result}
     quadCont += 1
-    pilaO.append(dirmem)
+    pilaO.append(result)
     pTipos.append(tipo)
 
 def p_LISTA(p):
@@ -1145,15 +1104,15 @@ def p_nt_pushInt(p):
 
     if sigNum == None:
         dicConstantes[dirmem] = {'val': p[-1], 'tipo': 'int', 'dir': dirmem}
-        pilaO.append(dirmem)
+        pilaO.append(p[-1])
     elif sigNum == '-':
         num = p[-1] * -1
         dicConstantes[dirmem] = {'val': num, 'tipo': 'int', 'dir': dirmem}
-        pilaO.append(dirmem)
+        pilaO.append(num)
         sigNum = None
     else:
         dicConstantes[dirmem] = {'val': p[-1], 'tipo': 'int', 'dir': dirmem}
-        pilaO.append(dirmem)
+        pilaO.append(p[-1])
         sigNum = None
     pTipos.append('int')
 
@@ -1173,15 +1132,15 @@ def p_nt_pushFloat(p):
 
     if sigNum == None:
         dicConstantes[dirmem] = {'val': p[-1], 'tipo': 'float', 'dir': dirmem}
-        pilaO.append(dirmem)
+        pilaO.append(p[-1])
     elif sigNum == '-':
         num = p[-1] * -1
         dicConstantes[dirmem] = {'val': num, 'tipo': 'float', 'dir': dirmem}
-        pilaO.append(dirmem)
+        pilaO.append(num)
         sigNum = None
     else:
         dicConstantes[dirmem] = {'val': p[-1], 'tipo': 'float', 'dir': dirmem}
-        pilaO.append(dirmem)
+        pilaO.append(p[-1])
         sigNum = None
     pTipos.append('float')
 
@@ -1200,7 +1159,7 @@ def p_BOOLEANA(p):
     dicMemorias['const']['bool'][llave] += 1
 
     dicConstantes[dirmem] = {'val': p[1], 'tipo': 'bool', 'dir': dirmem}
-    pilaO.append(dirmem)
+    pilaO.append(p[1])
     pTipos.append('bool')
 
 def p_STRINGS(p):
@@ -1217,7 +1176,7 @@ def p_STRINGS(p):
     dicMemorias['const']['string'][llave] += 1
 
     dicConstantes[dirmem] = {'val': p[1], 'tipo': 'string', 'dir': dirmem}
-    pilaO.append(dirmem)
+    pilaO.append(p[1])
     pTipos.append('string')
 
 def p_ASIGNACION(p):
@@ -1269,10 +1228,10 @@ def p_nt_pushPilaO(p):
 
     simbolo = p[-1]
     if simbolo in dicVarGlobales.keys():
-        pilaO.append(dicVarGlobales[simbolo]['dir'])
+        pilaO.append(dicVarGlobales[simbolo]['id'])
         pTipos.append(dicVarGlobales[simbolo]['tipo'])
     elif simbolo in dicVarLocales.keys():
-        pilaO.append(dicVarLocales[simbolo]['dir'])
+        pilaO.append(dicVarLocales[simbolo]['id'])
         pTipos.append(dicVarLocales[simbolo]['tipo'])
     else:
         print("Error, la variable '" + simbolo + "'' no existe!")
@@ -1344,13 +1303,6 @@ def AgregarDicVarLocal(IdVar, TipoActual, TipoDatoStruct, CteLista, dirmem):
         else:
             dicVarLocales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':None, 'lista':None, 'dir': dirmem}
 
-def AgregarDicFunc2(idFunc, Vars, Inicio, Temps):
-    global dicFunciones
-    dicFunciones[idFunc]['vars'] = Vars
-    dicFunciones[idFunc]['inicio'] = Inicio
-    dicFunciones[idFunc]['cantVar'] = calcularTam(Vars, Temps)
-    dicFunciones[idFunc]['temps']= Temps
-
 
 def AgregarDicFunc(IdFunc, FuncActual, Parametros, Vars, Inicio, Temps, dirmem):
     global dicFunciones
@@ -1360,7 +1312,6 @@ def AgregarDicFunc(IdFunc, FuncActual, Parametros, Vars, Inicio, Temps, dirmem):
         exit()
     else:
         dicFunciones[IdFunc] = {'id':IdFunc, 'tipo':FuncActual, 'inicio':Inicio, 'pars':Parametros, 'vars': Vars, 'cantVar':calcularTam(Vars, Temps), 'temps': Temps, 'dirRet': dirmem }
-
 
 def calcularTam(Vars, Temps):
     dicTam = {'i':0, 'f':0, 's':0, 'b':0, 'iT':0, 'fT':0, 'sT':0, 'bT':0}
@@ -1398,8 +1349,7 @@ yacc.yacc();
 
 
 
-data = """
-program compilador; 
+data = """program compilador; 
           var float G1, G2, G3;
           int uno(int b, int a, float c){
           var int z;
@@ -1432,13 +1382,12 @@ program compilador;
           alpha = "WHAT iS GOINF ON";
           var int x,y;
           var bool z;
-          var float h, l;
+          var float h;
           x = uno(1+1,x,4.5);
           z = true;
           x = h;
           y =2;
-          l=100.5 * 5.4 +1/3;
-          h=cuatro(1000*1000/3);
+          h=cuatro(100*5+1/3);
           z = x<y;
           while(z){
           x = x + 1;
@@ -1451,8 +1400,6 @@ program compilador;
           """
 
 yacc.parse(data)
-
-inicializarMaquinaVIrtual(idPrograma, dicQuadruplos, dicFunciones, dicVarGlobales, dicVarLocales, dicConstantes, dicTemporales)
 
 
 

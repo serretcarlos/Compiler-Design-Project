@@ -109,12 +109,12 @@ t_right_dblquotes = r'."'
 t_ignore = ' \t'
 
 def t_cteFloat(t):
-	r'\d\.\d+'
+	r'[0-9]+\.[0-9]+'
 	t.value = float(t.value)
 	return t
 
 def t_cteInt(t):
-	r'\d+'
+	r'[0-9]+'
 	t.value = int(t.value)
 	return t
 
