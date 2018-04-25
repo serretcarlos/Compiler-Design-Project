@@ -398,7 +398,7 @@ def p_FUNC(p):
     dTemps = dict(dicTemporales)
 
 
-    AgregarDicFunc2(idFunc, dLocales, funcQuad-1, dTemps)
+    AgregarDicFunc2(idFunc, dLocales, dTemps)
 
     #AgregarDicFunc(idFunc, funcActual, parametros, dLocales, funcQuad, dTemps, dirmem)
 
@@ -496,7 +496,7 @@ def p_nt_agregarParametro(p):
     dicMemorias[scope][tipoActual][llave] += 1
 
     AgregarDicVarLocal(idParametro, tipoActual, 'var', None, dirmem)
-    parametros.append({'id': idParametro, 'tipo': tipoActual})
+    parametros.append({'id': idParametro, 'tipo': tipoActual, 'dir':dirmem})
 
 
 def p_VOIDFUNC(p):
@@ -518,6 +518,11 @@ def p_VOIDFUNC_PARA(p):
                   | VOIDFUNC_PARA comma TIPO id nt_agregarParametro
                   | empty
     '''
+    global idFunc
+    global dicFunciones
+    global parametros
+
+    dicFunciones[idFunc]['pars'] = parametros
 
 def p_ESTATUTO(p):
     '''
@@ -809,7 +814,7 @@ def p_nt_checarRelop(p):
     if pOper:
         operator = pOper.pop()
 
-        if operator == '>' or operator == '<' or operator == '!=' or operator == '>=' or operator == '<=':
+        if operator == '>' or operator == '<' or operator == '!=' or operator == '>=' or operator == '<=' or operator == '==':
             right_operand = pilaO.pop()
             right_type = pTipos.pop()
             left_operand = pilaO.pop()
@@ -1023,8 +1028,7 @@ def p_nt_verifyArgType(p):
         compParam = dicFunciones[funcCall]['pars'][paramCont]['tipo']
 
         if argumentType == compParam:
-            arg = 'param' + str(paramCont)
-            dicQuadruplos[quadCont] = {'operador':'Param', 'izq': argument, 'der': None, 'res': arg}
+            dicQuadruplos[quadCont] = {'operador':'Param', 'izq': argument, 'der': None, 'res': dicFunciones[funcCall]['pars'][paramCont]['dir']}
             quadCont += 1
         else:
             print("Error, el parametro numero '%s' en la llamada de la funcion '%s' no es del tipo '%s'." % (paramCont+1, funcCall, argumentType))
@@ -1344,10 +1348,9 @@ def AgregarDicVarLocal(IdVar, TipoActual, TipoDatoStruct, CteLista, dirmem):
         else:
             dicVarLocales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':None, 'lista':None, 'dir': dirmem}
 
-def AgregarDicFunc2(idFunc, Vars, Inicio, Temps):
+def AgregarDicFunc2(idFunc, Vars, Temps):
     global dicFunciones
     dicFunciones[idFunc]['vars'] = Vars
-    dicFunciones[idFunc]['inicio'] = Inicio
     dicFunciones[idFunc]['cantVar'] = calcularTam(Vars, Temps)
     dicFunciones[idFunc]['temps']= Temps
 
@@ -1400,59 +1403,70 @@ yacc.yacc();
 
 data = """
 program compilador; 
-          var float G1, G2, G3;
-          int uno(int b, int a, float c){
-          var int z;
-          z = b;
-          b = a + a - z;
-          a = z;
-          return z;
-          }
-          string tres(int z, float a, bool T){
-          var string hola;
-          return hola;
-          }
-          float dos(int que, int pedo){
-          var float a;
-          a = que - pedo;
-          return a;
-          }
-          float cuatro( int a){
-          var float h;
-          h = 1;
-          G1 = G1 + 1;
-          return h;
-          }
-          void cinco(){
+    var float G1, G2, G3;
+    int uno(int b, int a, float c){
+        var int z;
+        z = b;
+        b = a + a - z;
+        a = z;
+        return z;
+    }
+    string tres(int z, float a, bool T){
+        var string hola;
+        return hola;
+    }
+    float dos(int que, int pedo){
+        var float a;
+        a = que - pedo;
+        return a;
+    }
+    float cuatro( int a){
+        var float h;
+        h = 1;
+        G1 = h + 1;
+        return h;
+    }
+    void cinco(){
 
-          }
-          main 
-          {
-          var string alpha;
-          alpha = "WHAT iS GOINF ON";
-          var int x,y;
-          var bool z;
-          var float h, l;
-          x = uno(1+1,x,4.5);
-          z = true;
-          x = h;
-          y =2;
-          l=100.5 * 5.4 +1/3;
-          h=cuatro(1000*1000/3);
-          z = x<y;
-          while(z){
-          x = x + 1;
-          y = y * x;
-          if( x >= 100){
-          z = false;
-          }
-          }
-          }
+    }
+    int fib(int n){
+        var int ret;
+        ret = n;
+        if(ret <= 1){
+            ret = 1;
+        }
+        else {
+            ret = fib(ret-1) + fib(ret-2);
+        }
+        return ret;
+    }
+main{
+    var string alpha;
+    alpha = "WHAT iS GOINF ON";
+    var int x,y;
+    var bool z;
+    var float h, l;
+
+    x = uno(1+1,5,4.5);
+    z = true;
+    x = h;
+    y =2;
+    l=100.5 * 5.4 +1/3;
+    h=cuatro(1000*1000/3);
+    z = x<y;
+    while(z){
+        x = x + 1;
+        y = y * x;
+        if( x >= 100){
+            z = false;
+        }
+    }
+}
           """
 
 yacc.parse(data)
 
-inicializarMaquinaVIrtual(idPrograma, dicQuadruplos, dicFunciones, dicVarGlobales, dicVarLocales, dicConstantes, dicTemporales)
+inicializarMaquinaVirtual(idPrograma, dicQuadruplos, dicFunciones, dicVarGlobales, dicVarLocales, dicConstantes, dicTemporales)
 
 
 
