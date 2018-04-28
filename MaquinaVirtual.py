@@ -8,22 +8,6 @@ def inicializarMaquinaVirtual(idPrograma, dicQuadruplos, dicFunciones, dicVarGlo
 
 	memPrincipal = Memoria(idPrograma, dicConstantes, dicVarGlobales, dicVarLocales, dicTemporales)
 
-	memPrincipal.imprimirValores('const', 'ints')
-	memPrincipal.imprimirValores('const', 'floats')
-	memPrincipal.imprimirValores('const', 'strings')
-	memPrincipal.imprimirValores('const', 'bools')
-	memPrincipal.imprimirValores('global', 'ints')
-	memPrincipal.imprimirValores('global', 'floats')
-	memPrincipal.imprimirValores('global', 'strings')
-	memPrincipal.imprimirValores('global', 'bools')
-	memPrincipal.imprimirValores('local', 'ints')
-	memPrincipal.imprimirValores('local', 'floats')
-	memPrincipal.imprimirValores('local', 'strings')
-	memPrincipal.imprimirValores('local', 'bools')
-	memPrincipal.imprimirValores('temp', 'ints')
-	memPrincipal.imprimirValores('temp', 'floats')
-	memPrincipal.imprimirValores('temp', 'strings')
-	memPrincipal.imprimirValores('temp', 'bools')
 
 	nomMem = memPrincipal.getIdPrograma()
 	print("Nombre: %s" % nomMem)
@@ -185,8 +169,8 @@ def inicializarMaquinaVirtual(idPrograma, dicQuadruplos, dicFunciones, dicVarGlo
 			print(opIzq)
 			print(valorRetorno)
 			print(dirRetorno)
-			#memPrincipal.guardarValDir(valorRetorno, dirRetorno)
-			#print(memPrincipal.getIdPrograma(),id(memPrincipal.getValorDir(dirRetorno)))
+			memPrincipal.guardarValDir(valorRetorno, dirRetorno)
+			print(memPrincipal.getIdPrograma(),id(memPrincipal.getValorDir(dirRetorno)))
 
 		elif operador == 'GoTo':
 			quadCont = resultado - 1
