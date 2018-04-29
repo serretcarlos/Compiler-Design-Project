@@ -19,12 +19,13 @@ tipoDatoStruct = None
 idFunc = None
 funcCall = None
 idVar = None
-cteLista = None
+cteLista = 0
 structAnt = None
 pOper = []
 pilaO = []
 pTipos = []
 pSaltos = []
+pDimensionadas = []
 tCont = 0
 quadCont = 0
 funcQuad = None
@@ -65,6 +66,46 @@ def p_PROGRAMA(p):
     '''
     PROGRAMA : program id nt_pushJmpMain semicolon PROGRAMA_VARS nt_cambiarScope PROGRAMA_FUNC nt_cambiarScope main nt_ambienteMain CUERPO nt_endQuad
     '''
+    print('ok\n')
+    print("Tabla de funciones: ")
+    for a in dicFunciones:
+        print('Funcion %s : ' % a)
+        print("\t id : %s" % dicFunciones[a]['id'])
+        print("\t tipo : %s" % dicFunciones[a]['tipo'])
+        print("\t inicio : %s" % dicFunciones[a]['inicio'])
+        print("\t dirRet : %s" % dicFunciones[a]['dirRet'])
+        print('\t pars : %s' % dicFunciones[a]['pars'])
+
+        print("\t vars :")
+        for b in dicFunciones[a]['vars']:
+            print("\t\t %s" % dicFunciones[a]['vars'][b])
+        print('\t Temps: %s' % dicFunciones[a]['temps'])
+        print('\t cantVar: %s' % dicFunciones[a]['cantVar'])
+            
+    print(" \n\n")
+    print("Tabla de variables globales: ")
+    for a in dicVarGlobales:
+        print("%s : %s" % (a, dicVarGlobales[a]))
+    print(" \n\n")
+    print("Tabla de variables en main: ")
+    for a in dicVarLocales:
+        print("%s : %s" % (a, dicVarLocales[a]))
+    print(" \n\n")
+    print("Temporales en el main: ")
+    for a in dicTemporales:
+        print(a, dicTemporales[a])
+    print(" \n\n")
+    print("Tabla de Constantes Usados")
+    for a in dicConstantes:
+        print(a, dicConstantes[a])
+    print(" \n\n")
+    print("Cantidad Vars usadas en main")
+    abcd = calcularTam(dicVarLocales, dicTemporales)
+    print(abcd)
+    print("\n\n")
+    print("Cuadruplos:")
+    for a in dicQuadruplos:
+        print("%s: %s" % (a, dicQuadruplos[a]))
 
 
 def p_nt_cambiarScope(p):
@@ -83,6 +124,9 @@ def p_nt_ambienteMain(p):
     '''
     global dicQuadruplos
     global quadCont
+    global dicFunciones
+
+    dicFunciones['main']['inicio']= quadCont
 
     dicQuadruplos[0]['res'] = quadCont
 
@@ -92,7 +136,12 @@ def p_nt_endQuad(p):
     '''
     global quadCont
     global dicQuadruplos
+    global dicVarLocales
+    global dicTemporales
+    global idPrograma
+    global dicFunciones
 
+    AgregarDicFunc2('main', dicVarLocales, dicTemporales)
     dicQuadruplos[quadCont]={'operador': 'END', 'izq': None, 'der': None, 'res':None}
     quadCont += 1
 
@@ -103,6 +152,9 @@ def p_nt_pushJmpMain(p):
     global dicQuadruplos
     global quadCont
     global idPrograma
+    global dicFunciones
+
+    dicFunciones['main'] = {'id': 'main', 'tipo': 'void', 'inicio': None , 'pars': None, 'vars': None, 'cantVar': None, 'temps': None, 'dirRet': None}
 
     idPrograma = p[-1]
     dicQuadruplos[quadCont]={'operador': 'GoTo', 'izq': None, 'der': None, 'res': None}
@@ -174,6 +226,11 @@ def p_nt_agregarCteLista(p):
     '''
     global cteLista
     cteLista = p[-1]
+    if cteLista == 0:
+        print("Error, no se puede declarar una lista con cero espacios!")
+        exit()
+    else:
+        cteLista -= 1
 
 def p_nt_agregarDicVar(p):
     '''
@@ -189,13 +246,12 @@ def p_nt_agregarDicVar(p):
     if scope == 'global':
         llave = list(dicMemorias[scope][tipoActual].keys())[0]
         dirmem = dicMemorias[scope][tipoActual][llave]+llave
-        dicMemorias[scope][tipoActual][llave] += 1
-
+        dicMemorias[scope][tipoActual][llave] = dicMemorias[scope][tipoActual][llave] + cteLista + 1
         AgregarDicVarGlobal(idVar, tipoActual, tipoDatoStruct, cteLista, dirmem)
     else:
         llave = list(dicMemorias[scope][tipoActual].keys())[0]
         dirmem = dicMemorias[scope][tipoActual][llave]+llave
-        dicMemorias[scope][tipoActual][llave] += 1
+        dicMemorias[scope][tipoActual][llave] = dicMemorias[scope][tipoActual][llave] + cteLista + 1
 
         AgregarDicVarLocal(idVar, tipoActual, tipoDatoStruct, cteLista, dirmem)
 
@@ -209,7 +265,9 @@ def p_nt_hacerVar(p):
     nt_hacerVar : empty
     '''
     global tipoDatoStruct
+    global cteLista
     tipoDatoStruct = p[-1]
+    cteLista = 0
 
 def p_VARS_VAR_AUX(p):
     '''
@@ -775,6 +833,7 @@ def p_nt_checarRelop(p):
     global quadCont
     global dicQuadruplos
     global dicTemporales
+    global dicMemorias
 
     if pOper:
         operator = pOper.pop()
@@ -817,6 +876,7 @@ def p_nt_checar_sumas(p):
     global quadCont
     global dicQuadruplos
     global dicTemporales
+    global dicMemorias
 
     if pOper:
         operator = pOper.pop()
@@ -869,6 +929,7 @@ def p_nt_checar_multis(p):
     global quadCont
     global dicQuadruplos
     global dicTemporales
+    global dicMemorias
 
     if pOper:
         operator = pOper.pop()
@@ -1059,8 +1120,118 @@ def p_nt_asignarRet(p):
 
 def p_LISTA(p):
     '''
-    LISTA : id left_sb EXP right_sb
+    LISTA : id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
     '''
+
+def p_nt_verificaVarDim(p):
+    '''
+    nt_verificarVarDim : empty
+    '''
+    global pDimensionadas
+    global dicVarLocales
+    global dicVarGlobales
+    global pOper
+
+    nombre = p[-1]
+
+    if nombre in dicVarGlobales.keys():
+        if dicVarGlobales[nombre]['struct'] != 'list':
+            print("Error, la variable %s no es una lista!" % nombre)
+            exit()
+
+    elif nombre in dicVarLocales.keys():
+        if dicVarLocales[nombre]['struct'] != 'list':
+            print("Error, la variable %s no es una lista!" % nombre)
+            exit()
+            
+    else:
+        print("Error, la variable %s no ha sido declarada!" % nombre)
+        exit()
+    pOper.append('(')
+
+
+def p_nt_pushVer(p):
+    '''
+    nt_pushVer : empty
+    '''
+    global pilaO
+    global pOper
+    global dicQuadruplos
+    global quadCont
+    global dicVarLocales
+    global dicVarGlobales
+    global tCont
+    global dicTemporales
+    global dicMemorias
+    global dicConstantes
+
+    nombre = p[-4]
+
+    if nombre in dicVarGlobales.keys():
+        limSup = dicVarGlobales[nombre]['tam']
+        base = dicVarGlobales[nombre]['dir']
+    elif nombre in dicVarLocales.keys():
+        limSup = dicVarLocales[nombre]['tam']
+        base = dicVarLocales[nombre]['dir']
+    else:
+        print("Error, no se encontro la variable!")
+        exit()
+
+    topePila = pilaO.pop()
+    pilaO.append(topePila)
+
+    dicQuadruplos[quadCont] = {'operador': 'VER', 'izq': topePila, 'der': 0, 'res': limSup }
+    quadCont += 1
+
+
+    aux1 = pilaO.pop()
+    aux1_type = pTipos.pop()
+    result_type = buscarCubo(aux1_type, 'int', '+')
+    if result_type != 'error':
+
+        llave = list(dicMemorias['temp'][result_type].keys())[0]
+        dirmem = dicMemorias['temp'][result_type][llave]+llave
+        dicMemorias['temp'][result_type][llave] += 1
+        result = 't' + str(tCont)
+        dicTemporales[tCont]={'id': result, 'tipo': result_type, 'dir':dirmem}
+        tCont += 1
+
+        dirmemBase = None
+        for a in dicConstantes:
+            if dicConstantes[a]['val'] == base:
+                dirmemBase = dicConstantes[a]['dir']
+        if dirmemBase == None:
+            llave = list(dicMemorias['const']['int'].keys())[0]
+            dirmemBase = dicMemorias['const']['int'][llave]+llave
+            dicMemorias['const']['int'][llave] += 1
+            dicConstantes[dirmemBase] = {'val': base, 'tipo': 'int', 'dir': dirmemBase}
+
+        dirmemS = "("+ str(dirmem) + ")"
+        dicQuadruplos[quadCont]={'operador': '+', 'izq': aux1, 'der': dirmemBase, 'res': dirmem}
+        quadCont += 1
+        pilaO.append(dirmemS)
+        pTipos.append(result_type)
+        pOper.pop()
+    else:
+        print("Error, tipo de variable a verificar no es entero!")
+
+
+
+def p_nt_quadsAcceso(p):
+    '''
+    nt_quadsAcceso : empty
+    '''
+    global pilaO
+    global pOper
+    global tCont
+    global quadCont
+    global dicQuadruplos
+    global dicTemporales
+    global dicVarLocales
+    global dicVarGlobales
+
+
+
 
 def p_CONSTANTE(p):
     '''
@@ -1293,7 +1464,7 @@ def AgregarDicVarGlobal(IdVar, TipoActual, TipoDatoStruct, CteLista, dirmem):
             print("Error, ya existe la variable global '" + IdVar + "'!")
             exit()
         else:
-            dicVarGlobales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':None, 'lista':None, 'dir':dirmem}
+            dicVarGlobales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':cteLista, 'lista':None, 'dir':dirmem}
 
 
 def AgregarDicVarLocal(IdVar, TipoActual, TipoDatoStruct, CteLista, dirmem):
@@ -1311,7 +1482,7 @@ def AgregarDicVarLocal(IdVar, TipoActual, TipoDatoStruct, CteLista, dirmem):
             print("Error, ya existe la variable '" + IdVar + "'!")
             exit()
         else:
-            dicVarLocales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':None, 'lista':None, 'dir': dirmem}
+            dicVarLocales[IdVar] = {'id':IdVar, 'tipo':TipoActual, 'struct':TipoDatoStruct, 'tam':cteLista, 'lista':None, 'dir': dirmem}
 
 def AgregarDicFunc2(idFunc, Vars, Temps):
     global dicFunciones
@@ -1335,16 +1506,28 @@ def calcularTam(Vars, Temps):
 
     for a in Vars:
         tipo = Vars[a]['tipo']
-        if tipo == 'int':
-            dicTam['i'] += 1
-        elif tipo == 'float':
-            dicTam['f'] += 1
-        elif tipo == 'string':
-            dicTam['s'] += 1
-        elif tipo == 'bool':
-            dicTam['b'] += 1
+        if Vars[a]['struct'] == 'list':
+            if tipo == 'int':
+                dicTam['i'] = dicTam['i'] + Vars[a]['tam'] + 1
+            elif tipo == 'float':
+                dicTam['f'] = dicTam['f'] + Vars[a]['tam'] + 1
+            elif tipo == 'string':
+                dicTam['s'] = dicTam['s'] + Vars[a]['tam'] + 1
+            elif tipo == 'bool':
+                dicTam['b'] = dicTam['b'] + Vars[a]['tam'] + 1
+            else:
+                print("El tipo no esta declarado!")
         else:
-            print("El tipo no esta declarado!")
+            if tipo == 'int':
+                dicTam['i'] += 1
+            elif tipo == 'float':
+                dicTam['f'] += 1
+            elif tipo == 'string':
+                dicTam['s'] += 1
+            elif tipo == 'bool':
+                dicTam['b'] += 1
+            else:
+                print("El tipo no esta declarado!")
 
     for a in Temps:
         tipo = Temps[a]['tipo']
@@ -1369,25 +1552,18 @@ yacc.yacc();
 data = """
 program compilador; 
 
-    int fib(int n){
-        var int ret;
-        ret = n;
-        if(ret <= 1){
-            ret = ret;
-        }
-        else {
-            ret = fib(ret-1) + fib(ret-2);
-        }
-        return ret;
-    }
+
 main{
-    cwrite(fib(7));
-    var int x;
-    var string z;
-    cread(x);
-    cwrite(x);
-    cread(z);
-    cwrite(z);
+    list float a[10];
+    var int c;
+    c = 5;
+    while(c>=-1){
+        a[c] = 1 + c;
+        c = c - 1;
+    }
+    cwrite(a[0]);
+
+
 }
           """
 

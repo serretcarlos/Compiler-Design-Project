@@ -1,5 +1,6 @@
 from CSP_Cubo import *
-from Memoria2 import *
+from Memoria3 import *
+
 
 globalInts = 1000
 globalFloats = 2000
@@ -209,14 +210,12 @@ def getTipoDir(direccion):
 
 
 
-
-
 def inicializarMaquinaVirtual(idPrograma, dicQuadruplos, dicFunciones, dicVarGlobales, dicVarLocales, dicConstantes, dicTemporales):
 	global mapaMemoria
 
 	guardaConstantes(dicConstantes)
 	generaGlobales(dicVarGlobales)
-	exeStack = ExecutionStack(idPrograma, dicVarLocales, dicTemporales)
+	exeStack = ExecutionStack(idPrograma, dicFunciones['main']['cantVar'])
 
 	stackExeStacks = []
 	stackSaltos = []
@@ -230,9 +229,29 @@ def inicializarMaquinaVirtual(idPrograma, dicQuadruplos, dicFunciones, dicVarGlo
 		opDer = currentQuad['der']
 		resultado = currentQuad['res']
 
+		if type(opIzq) is str and opIzq.startswith('(') and opIzq.endswith(')'):
+			opIzq = opIzq.replace('(', '')
+			opIzq = opIzq.replace(')', '')
+			opIzq = int(opIzq)
+			opIzq = getValor(opIzq, exeStack)
+
+		if type(opDer) is str and opDer.startswith('(') and opDer.endswith(')'):
+			opDer = opDer.replace('(', '')
+			opDer = opDer.replace(')', '')
+			opDer = int(opDer)
+			opDer = getValor(opDer, exeStack)
+
+		if type(resultado) is str and resultado.startswith('(') and resultado.endswith(')'):
+			resultado = resultado.replace('(', '')
+			resultado = resultado.replace(')', '')
+			resultado = int(resultado)
+			resultado = getValor(resultado, exeStack)
+
+
 		if operador == '+':
 			opIzq = getValor(opIzq, exeStack)
 			opDer = getValor(opDer, exeStack)
+
 
 			suma = opIzq + opDer
 
@@ -346,9 +365,7 @@ def inicializarMaquinaVirtual(idPrograma, dicQuadruplos, dicFunciones, dicVarGlo
 
 		elif operador == 'ERA':
 			funcion = dicFunciones[resultado]
-			tempsFuncion = funcion['temps']
-			varsFuncion = funcion['vars']
-			memERA = ExecutionStack(resultado, varsFuncion, tempsFuncion)
+			memERA = ExecutionStack(resultado, funcion['cantVar'])
 			stackExeStacks.append(memERA)
 
 		elif operador == 'Param':
@@ -374,7 +391,6 @@ def inicializarMaquinaVirtual(idPrograma, dicQuadruplos, dicFunciones, dicVarGlo
 
 			guardarValDir(valorRetorno, dirRetorno, exeStack)
 
-
 		elif operador == 'GoTo':
 			quadCont = resultado - 1
 
@@ -383,10 +399,15 @@ def inicializarMaquinaVirtual(idPrograma, dicQuadruplos, dicFunciones, dicVarGlo
 			if valorEval == False:
 				quadCont = resultado - 1
 
+		elif operador == 'VER':
+			opIzq = getValor(opIzq, exeStack)
+
+			if not(resultado >= opIzq and resultado >= opDer):
+				print("Error, se esta intentando accesar un espacio de memoria fuera del rango de la lista!")
+				exit()
+
+
 		quadCont += 1
-
-
-
 
 
 	
