@@ -108,6 +108,7 @@ def p_PROGRAMA(p):
         print("%s: %s" % (a, dicQuadruplos[a]))
 
 
+
 def p_nt_cambiarScope(p):
     '''
     nt_cambiarScope : empty
@@ -218,7 +219,17 @@ def p_nt_agregarId(p):
     nt_agregarId : empty
     '''
     global idVar
+    global dicVarLocales
+    global dicVarGlobales
+
     idVar = p[-1]
+
+    if idVar in dicVarGlobales.keys():
+        print("Error, ya se habia declarado la variable '%s' en el scope global!" % idVar)
+        exit()
+    elif idVar in dicVarLocales.keys():
+        print("Error, ya se habia declarado la variable '%s' en el scope local!" % idVar)
+        exit()
 
 def p_nt_agregarCteLista(p):
     '''
@@ -776,10 +787,11 @@ def p_nt_checaAndOrNot(p):
             right_operand = pilaO.pop()
             right_type = pTipos.pop()
 
+
             if right_type == 'bool':
-                llave = list(dicMemorias['temp'][result_type].keys())[0]
-                dirmem = dicMemorias['temp'][result_type][llave]+llave
-                dicMemorias['temp'][result_type][llave] += 1
+                llave = list(dicMemorias['temp']['bool'].keys())[0]
+                dirmem = dicMemorias['temp']['bool'][llave]+llave
+                dicMemorias['temp']['bool'][llave] += 1
                 result = 't' + str(tCont)
                 dicTemporales[tCont]={'id':result, 'tipo': right_type, 'dir': dirmem}
                 tCont += 1
@@ -1070,11 +1082,14 @@ def p_nt_verificaUltimo(p):
     global dicFunciones
     global funcCall
 
-    tamPar = len(dicFunciones[funcCall]['pars'])-1
+    tamPar = len(dicFunciones[funcCall]['pars'])
+    if(tamPar != 0):
+        tamPar -= 1;
     if paramCont < tamPar:
         print("Error, parametros insuficientes en llamada de funcion %s" % funcCall)
         exit()
     elif paramCont > tamPar:
+        print("TESTA AQUIIII", paramCont, tamPar)
         print("Error, parametros de mas en llamada de funcion %s" % funcCall)
         exit()
 
@@ -1550,23 +1565,52 @@ yacc.yacc();
 
 
 data = """
-program compilador; 
+program compilador;
+    var float A1;
+    void funcionTest(int x, int y, int z){
+        list int lista[12];
+        var int a;
+        list int lista2[5], lista3[4];
+        var int b, c, d;
+        
+    }
 
+    int fib(int n){
+        var int ret;
+        ret = n;
+        if(ret <= 1){
+            ret = ret;
+        }
+        else {
+            ret = fib(ret-1) + fib(ret-2);
+        }
+        return ret + 1;
+    }
+
+    void nada(){
+        A1 = A1 + 1;
+        cwrite(A1);
+
+    }
 
 main{
-    list float a[10];
-    var int c;
-    c = 5;
-    while(c>=-1){
-        a[c] = 1 + c;
-        c = c - 1;
+    var int a, ret;
+    A1 = 0;
+    list int b[15];
+    a = fib(10);
+    cwrite(a);
+    var int cont;
+    cont = 14;
+    while(cont >= 0) {
+        b[cont] = cont;
+        cwrite(b[cont]);
+        cont = cont -1;
+        nada();
     }
-    cwrite(a[0]);
-
+    cwrite(A1);
 
 }
           """
-
 yacc.parse(data)
 
 inicializarMaquinaVirtual(idPrograma, dicQuadruplos, dicFunciones, dicVarGlobales, dicVarLocales, dicConstantes, dicTemporales)

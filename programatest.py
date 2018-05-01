@@ -99,3 +99,44 @@ main{
 
 }
           """
+
+    print('ok\n')
+    print("Tabla de funciones: ")
+    for a in dicFunciones:
+        print('Funcion %s : ' % a)
+        print("\t id : %s" % dicFunciones[a]['id'])
+        print("\t tipo : %s" % dicFunciones[a]['tipo'])
+        print("\t inicio : %s" % dicFunciones[a]['inicio'])
+        print("\t dirRet : %s" % dicFunciones[a]['dirRet'])
+        print('\t pars : %s' % dicFunciones[a]['pars'])
+
+        print("\t vars :")
+        for b in dicFunciones[a]['vars']:
+            print("\t\t %s" % dicFunciones[a]['vars'][b])
+        print('\t Temps: %s' % dicFunciones[a]['temps'])
+        print('\t cantVar: %s' % dicFunciones[a]['cantVar'])
+            
+    print(" \n\n")
+    print("Tabla de variables globales: ")
+    for a in dicVarGlobales:
+        print("%s : %s" % (a, dicVarGlobales[a]))
+    print(" \n\n")
+    print("Tabla de variables en main: ")
+    for a in dicVarLocales:
+        print("%s : %s" % (a, dicVarLocales[a]))
+    print(" \n\n")
+    print("Temporales en el main: ")
+    for a in dicTemporales:
+        print(a, dicTemporales[a])
+    print(" \n\n")
+    print("Tabla de Constantes Usados")
+    for a in dicConstantes:
+        print(a, dicConstantes[a])
+    print(" \n\n")
+    print("Cantidad Vars usadas en main")
+    abcd = calcularTam(dicVarLocales, dicTemporales)
+    print(abcd)
+    print("\n\n")
+    print("Cuadruplos:")
+    for a in dicQuadruplos:
+        print("%s: %s" % (a, dicQuadruplos[a]))

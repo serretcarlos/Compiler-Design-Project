@@ -191,6 +191,9 @@ def getValor(direccion, exStack):
 		valor = exStack.getValorMapaMem(scope, tipo, llave, direccion)
 	else:
 		valor = mapaMemoria[scope][tipo][llave]
+	if valor == None:
+		print("Error, variable de tipo %s en la direccion %s no tiene un valor asignado" % (tipo, direccion))
+		exit()
 	return valor
 
 def guardarValDir(val, direccion, exStack):
@@ -252,7 +255,6 @@ def inicializarMaquinaVirtual(idPrograma, dicQuadruplos, dicFunciones, dicVarGlo
 			opIzq = getValor(opIzq, exeStack)
 			opDer = getValor(opDer, exeStack)
 
-
 			suma = opIzq + opDer
 
 			guardarValDir(suma, resultado, exeStack)
@@ -308,7 +310,7 @@ def inicializarMaquinaVirtual(idPrograma, dicQuadruplos, dicFunciones, dicVarGlo
 			opIzq = getValor(opIzq, exeStack)
 			opDer = getValor(opDer, exeStack)
 
-			mayorIgual = opIzq > opDer
+			mayorIgual = opIzq >= opDer
 			guardarValDir(mayorIgual, resultado, exeStack)
 
 		elif operador == '!=':
@@ -402,7 +404,7 @@ def inicializarMaquinaVirtual(idPrograma, dicQuadruplos, dicFunciones, dicVarGlo
 		elif operador == 'VER':
 			opIzq = getValor(opIzq, exeStack)
 
-			if not(resultado >= opIzq and resultado >= opDer):
+			if not(resultado >= opIzq and opIzq >= opDer):
 				print("Error, se esta intentando accesar un espacio de memoria fuera del rango de la lista!")
 				exit()
 
