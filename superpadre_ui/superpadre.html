@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Generador de SuperPadre</title>
+  <script src="blockly_compressed.js"></script>
+  <script src="blocks_compressed.js"></script>
+  <script src="javascript_compressed.js"></script>
+  <script src="blocks.js"></script>
+  <script src="en.js"></script>
+  <script src="FileSaver.js"></script>  
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <style>
+    body {
+      background-color: #fff;
+      font-family: sans-serif;
+    }
+
+    h1 {
+      font-weight: normal;
+      font-size: 140%;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>
+    <a href="https://developers.google.com/blockly/">Blockly</a> &gt;
+    <a href="../index.html">Demos</a> &gt; Generating JavaScript</h1>
+
+  <p>This is a simple demo of generating code from blocks.</p>
+
+  <p>&rarr; More info on
+    <a href="https://developers.google.com/blockly/guides/configure/web/code-generators">Code Generators</a>&hellip;</p>
+
+  <p>
+    <button onclick="showCode()">Show SuperPadre code</button>
+    <button onclick="getCode()">Download code</button>
+  </p>
+
+  <div id="blocklyDiv" style="height: 480px; width: 720px;"></div>
+
+  <xml id="toolbox" style="display: none">
+    <category name="Program, output, input">
+      <block type="program"></block>
+      <block type="main"></block>
+      <block type="write"></block>
+      <block type="read"></block>
+      <block type="return"></block>
+    </category>
+    <category name="Loops">
+      <block type="while"></block>
+    </category>
+    <category name="Conditions">
+      <block type="if"></block>
+      <block type="else_if"></block>
+      <block type="else"></block>
+    </category>
+    <category name="Functions">
+      <block type="new_function"></block>
+      <block type="call_function"></block>
+      <block type="assign_function"></block>
+    </category>
+    <category name="Variables">
+      <block type="variable_types"></block>
+      <block type="var_new"></block>
+      <block type="var_call"></block>
+      <block type="var_assign"></block>
+      <block type="var_action"></block>
+      <block type="parameter"></block>
+      <block type="value_input"></block>
+      <block type="value_input_end"></block>
+    </category>
+    <category name="Math operators">
+      <block type="plus"></block>
+      <block type="minus"></block>
+      <block type="multiply"></block>
+      <block type="division"></block>
+      <block type="left_par"></block>
+      <block type="right_par"></block>
+    </category>
+    <category name="Logic operators">
+      <block type="greater_than"></block>
+      <block type="less_than"></block>
+      <block type="less_equal"></block>
+      <block type="greater_equal"></block>
+      <block type="not_equal"></block>
+      <block type="equal"></block>
+      <block type="and"></block>
+      <block type="or"></block>
+      <block type="not"></block>
+    </category>
+  </xml>
+
+  <script>
+    var demoWorkspace = Blockly.inject('blocklyDiv', {
+      media: 'media/',
+      toolbox: document.getElementById('toolbox')
+    });
+    Blockly.Xml.domToWorkspace(document.getElementById('startBlocks'),
+      demoWorkspace);
+
+    function showCode() {
+      // Generate JavaScript code and display it.
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+      alert(code);
+    }
+
+    function getCode() {
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+      var fileName = 'program';
+      var blob = new Blob([code], {
+        type: "text/plain;charset=utf-8"
+      });
+      saveAs(blob, fileName + ".superpadre");
+    }
+  </script>
+
+</body>
+
+</html>
