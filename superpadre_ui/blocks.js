@@ -443,6 +443,31 @@ Blockly.Blocks['variable_types'] = {
     return [code, Blockly.JavaScript.ORDER_ATOMIC];
   };
 
+  Blockly.Blocks['lists'] = {
+    init: function() {
+      this.appendDummyInput()
+          .appendField("list")
+          .appendField(new Blockly.FieldDropdown([["int","int"], ["string","string"], ["float","float"], ["boolean","boolean"]]), "type")
+          .appendField(new Blockly.FieldTextInput("list name"), "name")
+          .appendField(new Blockly.FieldNumber(0, 0), "fields");
+      this.setInputsInline(true);
+      this.setPreviousStatement(true);
+      this.setNextStatement(true);
+      this.setColour(230);
+   this.setTooltip("data type - list name - number of elements");
+   this.setHelpUrl("");
+    }
+  };
+
+  Blockly.JavaScript['lists'] = function(block) {
+    var dropdown_type = block.getFieldValue('type');
+    var text_name = block.getFieldValue('name');
+    var number_fields = block.getFieldValue('fields');
+    // TODO: Assemble JavaScript into code variable.
+    var code = 'list '+ dropdown_type + ' ' + text_name +'('+number_fields+');\n';
+    return code;
+  };
+
 
 /********************************* 
 Math operators
