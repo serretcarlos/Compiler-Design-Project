@@ -1013,9 +1013,28 @@ def p_FACTOR(p):
 
 def p_FACTOR_AUX(p):
     '''
-    FACTOR_AUX : id nt_pushPilaO
+    FACTOR_AUX : id nt_pushPilaO nt_verificaVar
                 | id nt_verificaFuncId LLAMADA_F
     '''
+
+def p_nt_verificaVar(p):
+    '''
+    nt_verificaVar : empty
+    '''
+    global dicVarGlobales
+    global dicVarLocales
+
+    simbolo = p[-2]
+    if simbolo in dicVarGlobales.keys():
+        if dicVarGlobales[simbolo]['struct'] == 'list':
+            print("Error, la lista '%s' tiene que tener corchetes con una expression que se evalue a uno de sus indices!" % simbolo)
+            exit()
+    elif simbolo in dicVarLocales.keys():
+        if dicVarLocales[simbolo]['struct'] == 'list':
+            print("Error, la lista '%s' tiene que tener corchetes con una expression que se evalue a uno de sus indices!" % simbolo)
+            exit()
+
+
 
 def p_nt_verificaFuncId(p):
     '''
@@ -1167,7 +1186,7 @@ def p_nt_asignarRet(p):
 
 def p_LISTA(p):
     '''
-    LISTA : id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
+    LISTA : id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
     '''
 
 def p_nt_verificaVarDim(p):
@@ -1261,21 +1280,6 @@ def p_nt_pushVer(p):
         pOper.pop()
     else:
         print("Error, tipo de variable a verificar no es entero!")
-
-
-
-def p_nt_quadsAcceso(p):
-    '''
-    nt_quadsAcceso : empty
-    '''
-    global pilaO
-    global pOper
-    global tCont
-    global quadCont
-    global dicQuadruplos
-    global dicTemporales
-    global dicVarLocales
-    global dicVarGlobales
 
 
 
@@ -1631,6 +1635,25 @@ program compilador;
         
     }
 
+int fibo(int n ) {
+  var int previous, current, cont, new_current;
+  previous =  0;
+  current =  1;
+  cont =  2;
+  if ( n <= 1) {
+    current =  n;
+  }
+  else {
+    while( cont <= n) {
+      new_current =  previous + current;
+      previous =  current;
+      current =  new_current;
+      cont =  cont + 1;
+    }
+  }
+  return current;
+}
+
     int fib(int n){
         var int ret;
         ret = n;
@@ -1640,7 +1663,7 @@ program compilador;
         else {
             ret = fib(ret-1) + fib(ret-2);
         }
-        return ret + 1;
+        return ret;
     }
 
     void nada(){
@@ -1651,15 +1674,17 @@ program compilador;
 
 main{
     list int a[10];
+    var int b;
     var bool h;
     h = True;
     cwrite(h);
     h = !h;
     cwrite(h);
     A1 = 0;
-    a[0] = 1;
-    a[1]=3;
-    cwrite(a);
+    b = 9;
+    a[0] = fib(b + 2);
+    a[1]=fibo(10);
+    b = a + 10;
     cwrite(a[0]);
     cwrite(a[1]);
 
