@@ -9,8 +9,9 @@
   <script src="javascript_compressed.js"></script>
   <script src="blocks.js"></script>
   <script src="en.js"></script>
-  <script src="FileSaver.js"></script>  
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="FileSaver.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
   <style>
     body {
       background-color: #fff;
@@ -26,10 +27,15 @@
 
 <body>
   <h1>
-      SuperPadre</h1>
+    SuperPadre</h1>
   <p>
     <button onclick="showCode()">Show SuperPadre code</button>
     <button onclick="getCode()">Download code</button>
+    <button onclick="getBlocks()">Get blocks(for later use)</button>
+    <br>
+    <br>
+    <input id="blockfile" name="blocks" type="file">
+    <button onclick="importBlocks()">Load block file</button>
   </p>
 
   <div id="blocklyDiv" style="height: 480px; width: 720px;"></div>
@@ -58,15 +64,22 @@
     <category name="Variables">
       <block type="variable_types"></block>
       <block type="var_new"></block>
-      <block type="var_call"></block>
-      <block type="var_assign"></block>
       <block type="var_action"></block>
+      <!--<block type="var_call"></block>-->
+      <block type="var_assign"></block>
+      <block type="true"></block>
+      <block type="false"></block>
       <block type="parameter"></block>
       <block type="value_input"></block>
-      <block type="value_input_end"></block>
+      <block type="string_input"></block>
+    </category>
+    <category name="Lists">
       <block type="lists"></block>
+      <block type="field_assign"></block>
+      <block type="access_index"></block>
     </category>
     <category name="Math operators">
+      <block type="relate_two"></block>
       <block type="plus"></block>
       <block type="minus"></block>
       <block type="multiply"></block>
@@ -110,6 +123,30 @@
         type: "text/plain;charset=utf-8"
       });
       saveAs(blob, fileName + ".superpadre");
+    }
+
+    function getBlocks() {
+      var output = document.getElementById('importExport');
+      var xml = Blockly.Xml.workspaceToDom(demoWorkspace);
+      var xml_text = Blockly.Xml.domToText(xml);
+      var blob = new Blob([xml_text], {
+        type: "text/plain;charset=utf-8"
+      });
+      saveAs(blob, "program.xml");
+    }
+
+    function importBlocks() {
+      var fileInput = document.getElementById('blockfile');      
+      var file = fileInput.files[0];
+      var xml_text;
+      var xml;
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        xml_text = reader.result;
+        xml = Blockly.Xml.textToDom(xml_text);
+        Blockly.Xml.domToWorkspace(xml, demoWorkspace);
+      }
+      reader.readAsText(file);
     }
   </script>
 

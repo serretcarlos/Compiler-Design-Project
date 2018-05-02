@@ -1,0 +1,18 @@
+﻿program fibonacci;
+int fibo(int n ) {
+  var int result;
+  if ( n <= 1) {
+    result =  n;
+  }
+  else {
+    result = fibo(n- 1) + fibo(n- 2);
+  }
+  return  result;
+
+}
+main{
+  var int n;
+  n = fibo(10);
+  cwrite( n);
+
+}
