@@ -84,6 +84,9 @@ Blockly.Blocks['assign_function'] = {
     if (value_func_call.split(' ').length > 1){
         value_func_call = value_func_call.replace(/ /g, ', ');
     }
+    value_func_call = value_func_call.replace(/, +,|, -,|, \/,|, *,/, function(chars){
+        return chars.substring(chars.length-2,chars.length-1);
+    })
     var code = text_func_name + '(' + value_func_call +')';
     return [code, Blockly.JavaScript.ORDER_ATOMIC];
   };
@@ -472,6 +475,30 @@ Blockly.Blocks['variable_types'] = {
 /********************************* 
 Math operators
 ***********************************/
+Blockly.Blocks['relate_two'] = {
+  init: function() {
+    this.appendValueInput("first")
+        .setCheck(null);
+    this.appendValueInput("second")
+        .setCheck(null)
+        .appendField(new Blockly.FieldDropdown([["+","+"], ["-","-"], ["*","*"], ["/","/"]]), "NAME");
+    this.setInputsInline(true);
+    this.setOutput(true);
+    this.setColour(230);
+ this.setTooltip("");
+ this.setHelpUrl("");
+  }
+};
+
+Blockly.JavaScript['relate_two'] = function(block) {
+  var value_first = Blockly.JavaScript.valueToCode(block, 'first', Blockly.JavaScript.ORDER_ATOMIC);
+  var dropdown_name = block.getFieldValue('NAME');
+  var value_second = Blockly.JavaScript.valueToCode(block, 'second', Blockly.JavaScript.ORDER_ATOMIC);
+  var code = value_first + ' ' + dropdown_name + ' ' + value_second;
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+
 Blockly.Blocks['plus'] = {
     init: function() {
       this.appendValueInput("plus_text")
