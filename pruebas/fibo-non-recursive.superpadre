@@ -19,7 +19,7 @@ int fibo(int n ) {
 }
 main (){
   var int n;
-  cread(n)
+  cread(n);
   n = fibo(n);
   cwrite(n);
 }

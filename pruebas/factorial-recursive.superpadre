@@ -11,7 +11,7 @@ int factorial(int n ) {
 }
 main (){
   var int n;
-  cread(n)
+  cread(n);
   n = factorial(n);
   cwrite(n);
 }
