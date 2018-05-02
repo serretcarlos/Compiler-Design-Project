@@ -85,7 +85,7 @@ Blockly.Blocks['assign_function'] = {
         value_func_call = value_func_call.replace(/ /g, ', ');
     }
     var code = text_func_name + '(' + value_func_call +')';
-    return code;
+    return [code, Blockly.JavaScript.ORDER_ATOMIC];
   };
 
 
