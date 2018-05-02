@@ -4,8 +4,8 @@ import sys
 palabras_reservadas = {
 	'program' : 'program',
 	'main' : 'main',
-	'true' : 'true',
-	'false' : 'false',
+	'True' : 'True',
+	'False' : 'False',
 	'while' : 'while',
 	'if' : 'if',
 	'else' : 'else',

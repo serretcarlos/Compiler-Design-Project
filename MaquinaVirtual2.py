@@ -341,8 +341,13 @@ def inicializarMaquinaVirtual(idPrograma, dicQuadruplos, dicFunciones, dicVarGlo
 			simboloOr = opIzq or opDer 
 			guardarValDir(simboloOr, resultado, exeStack)
 
-		elif operador == 'cwrite':
+		elif operador == '!':
+			opDer = getValor(opDer, exeStack)
 
+			valorNegado = not opDer
+			guardarValDir(valorNegado, resultado, exeStack)
+
+		elif operador == 'cwrite':
 			opDer = getValor(opDer, exeStack)
 			print(opDer)
 

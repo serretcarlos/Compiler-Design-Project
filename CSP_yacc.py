@@ -728,8 +728,34 @@ def p_nt_escribir(p):
 
 def p_LLAMADA(p):
     '''
-    LLAMADA : id nt_verificaFuncId left_par nt_pushPOper nt_startERA LLAMADA_EXPRESION nt_verificaUltimo right_par nt_popPOper semicolon nt_pushGoSub
+    LLAMADA : id nt_verificaFuncIdLlamada left_par nt_pushPOper nt_startERA LLAMADA_EXPRESION nt_verificaUltimo right_par nt_popPOper semicolon nt_pushGoSub
     '''
+
+def p_nt_verificaFuncIdLlamada(p):
+    '''
+    nt_verificaFuncIdLlamada : empty
+    '''
+    global dicFunciones
+    global funcCall
+    global idFunc
+
+    nombre = p[-1]
+
+
+    if nombre not in dicFunciones.keys():
+        if nombre == idFunc:
+            if dicFunciones[nombre]['tipo'] != 'void':
+                print("Error, no se puede hacer una llamada usando la funcion '%s' porque no hay una variable para asignar su valor de retorno!" % nombre)
+                exit()
+            funcCall = nombre
+        else:
+            print("Error, no existe la funcion %s!" % nombre)
+            exit()
+    else:
+        if dicFunciones[nombre]['tipo'] != 'void':
+            print("Error, no se puede hacer una llamada usando la funcion '%s' porque no hay una variable para asignar su valor de retorno!" % nombre)
+            exit()
+        funcCall = nombre
 
 def p_LLAMADA_EXPRESION(p):
     '''
@@ -1004,11 +1030,17 @@ def p_nt_verificaFuncId(p):
 
     if nombre not in dicFunciones.keys():
         if nombre == idFunc:
+            if dicFunciones[nombre]['tipo'] == 'void':
+                print("Error, no se puede usar la funcion '%s' dentro de una expresion porque no tiene un valor de retorno!" % nombre)
+                exit()
             funcCall = nombre
         else:
             print("Error, no existe la funcion %s!" % nombre)
             exit()
     else:
+        if dicFunciones[nombre]['tipo'] == 'void':
+            print("Error, no se puede usar la funcion '%s' dentro de una expresion porque no tiene un valor de retorno!" % nombre)
+            exit()
         funcCall = nombre
 
 def p_LLAMADAF(p):
@@ -1342,8 +1374,8 @@ def p_nt_pushFloat(p):
 
 def p_BOOLEANA(p):
     '''
-    BOOLEANA : true
-             | false
+    BOOLEANA : True
+             | False
     '''
     global pilaO
     global pTipos
@@ -1354,7 +1386,12 @@ def p_BOOLEANA(p):
     dirmem = dicMemorias['const']['bool'][llave]+llave
     dicMemorias['const']['bool'][llave] += 1
 
-    dicConstantes[dirmem] = {'val': p[1], 'tipo': 'bool', 'dir': dirmem}
+    if p[1] == 'False':
+        valor = False
+    else:
+        valor = True
+
+    dicConstantes[dirmem] = {'val': valor, 'tipo': 'bool', 'dir': dirmem}
     pilaO.append(dirmem)
     pTipos.append('bool')
 
@@ -1409,9 +1446,28 @@ def p_nt_checaEquals(p):
 
 def p_ASIGNACION_AUX(p):
     '''
-    ASIGNACION_AUX : id nt_pushPilaO
+    ASIGNACION_AUX : id nt_pushPilaO nt_checaStruct
                    | LISTA
     '''
+
+def p_nt_checaStruct(p):
+    '''
+    nt_checaStruct : empty
+    '''
+    global dicVarGlobales
+    global dicVarLocales
+
+    simbolo = p[-2]
+
+    if simbolo in dicVarGlobales.keys():
+        if dicVarGlobales[simbolo]['struct'] == 'list':
+            print("Error, la lista '%s' no contiene indice!" % simbolo)
+            exit()
+    elif simbolo in dicVarLocales.keys():
+        if dicVarLocales[simbolo]['struct'] == 'list':
+            print("Error, la lista '%s' no contiene indice!" % simbolo)
+            exit()
+
 
 def p_nt_pushPilaO(p):
     '''
@@ -1588,26 +1644,24 @@ program compilador;
     }
 
     void nada(){
-        A1 = A1 + 1;
+        A1 = A1 + 19;
         cwrite(A1);
 
     }
 
 main{
-    var int a, ret;
+    list int a[10];
+    var bool h;
+    h = True;
+    cwrite(h);
+    h = !h;
+    cwrite(h);
     A1 = 0;
-    list int b[15];
-    a = fib(10);
+    a[0] = 1;
+    a[1]=3;
     cwrite(a);
-    var int cont;
-    cont = 14;
-    while(cont >= 0) {
-        b[cont] = cont;
-        cwrite(b[cont]);
-        cont = cont -1;
-        nada();
-    }
-    cwrite(A1);
+    cwrite(a[0]);
+    cwrite(a[1]);
 
 }
           """
