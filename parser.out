@@ -135,24 +135,24 @@ Rule 124   FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper
 Rule 125   FACTOR -> CONSTANTE
 Rule 126   FACTOR -> LISTA
 Rule 127   FACTOR -> FACTOR_AUX
-Rule 128   FACTOR_AUX -> id nt_pushPilaO
+Rule 128   FACTOR_AUX -> id nt_pushPilaO nt_verificaVar
 Rule 129   FACTOR_AUX -> id nt_verificaFuncId LLAMADA_F
-Rule 130   nt_verificaFuncId -> empty
-Rule 131   LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet
-Rule 132   LLAMADAF_AUX -> LLAMADAF_AUX2
-Rule 133   LLAMADAF_AUX -> empty
-Rule 134   LLAMADAF_AUX2 -> EXPRESION nt_verifyArgType
-Rule 135   LLAMADAF_AUX2 -> LLAMADAF_AUX2 comma nt_paramPP EXPRESION nt_verifyArgType
-Rule 136   nt_paramPP -> empty
-Rule 137   nt_startERA -> empty
-Rule 138   nt_verifyArgType -> empty
-Rule 139   nt_verificaUltimo -> empty
-Rule 140   nt_pushGoSub -> empty
-Rule 141   nt_asignarRet -> empty
-Rule 142   LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
-Rule 143   nt_verificarVarDim -> empty
-Rule 144   nt_pushVer -> empty
-Rule 145   nt_quadsAcceso -> empty
+Rule 130   nt_verificaVar -> empty
+Rule 131   nt_verificaFuncId -> empty
+Rule 132   LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet
+Rule 133   LLAMADAF_AUX -> LLAMADAF_AUX2
+Rule 134   LLAMADAF_AUX -> empty
+Rule 135   LLAMADAF_AUX2 -> EXPRESION nt_verifyArgType
+Rule 136   LLAMADAF_AUX2 -> LLAMADAF_AUX2 comma nt_paramPP EXPRESION nt_verifyArgType
+Rule 137   nt_paramPP -> empty
+Rule 138   nt_startERA -> empty
+Rule 139   nt_verifyArgType -> empty
+Rule 140   nt_verificaUltimo -> empty
+Rule 141   nt_pushGoSub -> empty
+Rule 142   nt_asignarRet -> empty
+Rule 143   LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
+Rule 144   nt_verificarVarDim -> empty
+Rule 145   nt_pushVer -> empty
 Rule 146   CONSTANTE -> NUMERICA
 Rule 147   CONSTANTE -> BOOLEANA
 Rule 148   CONSTANTE -> STRINGS
@@ -184,7 +184,7 @@ False                : 159
 True                 : 158
 and                  : 102
 bool                 : 30
-comma                : 20 27 61 67 97 135
+comma                : 20 27 61 67 97 136
 cread                : 88
 cteFloat             : 155
 cteInt               : 19 20 154
@@ -199,14 +199,14 @@ et                   : 111
 float                : 29
 ge                   : 109
 gt                   : 107
-id                   : 1 19 20 26 27 55 60 61 64 66 67 88 92 128 129 142 163
+id                   : 1 19 20 26 27 55 60 61 64 66 67 88 92 128 129 143 163
 if                   : 75
 int                  : 28
 le                   : 110
 left_cb              : 33 48 64
 left_dblquotes       : 
-left_par             : 55 64 76 85 88 90 92 124 131
-left_sb              : 19 20 142
+left_par             : 55 64 76 85 88 90 92 124 132
+left_sb              : 19 20 143
 list                 : 17
 lt                   : 106
 main                 : 1
@@ -220,8 +220,8 @@ program              : 1
 return               : 53
 right_cb             : 33 48 64
 right_dblquotes      : 
-right_par            : 55 64 76 85 88 90 92 124 131
-right_sb             : 19 20 142
+right_par            : 55 64 76 85 88 90 92 124 132
+right_sb             : 19 20 143
 semicolon            : 1 17 24 53 88 90 92 161
 string               : 31
 var                  : 24
@@ -253,8 +253,8 @@ ELSE                 : 77
 ELSE_ELIF            : 76
 ESCRITURA            : 73
 ESTATUTO             : 38 46
-EXP                  : 53 105 106 107 108 109 110 111 116 117 142
-EXPRESION            : 76 85 90 96 97 102 103 124 134 135 161
+EXP                  : 53 105 106 107 108 109 110 111 116 117 143
+EXPRESION            : 76 85 90 96 97 102 103 124 135 136 161
 EXPRESIONLOGICA      : 98
 EXPRESIONLOGICA_AUX  : 105
 EXPRESION_B          : 98
@@ -267,8 +267,8 @@ FUNC_PARA            : 55 61
 LECTURA              : 72
 LISTA                : 126 164
 LLAMADA              : 74
-LLAMADAF_AUX         : 131
-LLAMADAF_AUX2        : 132 135
+LLAMADAF_AUX         : 132
+LLAMADAF_AUX2        : 133 136
 LLAMADA_EXPRESION    : 92
 LLAMADA_EXPRESION_AUX : 94 97
 LLAMADA_F            : 129
@@ -292,14 +292,14 @@ VARS_VAR             : 16
 VARS_VAR_AUX         : 24 27
 VOIDFUNC             : 56
 VOIDFUNC_PARA        : 64 67
-empty                : 2 4 5 7 11 18 21 22 23 25 32 37 39 43 45 47 52 54 57 58 59 62 63 65 68 79 82 83 84 86 87 89 91 93 95 99 101 104 112 113 115 118 120 123 130 133 136 137 138 139 140 141 143 144 145 152 153 156 157 162 165 166 167 168
+empty                : 2 4 5 7 11 18 21 22 23 25 32 37 39 43 45 47 52 54 57 58 59 62 63 65 68 79 82 83 84 86 87 89 91 93 95 99 101 104 112 113 115 118 120 123 130 131 134 137 138 139 140 141 142 144 145 152 153 156 157 162 165 166 167 168
 nt_agregarCteLista   : 19 20
 nt_agregarDicVar     : 19 20 26 27
 nt_agregarId         : 19 20 26 27
 nt_agregarIdFunc     : 55 64
 nt_agregarParametro  : 60 61 66 67
 nt_ambienteMain      : 1
-nt_asignarRet        : 131
+nt_asignarRet        : 132
 nt_cambiarScope      : 1 1 3
 nt_cambioFuncActual  : 55
 nt_cambioTipoActual  : 28 29 30 31
@@ -318,29 +318,29 @@ nt_hacerLista        : 17
 nt_hacerVar          : 24
 nt_hacerVoid         : 64
 nt_leer              : 88
-nt_paramPP           : 97 135
-nt_popPOper          : 92 124 131
+nt_paramPP           : 97 136
+nt_popPOper          : 92 124 132
 nt_pushElse          : 80 81
 nt_pushEndsub        : 55 56
 nt_pushFloat         : 155
-nt_pushGoSub         : 92 131
+nt_pushGoSub         : 92 132
 nt_pushInt           : 154
 nt_pushJmpMain       : 1
 nt_pushLoop          : 85
-nt_pushPOper         : 92 100 102 103 106 107 108 109 110 111 116 117 121 122 124 131 161
+nt_pushPOper         : 92 100 102 103 106 107 108 109 110 111 116 117 121 122 124 132 161
 nt_pushPilaO         : 128 163
 nt_pushSalto         : 76
-nt_pushVer           : 142
-nt_quadsAcceso       : 142
+nt_pushVer           : 143
 nt_saltoLoop         : 85
 nt_sigMas            : 150
 nt_sigMenos          : 151
-nt_startERA          : 92 131
+nt_startERA          : 92 132
 nt_verificaFuncId    : 129
 nt_verificaFuncIdLlamada : 92
-nt_verificaUltimo    : 92 131
-nt_verificarVarDim   : 142
-nt_verifyArgType     : 96 97 134 135
+nt_verificaUltimo    : 92 132
+nt_verificaVar       : 128
+nt_verificarVarDim   : 143
+nt_verifyArgType     : 96 97 135 136
 
 Parsing method: LALR
 
@@ -1440,7 +1440,7 @@ state 86
     (92) LLAMADA -> . id nt_verificaFuncIdLlamada left_par nt_pushPOper nt_startERA LLAMADA_EXPRESION nt_verificaUltimo right_par nt_popPOper semicolon nt_pushGoSub
     (163) ASIGNACION_AUX -> . id nt_pushPilaO nt_checaStruct
     (164) ASIGNACION_AUX -> . LISTA
-    (142) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
+    (143) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
 
   ! shift/reduce conflict for if resolved as shift
   ! shift/reduce conflict for while resolved as shift
@@ -1709,10 +1709,10 @@ state 106
 
     (92) LLAMADA -> id . nt_verificaFuncIdLlamada left_par nt_pushPOper nt_startERA LLAMADA_EXPRESION nt_verificaUltimo right_par nt_popPOper semicolon nt_pushGoSub
     (163) ASIGNACION_AUX -> id . nt_pushPilaO nt_checaStruct
-    (142) LISTA -> id . nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
+    (143) LISTA -> id . nt_verificarVarDim left_sb EXP nt_pushVer right_sb
     (93) nt_verificaFuncIdLlamada -> . empty
     (166) nt_pushPilaO -> . empty
-    (143) nt_verificarVarDim -> . empty
+    (144) nt_verificarVarDim -> . empty
     (169) empty -> .
 
     left_par        reduce using rule 169 (empty -> .)
@@ -1849,7 +1849,7 @@ state 116
     (92) LLAMADA -> . id nt_verificaFuncIdLlamada left_par nt_pushPOper nt_startERA LLAMADA_EXPRESION nt_verificaUltimo right_par nt_popPOper semicolon nt_pushGoSub
     (163) ASIGNACION_AUX -> . id nt_pushPilaO nt_checaStruct
     (164) ASIGNACION_AUX -> . LISTA
-    (142) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
+    (143) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
 
   ! shift/reduce conflict for if resolved as shift
   ! shift/reduce conflict for while resolved as shift
@@ -1887,8 +1887,6 @@ state 117
 
     (33) CUERPO -> left_cb CUERPO_AUX right_cb .
 
-    else            reduce using rule 33 (CUERPO -> left_cb CUERPO_AUX right_cb .)
-    elseif          reduce using rule 33 (CUERPO -> left_cb CUERPO_AUX right_cb .)
     right_cb        reduce using rule 33 (CUERPO -> left_cb CUERPO_AUX right_cb .)
     list            reduce using rule 33 (CUERPO -> left_cb CUERPO_AUX right_cb .)
     var             reduce using rule 33 (CUERPO -> left_cb CUERPO_AUX right_cb .)
@@ -1898,6 +1896,8 @@ state 117
     cwrite          reduce using rule 33 (CUERPO -> left_cb CUERPO_AUX right_cb .)
     id              reduce using rule 33 (CUERPO -> left_cb CUERPO_AUX right_cb .)
     return          reduce using rule 33 (CUERPO -> left_cb CUERPO_AUX right_cb .)
+    else            reduce using rule 33 (CUERPO -> left_cb CUERPO_AUX right_cb .)
+    elseif          reduce using rule 33 (CUERPO -> left_cb CUERPO_AUX right_cb .)
     $end            reduce using rule 33 (CUERPO -> left_cb CUERPO_AUX right_cb .)
 
 
@@ -2091,7 +2091,7 @@ state 130
 
 state 131
 
-    (142) LISTA -> id nt_verificarVarDim . left_sb EXP nt_pushVer right_sb nt_quadsAcceso
+    (143) LISTA -> id nt_verificarVarDim . left_sb EXP nt_pushVer right_sb
 
     left_sb         shift and go to state 159
 
@@ -2107,11 +2107,11 @@ state 133
 
     (93) nt_verificaFuncIdLlamada -> empty .
     (166) nt_pushPilaO -> empty .
-    (143) nt_verificarVarDim -> empty .
+    (144) nt_verificarVarDim -> empty .
 
     left_par        reduce using rule 93 (nt_verificaFuncIdLlamada -> empty .)
     equals          reduce using rule 166 (nt_pushPilaO -> empty .)
-    left_sb         reduce using rule 143 (nt_verificarVarDim -> empty .)
+    left_sb         reduce using rule 144 (nt_verificarVarDim -> empty .)
 
 
 state 134
@@ -2482,8 +2482,8 @@ state 156
     (146) CONSTANTE -> . NUMERICA
     (147) CONSTANTE -> . BOOLEANA
     (148) CONSTANTE -> . STRINGS
-    (142) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
-    (128) FACTOR_AUX -> . id nt_pushPilaO
+    (143) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
+    (128) FACTOR_AUX -> . id nt_pushPilaO nt_verificaVar
     (129) FACTOR_AUX -> . id nt_verificaFuncId LLAMADA_F
     (149) NUMERICA -> . NUMERICA_AUX
     (150) NUMERICA -> . plus nt_sigMas NUMERICA_AUX
@@ -2552,7 +2552,7 @@ state 158
 
 state 159
 
-    (142) LISTA -> id nt_verificarVarDim left_sb . EXP nt_pushVer right_sb nt_quadsAcceso
+    (143) LISTA -> id nt_verificarVarDim left_sb . EXP nt_pushVer right_sb
     (114) EXP -> . TERMINO nt_checar_sumas EXP_AUX
     (119) TERMINO -> . FACTOR nt_checar_multis TERMINO_AUX
     (124) FACTOR -> . left_par nt_pushPOper EXPRESION right_par nt_popPOper
@@ -2562,8 +2562,8 @@ state 159
     (146) CONSTANTE -> . NUMERICA
     (147) CONSTANTE -> . BOOLEANA
     (148) CONSTANTE -> . STRINGS
-    (142) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
-    (128) FACTOR_AUX -> . id nt_pushPilaO
+    (143) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
+    (128) FACTOR_AUX -> . id nt_pushPilaO nt_verificaVar
     (129) FACTOR_AUX -> . id nt_verificaFuncId LLAMADA_F
     (149) NUMERICA -> . NUMERICA_AUX
     (150) NUMERICA -> . plus nt_sigMas NUMERICA_AUX
@@ -2802,8 +2802,8 @@ state 174
     (146) CONSTANTE -> . NUMERICA
     (147) CONSTANTE -> . BOOLEANA
     (148) CONSTANTE -> . STRINGS
-    (142) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
-    (128) FACTOR_AUX -> . id nt_pushPilaO
+    (143) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
+    (128) FACTOR_AUX -> . id nt_pushPilaO nt_verificaVar
     (129) FACTOR_AUX -> . id nt_verificaFuncId LLAMADA_F
     (149) NUMERICA -> . NUMERICA_AUX
     (150) NUMERICA -> . plus nt_sigMas NUMERICA_AUX
@@ -2885,7 +2885,7 @@ state 177
     (92) LLAMADA -> . id nt_verificaFuncIdLlamada left_par nt_pushPOper nt_startERA LLAMADA_EXPRESION nt_verificaUltimo right_par nt_popPOper semicolon nt_pushGoSub
     (163) ASIGNACION_AUX -> . id nt_pushPilaO nt_checaStruct
     (164) ASIGNACION_AUX -> . LISTA
-    (142) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
+    (143) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
 
   ! shift/reduce conflict for if resolved as shift
   ! shift/reduce conflict for while resolved as shift
@@ -3048,12 +3048,12 @@ state 186
 
 state 187
 
-    (142) LISTA -> id . nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
-    (128) FACTOR_AUX -> id . nt_pushPilaO
+    (143) LISTA -> id . nt_verificarVarDim left_sb EXP nt_pushVer right_sb
+    (128) FACTOR_AUX -> id . nt_pushPilaO nt_verificaVar
     (129) FACTOR_AUX -> id . nt_verificaFuncId LLAMADA_F
-    (143) nt_verificarVarDim -> . empty
+    (144) nt_verificarVarDim -> . empty
     (166) nt_pushPilaO -> . empty
-    (130) nt_verificaFuncId -> . empty
+    (131) nt_verificaFuncId -> . empty
     (169) empty -> .
 
     left_sb         reduce using rule 169 (empty -> .)
@@ -3100,18 +3100,18 @@ state 189
     divide          reduce using rule 127 (FACTOR -> FACTOR_AUX .)
     plus            reduce using rule 127 (FACTOR -> FACTOR_AUX .)
     minus           reduce using rule 127 (FACTOR -> FACTOR_AUX .)
+    semicolon       reduce using rule 127 (FACTOR -> FACTOR_AUX .)
+    and             reduce using rule 127 (FACTOR -> FACTOR_AUX .)
+    or              reduce using rule 127 (FACTOR -> FACTOR_AUX .)
+    right_par       reduce using rule 127 (FACTOR -> FACTOR_AUX .)
+    comma           reduce using rule 127 (FACTOR -> FACTOR_AUX .)
+    right_sb        reduce using rule 127 (FACTOR -> FACTOR_AUX .)
     lt              reduce using rule 127 (FACTOR -> FACTOR_AUX .)
     gt              reduce using rule 127 (FACTOR -> FACTOR_AUX .)
     ne              reduce using rule 127 (FACTOR -> FACTOR_AUX .)
     ge              reduce using rule 127 (FACTOR -> FACTOR_AUX .)
     le              reduce using rule 127 (FACTOR -> FACTOR_AUX .)
     et              reduce using rule 127 (FACTOR -> FACTOR_AUX .)
-    and             reduce using rule 127 (FACTOR -> FACTOR_AUX .)
-    or              reduce using rule 127 (FACTOR -> FACTOR_AUX .)
-    right_par       reduce using rule 127 (FACTOR -> FACTOR_AUX .)
-    semicolon       reduce using rule 127 (FACTOR -> FACTOR_AUX .)
-    comma           reduce using rule 127 (FACTOR -> FACTOR_AUX .)
-    right_sb        reduce using rule 127 (FACTOR -> FACTOR_AUX .)
 
 
 state 190
@@ -3146,17 +3146,17 @@ state 191
     divide          reduce using rule 160 (STRINGS -> cteString .)
     plus            reduce using rule 160 (STRINGS -> cteString .)
     minus           reduce using rule 160 (STRINGS -> cteString .)
-    and             reduce using rule 160 (STRINGS -> cteString .)
-    or              reduce using rule 160 (STRINGS -> cteString .)
-    right_par       reduce using rule 160 (STRINGS -> cteString .)
-    semicolon       reduce using rule 160 (STRINGS -> cteString .)
-    comma           reduce using rule 160 (STRINGS -> cteString .)
     lt              reduce using rule 160 (STRINGS -> cteString .)
     gt              reduce using rule 160 (STRINGS -> cteString .)
     ne              reduce using rule 160 (STRINGS -> cteString .)
     ge              reduce using rule 160 (STRINGS -> cteString .)
     le              reduce using rule 160 (STRINGS -> cteString .)
     et              reduce using rule 160 (STRINGS -> cteString .)
+    and             reduce using rule 160 (STRINGS -> cteString .)
+    or              reduce using rule 160 (STRINGS -> cteString .)
+    right_par       reduce using rule 160 (STRINGS -> cteString .)
+    semicolon       reduce using rule 160 (STRINGS -> cteString .)
+    comma           reduce using rule 160 (STRINGS -> cteString .)
     right_sb        reduce using rule 160 (STRINGS -> cteString .)
 
 
@@ -3232,18 +3232,18 @@ state 195
     divide          reduce using rule 125 (FACTOR -> CONSTANTE .)
     plus            reduce using rule 125 (FACTOR -> CONSTANTE .)
     minus           reduce using rule 125 (FACTOR -> CONSTANTE .)
+    semicolon       reduce using rule 125 (FACTOR -> CONSTANTE .)
+    and             reduce using rule 125 (FACTOR -> CONSTANTE .)
+    or              reduce using rule 125 (FACTOR -> CONSTANTE .)
+    right_par       reduce using rule 125 (FACTOR -> CONSTANTE .)
+    comma           reduce using rule 125 (FACTOR -> CONSTANTE .)
+    right_sb        reduce using rule 125 (FACTOR -> CONSTANTE .)
     lt              reduce using rule 125 (FACTOR -> CONSTANTE .)
     gt              reduce using rule 125 (FACTOR -> CONSTANTE .)
     ne              reduce using rule 125 (FACTOR -> CONSTANTE .)
     ge              reduce using rule 125 (FACTOR -> CONSTANTE .)
     le              reduce using rule 125 (FACTOR -> CONSTANTE .)
     et              reduce using rule 125 (FACTOR -> CONSTANTE .)
-    and             reduce using rule 125 (FACTOR -> CONSTANTE .)
-    or              reduce using rule 125 (FACTOR -> CONSTANTE .)
-    right_par       reduce using rule 125 (FACTOR -> CONSTANTE .)
-    semicolon       reduce using rule 125 (FACTOR -> CONSTANTE .)
-    comma           reduce using rule 125 (FACTOR -> CONSTANTE .)
-    right_sb        reduce using rule 125 (FACTOR -> CONSTANTE .)
 
 
 state 196
@@ -3302,17 +3302,17 @@ state 198
     divide          reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
     plus            reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
     minus           reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
-    and             reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
-    or              reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
-    right_par       reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
-    semicolon       reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
-    comma           reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
     lt              reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
     gt              reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
     ne              reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
     ge              reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
     le              reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
     et              reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
+    and             reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
+    or              reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
+    right_par       reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
+    semicolon       reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
+    comma           reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
     right_sb        reduce using rule 149 (NUMERICA -> NUMERICA_AUX .)
 
 
@@ -3372,18 +3372,18 @@ state 201
     divide          reduce using rule 126 (FACTOR -> LISTA .)
     plus            reduce using rule 126 (FACTOR -> LISTA .)
     minus           reduce using rule 126 (FACTOR -> LISTA .)
+    semicolon       reduce using rule 126 (FACTOR -> LISTA .)
+    and             reduce using rule 126 (FACTOR -> LISTA .)
+    or              reduce using rule 126 (FACTOR -> LISTA .)
+    right_par       reduce using rule 126 (FACTOR -> LISTA .)
+    comma           reduce using rule 126 (FACTOR -> LISTA .)
+    right_sb        reduce using rule 126 (FACTOR -> LISTA .)
     lt              reduce using rule 126 (FACTOR -> LISTA .)
     gt              reduce using rule 126 (FACTOR -> LISTA .)
     ne              reduce using rule 126 (FACTOR -> LISTA .)
     ge              reduce using rule 126 (FACTOR -> LISTA .)
     le              reduce using rule 126 (FACTOR -> LISTA .)
     et              reduce using rule 126 (FACTOR -> LISTA .)
-    and             reduce using rule 126 (FACTOR -> LISTA .)
-    or              reduce using rule 126 (FACTOR -> LISTA .)
-    right_par       reduce using rule 126 (FACTOR -> LISTA .)
-    semicolon       reduce using rule 126 (FACTOR -> LISTA .)
-    comma           reduce using rule 126 (FACTOR -> LISTA .)
-    right_sb        reduce using rule 126 (FACTOR -> LISTA .)
 
 
 state 202
@@ -3415,8 +3415,8 @@ state 203
 
 state 204
 
-    (142) LISTA -> id nt_verificarVarDim left_sb EXP . nt_pushVer right_sb nt_quadsAcceso
-    (144) nt_pushVer -> . empty
+    (143) LISTA -> id nt_verificarVarDim left_sb EXP . nt_pushVer right_sb
+    (145) nt_pushVer -> . empty
     (169) empty -> .
 
     right_sb        reduce using rule 169 (empty -> .)
@@ -3427,7 +3427,7 @@ state 204
 state 205
 
     (92) LLAMADA -> id nt_verificaFuncIdLlamada left_par nt_pushPOper . nt_startERA LLAMADA_EXPRESION nt_verificaUltimo right_par nt_popPOper semicolon nt_pushGoSub
-    (137) nt_startERA -> . empty
+    (138) nt_startERA -> . empty
     (169) empty -> .
 
     not             reduce using rule 169 (empty -> .)
@@ -3544,7 +3544,7 @@ state 214
     (92) LLAMADA -> . id nt_verificaFuncIdLlamada left_par nt_pushPOper nt_startERA LLAMADA_EXPRESION nt_verificaUltimo right_par nt_popPOper semicolon nt_pushGoSub
     (163) ASIGNACION_AUX -> . id nt_pushPilaO nt_checaStruct
     (164) ASIGNACION_AUX -> . LISTA
-    (142) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
+    (143) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
 
   ! shift/reduce conflict for if resolved as shift
   ! shift/reduce conflict for while resolved as shift
@@ -3861,11 +3861,11 @@ state 232
 
 state 233
 
-    (143) nt_verificarVarDim -> empty .
+    (144) nt_verificarVarDim -> empty .
     (166) nt_pushPilaO -> empty .
-    (130) nt_verificaFuncId -> empty .
+    (131) nt_verificaFuncId -> empty .
 
-    left_sb         reduce using rule 143 (nt_verificarVarDim -> empty .)
+    left_sb         reduce using rule 144 (nt_verificarVarDim -> empty .)
     multiply        reduce using rule 166 (nt_pushPilaO -> empty .)
     divide          reduce using rule 166 (nt_pushPilaO -> empty .)
     plus            reduce using rule 166 (nt_pushPilaO -> empty .)
@@ -3882,39 +3882,43 @@ state 233
     semicolon       reduce using rule 166 (nt_pushPilaO -> empty .)
     comma           reduce using rule 166 (nt_pushPilaO -> empty .)
     right_sb        reduce using rule 166 (nt_pushPilaO -> empty .)
-    left_par        reduce using rule 130 (nt_verificaFuncId -> empty .)
+    left_par        reduce using rule 131 (nt_verificaFuncId -> empty .)
 
 
 state 234
 
-    (128) FACTOR_AUX -> id nt_pushPilaO .
+    (128) FACTOR_AUX -> id nt_pushPilaO . nt_verificaVar
+    (130) nt_verificaVar -> . empty
+    (169) empty -> .
 
-    multiply        reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO .)
-    divide          reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO .)
-    plus            reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO .)
-    minus           reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO .)
-    and             reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO .)
-    or              reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO .)
-    right_par       reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO .)
-    semicolon       reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO .)
-    comma           reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO .)
-    right_sb        reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO .)
-    lt              reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO .)
-    gt              reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO .)
-    ne              reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO .)
-    ge              reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO .)
-    le              reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO .)
-    et              reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO .)
+    multiply        reduce using rule 169 (empty -> .)
+    divide          reduce using rule 169 (empty -> .)
+    plus            reduce using rule 169 (empty -> .)
+    minus           reduce using rule 169 (empty -> .)
+    lt              reduce using rule 169 (empty -> .)
+    gt              reduce using rule 169 (empty -> .)
+    ne              reduce using rule 169 (empty -> .)
+    ge              reduce using rule 169 (empty -> .)
+    le              reduce using rule 169 (empty -> .)
+    et              reduce using rule 169 (empty -> .)
+    and             reduce using rule 169 (empty -> .)
+    or              reduce using rule 169 (empty -> .)
+    right_par       reduce using rule 169 (empty -> .)
+    semicolon       reduce using rule 169 (empty -> .)
+    comma           reduce using rule 169 (empty -> .)
+    right_sb        reduce using rule 169 (empty -> .)
 
+    empty                          shift and go to state 270
+    nt_verificaVar                 shift and go to state 271
 
 state 235
 
     (129) FACTOR_AUX -> id nt_verificaFuncId . LLAMADA_F
-    (131) LLAMADA_F -> . left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet
+    (132) LLAMADA_F -> . left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet
 
-    left_par        shift and go to state 270
+    left_par        shift and go to state 272
 
-    LLAMADA_F                      shift and go to state 271
+    LLAMADA_F                      shift and go to state 273
 
 state 236
 
@@ -3925,7 +3929,7 @@ state 236
     cteInt          shift and go to state 197
     cteFloat        shift and go to state 184
 
-    NUMERICA_AUX                   shift and go to state 272
+    NUMERICA_AUX                   shift and go to state 274
 
 state 237
 
@@ -3963,8 +3967,8 @@ state 239
     (118) EXP_AUX -> . empty
     (169) empty -> .
 
-    plus            shift and go to state 275
-    minus           shift and go to state 273
+    plus            shift and go to state 277
+    minus           shift and go to state 275
     lt              reduce using rule 169 (empty -> .)
     gt              reduce using rule 169 (empty -> .)
     ne              reduce using rule 169 (empty -> .)
@@ -3978,8 +3982,8 @@ state 239
     comma           reduce using rule 169 (empty -> .)
     right_sb        reduce using rule 169 (empty -> .)
 
-    EXP_AUX                        shift and go to state 276
-    empty                          shift and go to state 274
+    EXP_AUX                        shift and go to state 278
+    empty                          shift and go to state 276
 
 state 240
 
@@ -4000,7 +4004,7 @@ state 240
     cteInt          reduce using rule 169 (empty -> .)
     cteFloat        reduce using rule 169 (empty -> .)
 
-    EXPRESION                      shift and go to state 277
+    EXPRESION                      shift and go to state 279
     EXPRESION_NOT                  shift and go to state 156
     empty                          shift and go to state 158
 
@@ -4056,8 +4060,8 @@ state 243
     (123) TERMINO_AUX -> . empty
     (169) empty -> .
 
-    multiply        shift and go to state 280
-    divide          shift and go to state 279
+    multiply        shift and go to state 282
+    divide          shift and go to state 281
     plus            reduce using rule 169 (empty -> .)
     minus           reduce using rule 169 (empty -> .)
     lt              reduce using rule 169 (empty -> .)
@@ -4073,8 +4077,8 @@ state 243
     comma           reduce using rule 169 (empty -> .)
     right_sb        reduce using rule 169 (empty -> .)
 
-    TERMINO_AUX                    shift and go to state 278
-    empty                          shift and go to state 281
+    TERMINO_AUX                    shift and go to state 280
+    empty                          shift and go to state 283
 
 state 244
 
@@ -4115,20 +4119,20 @@ state 246
     cteInt          shift and go to state 197
     cteFloat        shift and go to state 184
 
-    NUMERICA_AUX                   shift and go to state 282
+    NUMERICA_AUX                   shift and go to state 284
 
 state 247
 
-    (144) nt_pushVer -> empty .
+    (145) nt_pushVer -> empty .
 
-    right_sb        reduce using rule 144 (nt_pushVer -> empty .)
+    right_sb        reduce using rule 145 (nt_pushVer -> empty .)
 
 
 state 248
 
-    (142) LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer . right_sb nt_quadsAcceso
+    (143) LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer . right_sb
 
-    right_sb        shift and go to state 283
+    right_sb        shift and go to state 285
 
 
 state 249
@@ -4155,41 +4159,41 @@ state 249
     cteFloat        reduce using rule 169 (empty -> .)
     not             shift and go to state 157
 
-    EXPRESION                      shift and go to state 284
+    EXPRESION                      shift and go to state 286
     EXPRESION_NOT                  shift and go to state 156
-    LLAMADA_EXPRESION              shift and go to state 285
-    LLAMADA_EXPRESION_AUX          shift and go to state 287
-    empty                          shift and go to state 286
+    LLAMADA_EXPRESION              shift and go to state 287
+    LLAMADA_EXPRESION_AUX          shift and go to state 289
+    empty                          shift and go to state 288
 
 state 250
 
-    (137) nt_startERA -> empty .
+    (138) nt_startERA -> empty .
 
-    not             reduce using rule 137 (nt_startERA -> empty .)
-    right_par       reduce using rule 137 (nt_startERA -> empty .)
-    left_par        reduce using rule 137 (nt_startERA -> empty .)
-    id              reduce using rule 137 (nt_startERA -> empty .)
-    plus            reduce using rule 137 (nt_startERA -> empty .)
-    minus           reduce using rule 137 (nt_startERA -> empty .)
-    True            reduce using rule 137 (nt_startERA -> empty .)
-    False           reduce using rule 137 (nt_startERA -> empty .)
-    cteString       reduce using rule 137 (nt_startERA -> empty .)
-    cteInt          reduce using rule 137 (nt_startERA -> empty .)
-    cteFloat        reduce using rule 137 (nt_startERA -> empty .)
+    not             reduce using rule 138 (nt_startERA -> empty .)
+    right_par       reduce using rule 138 (nt_startERA -> empty .)
+    left_par        reduce using rule 138 (nt_startERA -> empty .)
+    id              reduce using rule 138 (nt_startERA -> empty .)
+    plus            reduce using rule 138 (nt_startERA -> empty .)
+    minus           reduce using rule 138 (nt_startERA -> empty .)
+    True            reduce using rule 138 (nt_startERA -> empty .)
+    False           reduce using rule 138 (nt_startERA -> empty .)
+    cteString       reduce using rule 138 (nt_startERA -> empty .)
+    cteInt          reduce using rule 138 (nt_startERA -> empty .)
+    cteFloat        reduce using rule 138 (nt_startERA -> empty .)
 
 
 state 251
 
     (90) ESCRITURA -> cwrite left_par EXPRESION nt_escribir right_par . semicolon
 
-    semicolon       shift and go to state 288
+    semicolon       shift and go to state 290
 
 
 state 252
 
     (161) ASIGNACION -> ASIGNACION_AUX equals nt_pushPOper EXPRESION nt_checaEquals . semicolon
 
-    semicolon       shift and go to state 289
+    semicolon       shift and go to state 291
 
 
 state 253
@@ -4203,7 +4207,7 @@ state 254
 
     (85) CICLO -> while nt_saltoLoop left_par EXPRESION nt_checarBool . right_par CUERPO nt_pushLoop
 
-    right_par       shift and go to state 290
+    right_par       shift and go to state 292
 
 
 state 255
@@ -4232,7 +4236,7 @@ state 257
 
     (53) RETORNO -> return EXP nt_checaRet . semicolon
 
-    semicolon       shift and go to state 291
+    semicolon       shift and go to state 293
 
 
 state 258
@@ -4260,8 +4264,8 @@ state 259
     (81) ELIF -> . elseif nt_pushElse CONDICION_AUX
     (169) empty -> .
 
-    else            shift and go to state 296
-    elseif          shift and go to state 295
+    else            shift and go to state 298
+    elseif          shift and go to state 297
     right_cb        reduce using rule 169 (empty -> .)
     list            reduce using rule 169 (empty -> .)
     var             reduce using rule 169 (empty -> .)
@@ -4272,10 +4276,10 @@ state 259
     id              reduce using rule 169 (empty -> .)
     return          reduce using rule 169 (empty -> .)
 
-    ELIF                           shift and go to state 293
-    ELSE_ELIF                      shift and go to state 292
-    ELSE                           shift and go to state 294
-    empty                          shift and go to state 297
+    ELIF                           shift and go to state 295
+    ELSE_ELIF                      shift and go to state 294
+    ELSE                           shift and go to state 296
+    empty                          shift and go to state 299
 
 state 260
 
@@ -4295,7 +4299,7 @@ state 260
     cteFloat        reduce using rule 169 (empty -> .)
 
     empty                          shift and go to state 164
-    nt_pushPOper                   shift and go to state 298
+    nt_pushPOper                   shift and go to state 300
 
 state 261
 
@@ -4324,7 +4328,7 @@ state 262
     cteFloat        reduce using rule 169 (empty -> .)
 
     empty                          shift and go to state 164
-    nt_pushPOper                   shift and go to state 299
+    nt_pushPOper                   shift and go to state 301
 
 state 263
 
@@ -4347,98 +4351,8 @@ state 264
     (146) CONSTANTE -> . NUMERICA
     (147) CONSTANTE -> . BOOLEANA
     (148) CONSTANTE -> . STRINGS
-    (142) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
-    (128) FACTOR_AUX -> . id nt_pushPilaO
-    (129) FACTOR_AUX -> . id nt_verificaFuncId LLAMADA_F
-    (149) NUMERICA -> . NUMERICA_AUX
-    (150) NUMERICA -> . plus nt_sigMas NUMERICA_AUX
-    (151) NUMERICA -> . minus nt_sigMenos NUMERICA_AUX
-    (158) BOOLEANA -> . True
-    (159) BOOLEANA -> . False
-    (160) STRINGS -> . cteString
-    (154) NUMERICA_AUX -> . cteInt nt_pushInt
-    (155) NUMERICA_AUX -> . cteFloat nt_pushFloat
-
-    left_par        shift and go to state 192
-    id              shift and go to state 187
-    plus            shift and go to state 188
-    minus           shift and go to state 202
-    True            shift and go to state 196
-    False           shift and go to state 194
-    cteString       shift and go to state 191
-    cteInt          shift and go to state 197
-    cteFloat        shift and go to state 184
-
-    BOOLEANA                       shift and go to state 185
-    EXP                            shift and go to state 300
-    FACTOR_AUX                     shift and go to state 189
-    TERMINO                        shift and go to state 190
-    STRINGS                        shift and go to state 193
-    CONSTANTE                      shift and go to state 195
-    NUMERICA_AUX                   shift and go to state 198
-    NUMERICA                       shift and go to state 199
-    FACTOR                         shift and go to state 200
-    LISTA                          shift and go to state 201
-
-state 265
-
-    (107) EXPRESIONLOGICA_AUX -> gt nt_pushPOper . EXP nt_checarRelop
-    (114) EXP -> . TERMINO nt_checar_sumas EXP_AUX
-    (119) TERMINO -> . FACTOR nt_checar_multis TERMINO_AUX
-    (124) FACTOR -> . left_par nt_pushPOper EXPRESION right_par nt_popPOper
-    (125) FACTOR -> . CONSTANTE
-    (126) FACTOR -> . LISTA
-    (127) FACTOR -> . FACTOR_AUX
-    (146) CONSTANTE -> . NUMERICA
-    (147) CONSTANTE -> . BOOLEANA
-    (148) CONSTANTE -> . STRINGS
-    (142) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
-    (128) FACTOR_AUX -> . id nt_pushPilaO
-    (129) FACTOR_AUX -> . id nt_verificaFuncId LLAMADA_F
-    (149) NUMERICA -> . NUMERICA_AUX
-    (150) NUMERICA -> . plus nt_sigMas NUMERICA_AUX
-    (151) NUMERICA -> . minus nt_sigMenos NUMERICA_AUX
-    (158) BOOLEANA -> . True
-    (159) BOOLEANA -> . False
-    (160) STRINGS -> . cteString
-    (154) NUMERICA_AUX -> . cteInt nt_pushInt
-    (155) NUMERICA_AUX -> . cteFloat nt_pushFloat
-
-    left_par        shift and go to state 192
-    id              shift and go to state 187
-    plus            shift and go to state 188
-    minus           shift and go to state 202
-    True            shift and go to state 196
-    False           shift and go to state 194
-    cteString       shift and go to state 191
-    cteInt          shift and go to state 197
-    cteFloat        shift and go to state 184
-
-    BOOLEANA                       shift and go to state 185
-    EXP                            shift and go to state 301
-    FACTOR_AUX                     shift and go to state 189
-    TERMINO                        shift and go to state 190
-    STRINGS                        shift and go to state 193
-    CONSTANTE                      shift and go to state 195
-    NUMERICA_AUX                   shift and go to state 198
-    NUMERICA                       shift and go to state 199
-    FACTOR                         shift and go to state 200
-    LISTA                          shift and go to state 201
-
-state 266
-
-    (108) EXPRESIONLOGICA_AUX -> ne nt_pushPOper . EXP nt_checarRelop
-    (114) EXP -> . TERMINO nt_checar_sumas EXP_AUX
-    (119) TERMINO -> . FACTOR nt_checar_multis TERMINO_AUX
-    (124) FACTOR -> . left_par nt_pushPOper EXPRESION right_par nt_popPOper
-    (125) FACTOR -> . CONSTANTE
-    (126) FACTOR -> . LISTA
-    (127) FACTOR -> . FACTOR_AUX
-    (146) CONSTANTE -> . NUMERICA
-    (147) CONSTANTE -> . BOOLEANA
-    (148) CONSTANTE -> . STRINGS
-    (142) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
-    (128) FACTOR_AUX -> . id nt_pushPilaO
+    (143) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
+    (128) FACTOR_AUX -> . id nt_pushPilaO nt_verificaVar
     (129) FACTOR_AUX -> . id nt_verificaFuncId LLAMADA_F
     (149) NUMERICA -> . NUMERICA_AUX
     (150) NUMERICA -> . plus nt_sigMas NUMERICA_AUX
@@ -4470,9 +4384,9 @@ state 266
     FACTOR                         shift and go to state 200
     LISTA                          shift and go to state 201
 
-state 267
+state 265
 
-    (106) EXPRESIONLOGICA_AUX -> lt nt_pushPOper . EXP nt_checarRelop
+    (107) EXPRESIONLOGICA_AUX -> gt nt_pushPOper . EXP nt_checarRelop
     (114) EXP -> . TERMINO nt_checar_sumas EXP_AUX
     (119) TERMINO -> . FACTOR nt_checar_multis TERMINO_AUX
     (124) FACTOR -> . left_par nt_pushPOper EXPRESION right_par nt_popPOper
@@ -4482,8 +4396,8 @@ state 267
     (146) CONSTANTE -> . NUMERICA
     (147) CONSTANTE -> . BOOLEANA
     (148) CONSTANTE -> . STRINGS
-    (142) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
-    (128) FACTOR_AUX -> . id nt_pushPilaO
+    (143) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
+    (128) FACTOR_AUX -> . id nt_pushPilaO nt_verificaVar
     (129) FACTOR_AUX -> . id nt_verificaFuncId LLAMADA_F
     (149) NUMERICA -> . NUMERICA_AUX
     (150) NUMERICA -> . plus nt_sigMas NUMERICA_AUX
@@ -4515,9 +4429,9 @@ state 267
     FACTOR                         shift and go to state 200
     LISTA                          shift and go to state 201
 
-state 268
+state 266
 
-    (110) EXPRESIONLOGICA_AUX -> le nt_pushPOper . EXP nt_checarRelop
+    (108) EXPRESIONLOGICA_AUX -> ne nt_pushPOper . EXP nt_checarRelop
     (114) EXP -> . TERMINO nt_checar_sumas EXP_AUX
     (119) TERMINO -> . FACTOR nt_checar_multis TERMINO_AUX
     (124) FACTOR -> . left_par nt_pushPOper EXPRESION right_par nt_popPOper
@@ -4527,8 +4441,8 @@ state 268
     (146) CONSTANTE -> . NUMERICA
     (147) CONSTANTE -> . BOOLEANA
     (148) CONSTANTE -> . STRINGS
-    (142) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
-    (128) FACTOR_AUX -> . id nt_pushPilaO
+    (143) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
+    (128) FACTOR_AUX -> . id nt_pushPilaO nt_verificaVar
     (129) FACTOR_AUX -> . id nt_verificaFuncId LLAMADA_F
     (149) NUMERICA -> . NUMERICA_AUX
     (150) NUMERICA -> . plus nt_sigMas NUMERICA_AUX
@@ -4560,9 +4474,9 @@ state 268
     FACTOR                         shift and go to state 200
     LISTA                          shift and go to state 201
 
-state 269
+state 267
 
-    (111) EXPRESIONLOGICA_AUX -> et nt_pushPOper . EXP nt_checarRelop
+    (106) EXPRESIONLOGICA_AUX -> lt nt_pushPOper . EXP nt_checarRelop
     (114) EXP -> . TERMINO nt_checar_sumas EXP_AUX
     (119) TERMINO -> . FACTOR nt_checar_multis TERMINO_AUX
     (124) FACTOR -> . left_par nt_pushPOper EXPRESION right_par nt_popPOper
@@ -4572,8 +4486,8 @@ state 269
     (146) CONSTANTE -> . NUMERICA
     (147) CONSTANTE -> . BOOLEANA
     (148) CONSTANTE -> . STRINGS
-    (142) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
-    (128) FACTOR_AUX -> . id nt_pushPilaO
+    (143) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
+    (128) FACTOR_AUX -> . id nt_pushPilaO nt_verificaVar
     (129) FACTOR_AUX -> . id nt_verificaFuncId LLAMADA_F
     (149) NUMERICA -> . NUMERICA_AUX
     (150) NUMERICA -> . plus nt_sigMas NUMERICA_AUX
@@ -4605,9 +4519,143 @@ state 269
     FACTOR                         shift and go to state 200
     LISTA                          shift and go to state 201
 
+state 268
+
+    (110) EXPRESIONLOGICA_AUX -> le nt_pushPOper . EXP nt_checarRelop
+    (114) EXP -> . TERMINO nt_checar_sumas EXP_AUX
+    (119) TERMINO -> . FACTOR nt_checar_multis TERMINO_AUX
+    (124) FACTOR -> . left_par nt_pushPOper EXPRESION right_par nt_popPOper
+    (125) FACTOR -> . CONSTANTE
+    (126) FACTOR -> . LISTA
+    (127) FACTOR -> . FACTOR_AUX
+    (146) CONSTANTE -> . NUMERICA
+    (147) CONSTANTE -> . BOOLEANA
+    (148) CONSTANTE -> . STRINGS
+    (143) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
+    (128) FACTOR_AUX -> . id nt_pushPilaO nt_verificaVar
+    (129) FACTOR_AUX -> . id nt_verificaFuncId LLAMADA_F
+    (149) NUMERICA -> . NUMERICA_AUX
+    (150) NUMERICA -> . plus nt_sigMas NUMERICA_AUX
+    (151) NUMERICA -> . minus nt_sigMenos NUMERICA_AUX
+    (158) BOOLEANA -> . True
+    (159) BOOLEANA -> . False
+    (160) STRINGS -> . cteString
+    (154) NUMERICA_AUX -> . cteInt nt_pushInt
+    (155) NUMERICA_AUX -> . cteFloat nt_pushFloat
+
+    left_par        shift and go to state 192
+    id              shift and go to state 187
+    plus            shift and go to state 188
+    minus           shift and go to state 202
+    True            shift and go to state 196
+    False           shift and go to state 194
+    cteString       shift and go to state 191
+    cteInt          shift and go to state 197
+    cteFloat        shift and go to state 184
+
+    BOOLEANA                       shift and go to state 185
+    EXP                            shift and go to state 306
+    FACTOR_AUX                     shift and go to state 189
+    TERMINO                        shift and go to state 190
+    STRINGS                        shift and go to state 193
+    CONSTANTE                      shift and go to state 195
+    NUMERICA_AUX                   shift and go to state 198
+    NUMERICA                       shift and go to state 199
+    FACTOR                         shift and go to state 200
+    LISTA                          shift and go to state 201
+
+state 269
+
+    (111) EXPRESIONLOGICA_AUX -> et nt_pushPOper . EXP nt_checarRelop
+    (114) EXP -> . TERMINO nt_checar_sumas EXP_AUX
+    (119) TERMINO -> . FACTOR nt_checar_multis TERMINO_AUX
+    (124) FACTOR -> . left_par nt_pushPOper EXPRESION right_par nt_popPOper
+    (125) FACTOR -> . CONSTANTE
+    (126) FACTOR -> . LISTA
+    (127) FACTOR -> . FACTOR_AUX
+    (146) CONSTANTE -> . NUMERICA
+    (147) CONSTANTE -> . BOOLEANA
+    (148) CONSTANTE -> . STRINGS
+    (143) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
+    (128) FACTOR_AUX -> . id nt_pushPilaO nt_verificaVar
+    (129) FACTOR_AUX -> . id nt_verificaFuncId LLAMADA_F
+    (149) NUMERICA -> . NUMERICA_AUX
+    (150) NUMERICA -> . plus nt_sigMas NUMERICA_AUX
+    (151) NUMERICA -> . minus nt_sigMenos NUMERICA_AUX
+    (158) BOOLEANA -> . True
+    (159) BOOLEANA -> . False
+    (160) STRINGS -> . cteString
+    (154) NUMERICA_AUX -> . cteInt nt_pushInt
+    (155) NUMERICA_AUX -> . cteFloat nt_pushFloat
+
+    left_par        shift and go to state 192
+    id              shift and go to state 187
+    plus            shift and go to state 188
+    minus           shift and go to state 202
+    True            shift and go to state 196
+    False           shift and go to state 194
+    cteString       shift and go to state 191
+    cteInt          shift and go to state 197
+    cteFloat        shift and go to state 184
+
+    BOOLEANA                       shift and go to state 185
+    EXP                            shift and go to state 307
+    FACTOR_AUX                     shift and go to state 189
+    TERMINO                        shift and go to state 190
+    STRINGS                        shift and go to state 193
+    CONSTANTE                      shift and go to state 195
+    NUMERICA_AUX                   shift and go to state 198
+    NUMERICA                       shift and go to state 199
+    FACTOR                         shift and go to state 200
+    LISTA                          shift and go to state 201
+
 state 270
 
-    (131) LLAMADA_F -> left_par . nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet
+    (130) nt_verificaVar -> empty .
+
+    multiply        reduce using rule 130 (nt_verificaVar -> empty .)
+    divide          reduce using rule 130 (nt_verificaVar -> empty .)
+    plus            reduce using rule 130 (nt_verificaVar -> empty .)
+    minus           reduce using rule 130 (nt_verificaVar -> empty .)
+    lt              reduce using rule 130 (nt_verificaVar -> empty .)
+    gt              reduce using rule 130 (nt_verificaVar -> empty .)
+    ne              reduce using rule 130 (nt_verificaVar -> empty .)
+    ge              reduce using rule 130 (nt_verificaVar -> empty .)
+    le              reduce using rule 130 (nt_verificaVar -> empty .)
+    et              reduce using rule 130 (nt_verificaVar -> empty .)
+    and             reduce using rule 130 (nt_verificaVar -> empty .)
+    or              reduce using rule 130 (nt_verificaVar -> empty .)
+    right_par       reduce using rule 130 (nt_verificaVar -> empty .)
+    semicolon       reduce using rule 130 (nt_verificaVar -> empty .)
+    comma           reduce using rule 130 (nt_verificaVar -> empty .)
+    right_sb        reduce using rule 130 (nt_verificaVar -> empty .)
+
+
+state 271
+
+    (128) FACTOR_AUX -> id nt_pushPilaO nt_verificaVar .
+
+    multiply        reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO nt_verificaVar .)
+    divide          reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO nt_verificaVar .)
+    plus            reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO nt_verificaVar .)
+    minus           reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO nt_verificaVar .)
+    and             reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO nt_verificaVar .)
+    or              reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO nt_verificaVar .)
+    right_par       reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO nt_verificaVar .)
+    semicolon       reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO nt_verificaVar .)
+    comma           reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO nt_verificaVar .)
+    right_sb        reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO nt_verificaVar .)
+    lt              reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO nt_verificaVar .)
+    gt              reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO nt_verificaVar .)
+    ne              reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO nt_verificaVar .)
+    ge              reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO nt_verificaVar .)
+    le              reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO nt_verificaVar .)
+    et              reduce using rule 128 (FACTOR_AUX -> id nt_pushPilaO nt_verificaVar .)
+
+
+state 272
+
+    (132) LLAMADA_F -> left_par . nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet
     (167) nt_pushPOper -> . empty
     (169) empty -> .
 
@@ -4624,9 +4672,9 @@ state 270
     cteFloat        reduce using rule 169 (empty -> .)
 
     empty                          shift and go to state 164
-    nt_pushPOper                   shift and go to state 306
+    nt_pushPOper                   shift and go to state 308
 
-state 271
+state 273
 
     (129) FACTOR_AUX -> id nt_verificaFuncId LLAMADA_F .
 
@@ -4648,7 +4696,7 @@ state 271
     et              reduce using rule 129 (FACTOR_AUX -> id nt_verificaFuncId LLAMADA_F .)
 
 
-state 272
+state 274
 
     (150) NUMERICA -> plus nt_sigMas NUMERICA_AUX .
 
@@ -4656,21 +4704,21 @@ state 272
     divide          reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
     plus            reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
     minus           reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
-    and             reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
-    or              reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
-    right_par       reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
-    semicolon       reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
-    comma           reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
     lt              reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
     gt              reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
     ne              reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
     ge              reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
     le              reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
     et              reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
+    and             reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
+    or              reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
+    right_par       reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
+    semicolon       reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
+    comma           reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
     right_sb        reduce using rule 150 (NUMERICA -> plus nt_sigMas NUMERICA_AUX .)
 
 
-state 273
+state 275
 
     (117) EXP_AUX -> minus . nt_pushPOper EXP
     (167) nt_pushPOper -> . empty
@@ -4687,9 +4735,9 @@ state 273
     cteFloat        reduce using rule 169 (empty -> .)
 
     empty                          shift and go to state 164
-    nt_pushPOper                   shift and go to state 307
+    nt_pushPOper                   shift and go to state 309
 
-state 274
+state 276
 
     (118) EXP_AUX -> empty .
 
@@ -4707,7 +4755,7 @@ state 274
     right_sb        reduce using rule 118 (EXP_AUX -> empty .)
 
 
-state 275
+state 277
 
     (116) EXP_AUX -> plus . nt_pushPOper EXP
     (167) nt_pushPOper -> . empty
@@ -4724,9 +4772,9 @@ state 275
     cteFloat        reduce using rule 169 (empty -> .)
 
     empty                          shift and go to state 164
-    nt_pushPOper                   shift and go to state 308
+    nt_pushPOper                   shift and go to state 310
 
-state 276
+state 278
 
     (114) EXP -> TERMINO nt_checar_sumas EXP_AUX .
 
@@ -4744,14 +4792,14 @@ state 276
     right_sb        reduce using rule 114 (EXP -> TERMINO nt_checar_sumas EXP_AUX .)
 
 
-state 277
+state 279
 
     (124) FACTOR -> left_par nt_pushPOper EXPRESION . right_par nt_popPOper
 
-    right_par       shift and go to state 309
+    right_par       shift and go to state 311
 
 
-state 278
+state 280
 
     (119) TERMINO -> FACTOR nt_checar_multis TERMINO_AUX .
 
@@ -4771,7 +4819,7 @@ state 278
     right_sb        reduce using rule 119 (TERMINO -> FACTOR nt_checar_multis TERMINO_AUX .)
 
 
-state 279
+state 281
 
     (122) TERMINO_AUX -> divide . nt_pushPOper TERMINO
     (167) nt_pushPOper -> . empty
@@ -4788,9 +4836,9 @@ state 279
     cteFloat        reduce using rule 169 (empty -> .)
 
     empty                          shift and go to state 164
-    nt_pushPOper                   shift and go to state 310
+    nt_pushPOper                   shift and go to state 312
 
-state 280
+state 282
 
     (121) TERMINO_AUX -> multiply . nt_pushPOper TERMINO
     (167) nt_pushPOper -> . empty
@@ -4807,9 +4855,9 @@ state 280
     cteFloat        reduce using rule 169 (empty -> .)
 
     empty                          shift and go to state 164
-    nt_pushPOper                   shift and go to state 311
+    nt_pushPOper                   shift and go to state 313
 
-state 281
+state 283
 
     (123) TERMINO_AUX -> empty .
 
@@ -4829,7 +4877,7 @@ state 281
     right_sb        reduce using rule 123 (TERMINO_AUX -> empty .)
 
 
-state 282
+state 284
 
     (151) NUMERICA -> minus nt_sigMenos NUMERICA_AUX .
 
@@ -4837,51 +4885,47 @@ state 282
     divide          reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
     plus            reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
     minus           reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
-    and             reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
-    or              reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
-    right_par       reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
-    semicolon       reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
-    comma           reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
     lt              reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
     gt              reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
     ne              reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
     ge              reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
     le              reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
     et              reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
+    and             reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
+    or              reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
+    right_par       reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
+    semicolon       reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
+    comma           reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
     right_sb        reduce using rule 151 (NUMERICA -> minus nt_sigMenos NUMERICA_AUX .)
 
 
-state 283
+state 285
 
-    (142) LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb . nt_quadsAcceso
-    (145) nt_quadsAcceso -> . empty
-    (169) empty -> .
+    (143) LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .
 
-    equals          reduce using rule 169 (empty -> .)
-    multiply        reduce using rule 169 (empty -> .)
-    divide          reduce using rule 169 (empty -> .)
-    plus            reduce using rule 169 (empty -> .)
-    minus           reduce using rule 169 (empty -> .)
-    lt              reduce using rule 169 (empty -> .)
-    gt              reduce using rule 169 (empty -> .)
-    ne              reduce using rule 169 (empty -> .)
-    ge              reduce using rule 169 (empty -> .)
-    le              reduce using rule 169 (empty -> .)
-    et              reduce using rule 169 (empty -> .)
-    and             reduce using rule 169 (empty -> .)
-    or              reduce using rule 169 (empty -> .)
-    right_par       reduce using rule 169 (empty -> .)
-    semicolon       reduce using rule 169 (empty -> .)
-    comma           reduce using rule 169 (empty -> .)
-    right_sb        reduce using rule 169 (empty -> .)
+    multiply        reduce using rule 143 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .)
+    divide          reduce using rule 143 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .)
+    plus            reduce using rule 143 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .)
+    minus           reduce using rule 143 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .)
+    and             reduce using rule 143 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .)
+    or              reduce using rule 143 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .)
+    right_par       reduce using rule 143 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .)
+    semicolon       reduce using rule 143 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .)
+    comma           reduce using rule 143 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .)
+    lt              reduce using rule 143 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .)
+    gt              reduce using rule 143 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .)
+    ne              reduce using rule 143 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .)
+    ge              reduce using rule 143 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .)
+    le              reduce using rule 143 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .)
+    et              reduce using rule 143 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .)
+    right_sb        reduce using rule 143 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .)
+    equals          reduce using rule 143 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb .)
 
-    empty                          shift and go to state 313
-    nt_quadsAcceso                 shift and go to state 312
 
-state 284
+state 286
 
     (96) LLAMADA_EXPRESION_AUX -> EXPRESION . nt_verifyArgType
-    (138) nt_verifyArgType -> . empty
+    (139) nt_verifyArgType -> . empty
     (169) empty -> .
 
     comma           reduce using rule 169 (empty -> .)
@@ -4890,10 +4934,10 @@ state 284
     empty                          shift and go to state 314
     nt_verifyArgType               shift and go to state 315
 
-state 285
+state 287
 
     (92) LLAMADA -> id nt_verificaFuncIdLlamada left_par nt_pushPOper nt_startERA LLAMADA_EXPRESION . nt_verificaUltimo right_par nt_popPOper semicolon nt_pushGoSub
-    (139) nt_verificaUltimo -> . empty
+    (140) nt_verificaUltimo -> . empty
     (169) empty -> .
 
     right_par       reduce using rule 169 (empty -> .)
@@ -4901,7 +4945,7 @@ state 285
     nt_verificaUltimo              shift and go to state 316
     empty                          shift and go to state 317
 
-state 286
+state 288
 
     (95) LLAMADA_EXPRESION -> empty .
     (101) EXPRESION_NOT -> empty .
@@ -4918,7 +4962,7 @@ state 286
     cteFloat        reduce using rule 101 (EXPRESION_NOT -> empty .)
 
 
-state 287
+state 289
 
     (94) LLAMADA_EXPRESION -> LLAMADA_EXPRESION_AUX .
     (97) LLAMADA_EXPRESION_AUX -> LLAMADA_EXPRESION_AUX . comma nt_paramPP EXPRESION nt_verifyArgType
@@ -4927,7 +4971,7 @@ state 287
     comma           shift and go to state 318
 
 
-state 288
+state 290
 
     (90) ESCRITURA -> cwrite left_par EXPRESION nt_escribir right_par semicolon .
 
@@ -4942,7 +4986,7 @@ state 288
     return          reduce using rule 90 (ESCRITURA -> cwrite left_par EXPRESION nt_escribir right_par semicolon .)
 
 
-state 289
+state 291
 
     (161) ASIGNACION -> ASIGNACION_AUX equals nt_pushPOper EXPRESION nt_checaEquals semicolon .
 
@@ -4957,7 +5001,7 @@ state 289
     right_cb        reduce using rule 161 (ASIGNACION -> ASIGNACION_AUX equals nt_pushPOper EXPRESION nt_checaEquals semicolon .)
 
 
-state 290
+state 292
 
     (85) CICLO -> while nt_saltoLoop left_par EXPRESION nt_checarBool right_par . CUERPO nt_pushLoop
     (33) CUERPO -> . left_cb CUERPO_AUX right_cb
@@ -4966,7 +5010,7 @@ state 290
 
     CUERPO                         shift and go to state 319
 
-state 291
+state 293
 
     (53) RETORNO -> return EXP nt_checaRet semicolon .
 
@@ -4981,7 +5025,7 @@ state 291
     id              reduce using rule 53 (RETORNO -> return EXP nt_checaRet semicolon .)
 
 
-state 292
+state 294
 
     (76) CONDICION_AUX -> left_par EXPRESION nt_checarBool right_par CUERPO ELSE_ELIF . nt_pushSalto
     (83) nt_pushSalto -> . empty
@@ -5000,7 +5044,7 @@ state 292
     nt_pushSalto                   shift and go to state 320
     empty                          shift and go to state 321
 
-state 293
+state 295
 
     (78) ELSE_ELIF -> ELIF .
 
@@ -5015,7 +5059,7 @@ state 293
     return          reduce using rule 78 (ELSE_ELIF -> ELIF .)
 
 
-state 294
+state 296
 
     (77) ELSE_ELIF -> ELSE .
 
@@ -5030,7 +5074,7 @@ state 294
     return          reduce using rule 77 (ELSE_ELIF -> ELSE .)
 
 
-state 295
+state 297
 
     (81) ELIF -> elseif . nt_pushElse CONDICION_AUX
     (84) nt_pushElse -> . empty
@@ -5041,7 +5085,7 @@ state 295
     nt_pushElse                    shift and go to state 322
     empty                          shift and go to state 323
 
-state 296
+state 298
 
     (80) ELSE -> else . nt_pushElse CUERPO
     (84) nt_pushElse -> . empty
@@ -5052,7 +5096,7 @@ state 296
     nt_pushElse                    shift and go to state 324
     empty                          shift and go to state 323
 
-state 297
+state 299
 
     (79) ELSE_ELIF -> empty .
 
@@ -5067,7 +5111,7 @@ state 297
     return          reduce using rule 79 (ELSE_ELIF -> empty .)
 
 
-state 298
+state 300
 
     (102) EXPRESION_B -> and nt_pushPOper . EXPRESION
     (98) EXPRESION -> . EXPRESION_NOT EXPRESIONLOGICA nt_checaAndOrNot EXPRESION_B
@@ -5090,7 +5134,7 @@ state 298
     EXPRESION_NOT                  shift and go to state 156
     empty                          shift and go to state 158
 
-state 299
+state 301
 
     (103) EXPRESION_B -> or nt_pushPOper . EXPRESION
     (98) EXPRESION -> . EXPRESION_NOT EXPRESIONLOGICA nt_checaAndOrNot EXPRESION_B
@@ -5113,7 +5157,7 @@ state 299
     EXPRESION_NOT                  shift and go to state 156
     empty                          shift and go to state 158
 
-state 300
+state 302
 
     (109) EXPRESIONLOGICA_AUX -> ge nt_pushPOper EXP . nt_checarRelop
     (113) nt_checarRelop -> . empty
@@ -5128,7 +5172,7 @@ state 300
     nt_checarRelop                 shift and go to state 327
     empty                          shift and go to state 328
 
-state 301
+state 303
 
     (107) EXPRESIONLOGICA_AUX -> gt nt_pushPOper EXP . nt_checarRelop
     (113) nt_checarRelop -> . empty
@@ -5143,7 +5187,7 @@ state 301
     nt_checarRelop                 shift and go to state 329
     empty                          shift and go to state 328
 
-state 302
+state 304
 
     (108) EXPRESIONLOGICA_AUX -> ne nt_pushPOper EXP . nt_checarRelop
     (113) nt_checarRelop -> . empty
@@ -5158,7 +5202,7 @@ state 302
     nt_checarRelop                 shift and go to state 330
     empty                          shift and go to state 328
 
-state 303
+state 305
 
     (106) EXPRESIONLOGICA_AUX -> lt nt_pushPOper EXP . nt_checarRelop
     (113) nt_checarRelop -> . empty
@@ -5173,7 +5217,7 @@ state 303
     nt_checarRelop                 shift and go to state 331
     empty                          shift and go to state 328
 
-state 304
+state 306
 
     (110) EXPRESIONLOGICA_AUX -> le nt_pushPOper EXP . nt_checarRelop
     (113) nt_checarRelop -> . empty
@@ -5188,7 +5232,7 @@ state 304
     nt_checarRelop                 shift and go to state 332
     empty                          shift and go to state 328
 
-state 305
+state 307
 
     (111) EXPRESIONLOGICA_AUX -> et nt_pushPOper EXP . nt_checarRelop
     (113) nt_checarRelop -> . empty
@@ -5203,10 +5247,10 @@ state 305
     nt_checarRelop                 shift and go to state 333
     empty                          shift and go to state 328
 
-state 306
+state 308
 
-    (131) LLAMADA_F -> left_par nt_pushPOper . nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet
-    (137) nt_startERA -> . empty
+    (132) LLAMADA_F -> left_par nt_pushPOper . nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet
+    (138) nt_startERA -> . empty
     (169) empty -> .
 
     not             reduce using rule 169 (empty -> .)
@@ -5224,7 +5268,7 @@ state 306
     nt_startERA                    shift and go to state 334
     empty                          shift and go to state 250
 
-state 307
+state 309
 
     (117) EXP_AUX -> minus nt_pushPOper . EXP
     (114) EXP -> . TERMINO nt_checar_sumas EXP_AUX
@@ -5236,8 +5280,8 @@ state 307
     (146) CONSTANTE -> . NUMERICA
     (147) CONSTANTE -> . BOOLEANA
     (148) CONSTANTE -> . STRINGS
-    (142) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
-    (128) FACTOR_AUX -> . id nt_pushPilaO
+    (143) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
+    (128) FACTOR_AUX -> . id nt_pushPilaO nt_verificaVar
     (129) FACTOR_AUX -> . id nt_verificaFuncId LLAMADA_F
     (149) NUMERICA -> . NUMERICA_AUX
     (150) NUMERICA -> . plus nt_sigMas NUMERICA_AUX
@@ -5269,7 +5313,7 @@ state 307
     FACTOR                         shift and go to state 200
     LISTA                          shift and go to state 201
 
-state 308
+state 310
 
     (116) EXP_AUX -> plus nt_pushPOper . EXP
     (114) EXP -> . TERMINO nt_checar_sumas EXP_AUX
@@ -5281,8 +5325,8 @@ state 308
     (146) CONSTANTE -> . NUMERICA
     (147) CONSTANTE -> . BOOLEANA
     (148) CONSTANTE -> . STRINGS
-    (142) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
-    (128) FACTOR_AUX -> . id nt_pushPilaO
+    (143) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
+    (128) FACTOR_AUX -> . id nt_pushPilaO nt_verificaVar
     (129) FACTOR_AUX -> . id nt_verificaFuncId LLAMADA_F
     (149) NUMERICA -> . NUMERICA_AUX
     (150) NUMERICA -> . plus nt_sigMas NUMERICA_AUX
@@ -5314,7 +5358,7 @@ state 308
     FACTOR                         shift and go to state 200
     LISTA                          shift and go to state 201
 
-state 309
+state 311
 
     (124) FACTOR -> left_par nt_pushPOper EXPRESION right_par . nt_popPOper
     (168) nt_popPOper -> . empty
@@ -5340,7 +5384,7 @@ state 309
     nt_popPOper                    shift and go to state 337
     empty                          shift and go to state 338
 
-state 310
+state 312
 
     (122) TERMINO_AUX -> divide nt_pushPOper . TERMINO
     (119) TERMINO -> . FACTOR nt_checar_multis TERMINO_AUX
@@ -5351,8 +5395,8 @@ state 310
     (146) CONSTANTE -> . NUMERICA
     (147) CONSTANTE -> . BOOLEANA
     (148) CONSTANTE -> . STRINGS
-    (142) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
-    (128) FACTOR_AUX -> . id nt_pushPilaO
+    (143) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
+    (128) FACTOR_AUX -> . id nt_pushPilaO nt_verificaVar
     (129) FACTOR_AUX -> . id nt_verificaFuncId LLAMADA_F
     (149) NUMERICA -> . NUMERICA_AUX
     (150) NUMERICA -> . plus nt_sigMas NUMERICA_AUX
@@ -5383,7 +5427,7 @@ state 310
     FACTOR                         shift and go to state 200
     LISTA                          shift and go to state 201
 
-state 311
+state 313
 
     (121) TERMINO_AUX -> multiply nt_pushPOper . TERMINO
     (119) TERMINO -> . FACTOR nt_checar_multis TERMINO_AUX
@@ -5394,8 +5438,8 @@ state 311
     (146) CONSTANTE -> . NUMERICA
     (147) CONSTANTE -> . BOOLEANA
     (148) CONSTANTE -> . STRINGS
-    (142) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
-    (128) FACTOR_AUX -> . id nt_pushPilaO
+    (143) LISTA -> . id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
+    (128) FACTOR_AUX -> . id nt_pushPilaO nt_verificaVar
     (129) FACTOR_AUX -> . id nt_verificaFuncId LLAMADA_F
     (149) NUMERICA -> . NUMERICA_AUX
     (150) NUMERICA -> . plus nt_sigMas NUMERICA_AUX
@@ -5426,58 +5470,12 @@ state 311
     FACTOR                         shift and go to state 200
     LISTA                          shift and go to state 201
 
-state 312
-
-    (142) LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .
-
-    multiply        reduce using rule 142 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .)
-    divide          reduce using rule 142 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .)
-    plus            reduce using rule 142 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .)
-    minus           reduce using rule 142 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .)
-    lt              reduce using rule 142 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .)
-    gt              reduce using rule 142 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .)
-    ne              reduce using rule 142 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .)
-    ge              reduce using rule 142 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .)
-    le              reduce using rule 142 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .)
-    et              reduce using rule 142 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .)
-    and             reduce using rule 142 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .)
-    or              reduce using rule 142 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .)
-    right_par       reduce using rule 142 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .)
-    semicolon       reduce using rule 142 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .)
-    comma           reduce using rule 142 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .)
-    right_sb        reduce using rule 142 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .)
-    equals          reduce using rule 142 (LISTA -> id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso .)
-
-
-state 313
-
-    (145) nt_quadsAcceso -> empty .
-
-    equals          reduce using rule 145 (nt_quadsAcceso -> empty .)
-    multiply        reduce using rule 145 (nt_quadsAcceso -> empty .)
-    divide          reduce using rule 145 (nt_quadsAcceso -> empty .)
-    plus            reduce using rule 145 (nt_quadsAcceso -> empty .)
-    minus           reduce using rule 145 (nt_quadsAcceso -> empty .)
-    lt              reduce using rule 145 (nt_quadsAcceso -> empty .)
-    gt              reduce using rule 145 (nt_quadsAcceso -> empty .)
-    ne              reduce using rule 145 (nt_quadsAcceso -> empty .)
-    ge              reduce using rule 145 (nt_quadsAcceso -> empty .)
-    le              reduce using rule 145 (nt_quadsAcceso -> empty .)
-    et              reduce using rule 145 (nt_quadsAcceso -> empty .)
-    and             reduce using rule 145 (nt_quadsAcceso -> empty .)
-    or              reduce using rule 145 (nt_quadsAcceso -> empty .)
-    right_par       reduce using rule 145 (nt_quadsAcceso -> empty .)
-    semicolon       reduce using rule 145 (nt_quadsAcceso -> empty .)
-    comma           reduce using rule 145 (nt_quadsAcceso -> empty .)
-    right_sb        reduce using rule 145 (nt_quadsAcceso -> empty .)
-
-
 state 314
 
-    (138) nt_verifyArgType -> empty .
+    (139) nt_verifyArgType -> empty .
 
-    comma           reduce using rule 138 (nt_verifyArgType -> empty .)
-    right_par       reduce using rule 138 (nt_verifyArgType -> empty .)
+    comma           reduce using rule 139 (nt_verifyArgType -> empty .)
+    right_par       reduce using rule 139 (nt_verifyArgType -> empty .)
 
 
 state 315
@@ -5497,15 +5495,15 @@ state 316
 
 state 317
 
-    (139) nt_verificaUltimo -> empty .
+    (140) nt_verificaUltimo -> empty .
 
-    right_par       reduce using rule 139 (nt_verificaUltimo -> empty .)
+    right_par       reduce using rule 140 (nt_verificaUltimo -> empty .)
 
 
 state 318
 
     (97) LLAMADA_EXPRESION_AUX -> LLAMADA_EXPRESION_AUX comma . nt_paramPP EXPRESION nt_verifyArgType
-    (136) nt_paramPP -> . empty
+    (137) nt_paramPP -> . empty
     (169) empty -> .
 
     not             reduce using rule 169 (empty -> .)
@@ -5584,8 +5582,8 @@ state 323
 
     (84) nt_pushElse -> empty .
 
-    left_cb         reduce using rule 84 (nt_pushElse -> empty .)
     left_par        reduce using rule 84 (nt_pushElse -> empty .)
+    left_cb         reduce using rule 84 (nt_pushElse -> empty .)
 
 
 state 324
@@ -5694,11 +5692,11 @@ state 333
 
 state 334
 
-    (131) LLAMADA_F -> left_par nt_pushPOper nt_startERA . LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet
-    (132) LLAMADAF_AUX -> . LLAMADAF_AUX2
-    (133) LLAMADAF_AUX -> . empty
-    (134) LLAMADAF_AUX2 -> . EXPRESION nt_verifyArgType
-    (135) LLAMADAF_AUX2 -> . LLAMADAF_AUX2 comma nt_paramPP EXPRESION nt_verifyArgType
+    (132) LLAMADA_F -> left_par nt_pushPOper nt_startERA . LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet
+    (133) LLAMADAF_AUX -> . LLAMADAF_AUX2
+    (134) LLAMADAF_AUX -> . empty
+    (135) LLAMADAF_AUX2 -> . EXPRESION nt_verifyArgType
+    (136) LLAMADAF_AUX2 -> . LLAMADAF_AUX2 comma nt_paramPP EXPRESION nt_verifyArgType
     (169) empty -> .
     (98) EXPRESION -> . EXPRESION_NOT EXPRESIONLOGICA nt_checaAndOrNot EXPRESION_B
     (100) EXPRESION_NOT -> . not nt_pushPOper
@@ -5766,18 +5764,18 @@ state 337
     divide          reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
     plus            reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
     minus           reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
+    semicolon       reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
+    and             reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
+    or              reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
+    right_par       reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
+    comma           reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
+    right_sb        reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
     lt              reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
     gt              reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
     ne              reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
     ge              reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
     le              reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
     et              reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
-    and             reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
-    or              reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
-    right_par       reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
-    semicolon       reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
-    comma           reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
-    right_sb        reduce using rule 124 (FACTOR -> left_par nt_pushPOper EXPRESION right_par nt_popPOper .)
 
 
 state 338
@@ -5878,18 +5876,18 @@ state 342
 
 state 343
 
-    (136) nt_paramPP -> empty .
+    (137) nt_paramPP -> empty .
 
-    not             reduce using rule 136 (nt_paramPP -> empty .)
-    left_par        reduce using rule 136 (nt_paramPP -> empty .)
-    id              reduce using rule 136 (nt_paramPP -> empty .)
-    plus            reduce using rule 136 (nt_paramPP -> empty .)
-    minus           reduce using rule 136 (nt_paramPP -> empty .)
-    True            reduce using rule 136 (nt_paramPP -> empty .)
-    False           reduce using rule 136 (nt_paramPP -> empty .)
-    cteString       reduce using rule 136 (nt_paramPP -> empty .)
-    cteInt          reduce using rule 136 (nt_paramPP -> empty .)
-    cteFloat        reduce using rule 136 (nt_paramPP -> empty .)
+    not             reduce using rule 137 (nt_paramPP -> empty .)
+    left_par        reduce using rule 137 (nt_paramPP -> empty .)
+    id              reduce using rule 137 (nt_paramPP -> empty .)
+    plus            reduce using rule 137 (nt_paramPP -> empty .)
+    minus           reduce using rule 137 (nt_paramPP -> empty .)
+    True            reduce using rule 137 (nt_paramPP -> empty .)
+    False           reduce using rule 137 (nt_paramPP -> empty .)
+    cteString       reduce using rule 137 (nt_paramPP -> empty .)
+    cteInt          reduce using rule 137 (nt_paramPP -> empty .)
+    cteFloat        reduce using rule 137 (nt_paramPP -> empty .)
 
 
 state 344
@@ -5954,8 +5952,8 @@ state 347
 
 state 348
 
-    (134) LLAMADAF_AUX2 -> EXPRESION . nt_verifyArgType
-    (138) nt_verifyArgType -> . empty
+    (135) LLAMADAF_AUX2 -> EXPRESION . nt_verifyArgType
+    (139) nt_verifyArgType -> . empty
     (169) empty -> .
 
     comma           reduce using rule 169 (empty -> .)
@@ -5966,8 +5964,8 @@ state 348
 
 state 349
 
-    (131) LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX . nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet
-    (139) nt_verificaUltimo -> . empty
+    (132) LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX . nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet
+    (140) nt_verificaUltimo -> . empty
     (169) empty -> .
 
     right_par       reduce using rule 169 (empty -> .)
@@ -5977,19 +5975,19 @@ state 349
 
 state 350
 
-    (132) LLAMADAF_AUX -> LLAMADAF_AUX2 .
-    (135) LLAMADAF_AUX2 -> LLAMADAF_AUX2 . comma nt_paramPP EXPRESION nt_verifyArgType
+    (133) LLAMADAF_AUX -> LLAMADAF_AUX2 .
+    (136) LLAMADAF_AUX2 -> LLAMADAF_AUX2 . comma nt_paramPP EXPRESION nt_verifyArgType
 
-    right_par       reduce using rule 132 (LLAMADAF_AUX -> LLAMADAF_AUX2 .)
+    right_par       reduce using rule 133 (LLAMADAF_AUX -> LLAMADAF_AUX2 .)
     comma           shift and go to state 356
 
 
 state 351
 
-    (133) LLAMADAF_AUX -> empty .
+    (134) LLAMADAF_AUX -> empty .
     (101) EXPRESION_NOT -> empty .
 
-    right_par       reduce using rule 133 (LLAMADAF_AUX -> empty .)
+    right_par       reduce using rule 134 (LLAMADAF_AUX -> empty .)
     left_par        reduce using rule 101 (EXPRESION_NOT -> empty .)
     id              reduce using rule 101 (EXPRESION_NOT -> empty .)
     plus            reduce using rule 101 (EXPRESION_NOT -> empty .)
@@ -6011,7 +6009,7 @@ state 352
 state 353
 
     (97) LLAMADA_EXPRESION_AUX -> LLAMADA_EXPRESION_AUX comma nt_paramPP EXPRESION . nt_verifyArgType
-    (138) nt_verifyArgType -> . empty
+    (139) nt_verifyArgType -> . empty
     (169) empty -> .
 
     comma           reduce using rule 169 (empty -> .)
@@ -6022,23 +6020,23 @@ state 353
 
 state 354
 
-    (134) LLAMADAF_AUX2 -> EXPRESION nt_verifyArgType .
+    (135) LLAMADAF_AUX2 -> EXPRESION nt_verifyArgType .
 
-    comma           reduce using rule 134 (LLAMADAF_AUX2 -> EXPRESION nt_verifyArgType .)
-    right_par       reduce using rule 134 (LLAMADAF_AUX2 -> EXPRESION nt_verifyArgType .)
+    comma           reduce using rule 135 (LLAMADAF_AUX2 -> EXPRESION nt_verifyArgType .)
+    right_par       reduce using rule 135 (LLAMADAF_AUX2 -> EXPRESION nt_verifyArgType .)
 
 
 state 355
 
-    (131) LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo . right_par nt_popPOper nt_pushGoSub nt_asignarRet
+    (132) LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo . right_par nt_popPOper nt_pushGoSub nt_asignarRet
 
     right_par       shift and go to state 359
 
 
 state 356
 
-    (135) LLAMADAF_AUX2 -> LLAMADAF_AUX2 comma . nt_paramPP EXPRESION nt_verifyArgType
-    (136) nt_paramPP -> . empty
+    (136) LLAMADAF_AUX2 -> LLAMADAF_AUX2 comma . nt_paramPP EXPRESION nt_verifyArgType
+    (137) nt_paramPP -> . empty
     (169) empty -> .
 
     not             reduce using rule 169 (empty -> .)
@@ -6058,7 +6056,7 @@ state 356
 state 357
 
     (92) LLAMADA -> id nt_verificaFuncIdLlamada left_par nt_pushPOper nt_startERA LLAMADA_EXPRESION nt_verificaUltimo right_par nt_popPOper semicolon . nt_pushGoSub
-    (140) nt_pushGoSub -> . empty
+    (141) nt_pushGoSub -> . empty
     (169) empty -> .
 
     right_cb        reduce using rule 169 (empty -> .)
@@ -6084,7 +6082,7 @@ state 358
 
 state 359
 
-    (131) LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par . nt_popPOper nt_pushGoSub nt_asignarRet
+    (132) LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par . nt_popPOper nt_pushGoSub nt_asignarRet
     (168) nt_popPOper -> . empty
     (169) empty -> .
 
@@ -6110,7 +6108,7 @@ state 359
 
 state 360
 
-    (135) LLAMADAF_AUX2 -> LLAMADAF_AUX2 comma nt_paramPP . EXPRESION nt_verifyArgType
+    (136) LLAMADAF_AUX2 -> LLAMADAF_AUX2 comma nt_paramPP . EXPRESION nt_verifyArgType
     (98) EXPRESION -> . EXPRESION_NOT EXPRESIONLOGICA nt_checaAndOrNot EXPRESION_B
     (100) EXPRESION_NOT -> . not nt_pushPOper
     (101) EXPRESION_NOT -> . empty
@@ -6148,39 +6146,39 @@ state 361
 
 state 362
 
-    (140) nt_pushGoSub -> empty .
+    (141) nt_pushGoSub -> empty .
 
-    multiply        reduce using rule 140 (nt_pushGoSub -> empty .)
-    divide          reduce using rule 140 (nt_pushGoSub -> empty .)
-    plus            reduce using rule 140 (nt_pushGoSub -> empty .)
-    minus           reduce using rule 140 (nt_pushGoSub -> empty .)
-    lt              reduce using rule 140 (nt_pushGoSub -> empty .)
-    gt              reduce using rule 140 (nt_pushGoSub -> empty .)
-    ne              reduce using rule 140 (nt_pushGoSub -> empty .)
-    ge              reduce using rule 140 (nt_pushGoSub -> empty .)
-    le              reduce using rule 140 (nt_pushGoSub -> empty .)
-    et              reduce using rule 140 (nt_pushGoSub -> empty .)
-    and             reduce using rule 140 (nt_pushGoSub -> empty .)
-    or              reduce using rule 140 (nt_pushGoSub -> empty .)
-    right_par       reduce using rule 140 (nt_pushGoSub -> empty .)
-    semicolon       reduce using rule 140 (nt_pushGoSub -> empty .)
-    comma           reduce using rule 140 (nt_pushGoSub -> empty .)
-    right_sb        reduce using rule 140 (nt_pushGoSub -> empty .)
-    right_cb        reduce using rule 140 (nt_pushGoSub -> empty .)
-    list            reduce using rule 140 (nt_pushGoSub -> empty .)
-    var             reduce using rule 140 (nt_pushGoSub -> empty .)
-    if              reduce using rule 140 (nt_pushGoSub -> empty .)
-    while           reduce using rule 140 (nt_pushGoSub -> empty .)
-    cread           reduce using rule 140 (nt_pushGoSub -> empty .)
-    cwrite          reduce using rule 140 (nt_pushGoSub -> empty .)
-    id              reduce using rule 140 (nt_pushGoSub -> empty .)
-    return          reduce using rule 140 (nt_pushGoSub -> empty .)
+    multiply        reduce using rule 141 (nt_pushGoSub -> empty .)
+    divide          reduce using rule 141 (nt_pushGoSub -> empty .)
+    plus            reduce using rule 141 (nt_pushGoSub -> empty .)
+    minus           reduce using rule 141 (nt_pushGoSub -> empty .)
+    lt              reduce using rule 141 (nt_pushGoSub -> empty .)
+    gt              reduce using rule 141 (nt_pushGoSub -> empty .)
+    ne              reduce using rule 141 (nt_pushGoSub -> empty .)
+    ge              reduce using rule 141 (nt_pushGoSub -> empty .)
+    le              reduce using rule 141 (nt_pushGoSub -> empty .)
+    et              reduce using rule 141 (nt_pushGoSub -> empty .)
+    and             reduce using rule 141 (nt_pushGoSub -> empty .)
+    or              reduce using rule 141 (nt_pushGoSub -> empty .)
+    right_par       reduce using rule 141 (nt_pushGoSub -> empty .)
+    semicolon       reduce using rule 141 (nt_pushGoSub -> empty .)
+    comma           reduce using rule 141 (nt_pushGoSub -> empty .)
+    right_sb        reduce using rule 141 (nt_pushGoSub -> empty .)
+    right_cb        reduce using rule 141 (nt_pushGoSub -> empty .)
+    list            reduce using rule 141 (nt_pushGoSub -> empty .)
+    var             reduce using rule 141 (nt_pushGoSub -> empty .)
+    if              reduce using rule 141 (nt_pushGoSub -> empty .)
+    while           reduce using rule 141 (nt_pushGoSub -> empty .)
+    cread           reduce using rule 141 (nt_pushGoSub -> empty .)
+    cwrite          reduce using rule 141 (nt_pushGoSub -> empty .)
+    id              reduce using rule 141 (nt_pushGoSub -> empty .)
+    return          reduce using rule 141 (nt_pushGoSub -> empty .)
 
 
 state 363
 
-    (131) LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper . nt_pushGoSub nt_asignarRet
-    (140) nt_pushGoSub -> . empty
+    (132) LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper . nt_pushGoSub nt_asignarRet
+    (141) nt_pushGoSub -> . empty
     (169) empty -> .
 
     multiply        reduce using rule 169 (empty -> .)
@@ -6205,8 +6203,8 @@ state 363
 
 state 364
 
-    (135) LLAMADAF_AUX2 -> LLAMADAF_AUX2 comma nt_paramPP EXPRESION . nt_verifyArgType
-    (138) nt_verifyArgType -> . empty
+    (136) LLAMADAF_AUX2 -> LLAMADAF_AUX2 comma nt_paramPP EXPRESION . nt_verifyArgType
+    (139) nt_verifyArgType -> . empty
     (169) empty -> .
 
     comma           reduce using rule 169 (empty -> .)
@@ -6217,8 +6215,8 @@ state 364
 
 state 365
 
-    (131) LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub . nt_asignarRet
-    (141) nt_asignarRet -> . empty
+    (132) LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub . nt_asignarRet
+    (142) nt_asignarRet -> . empty
     (169) empty -> .
 
     multiply        reduce using rule 169 (empty -> .)
@@ -6243,54 +6241,54 @@ state 365
 
 state 366
 
-    (135) LLAMADAF_AUX2 -> LLAMADAF_AUX2 comma nt_paramPP EXPRESION nt_verifyArgType .
+    (136) LLAMADAF_AUX2 -> LLAMADAF_AUX2 comma nt_paramPP EXPRESION nt_verifyArgType .
 
-    comma           reduce using rule 135 (LLAMADAF_AUX2 -> LLAMADAF_AUX2 comma nt_paramPP EXPRESION nt_verifyArgType .)
-    right_par       reduce using rule 135 (LLAMADAF_AUX2 -> LLAMADAF_AUX2 comma nt_paramPP EXPRESION nt_verifyArgType .)
+    comma           reduce using rule 136 (LLAMADAF_AUX2 -> LLAMADAF_AUX2 comma nt_paramPP EXPRESION nt_verifyArgType .)
+    right_par       reduce using rule 136 (LLAMADAF_AUX2 -> LLAMADAF_AUX2 comma nt_paramPP EXPRESION nt_verifyArgType .)
 
 
 state 367
 
-    (131) LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .
+    (132) LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .
 
-    multiply        reduce using rule 131 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
-    divide          reduce using rule 131 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
-    plus            reduce using rule 131 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
-    minus           reduce using rule 131 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
-    lt              reduce using rule 131 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
-    gt              reduce using rule 131 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
-    ne              reduce using rule 131 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
-    ge              reduce using rule 131 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
-    le              reduce using rule 131 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
-    et              reduce using rule 131 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
-    and             reduce using rule 131 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
-    or              reduce using rule 131 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
-    right_par       reduce using rule 131 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
-    semicolon       reduce using rule 131 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
-    comma           reduce using rule 131 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
-    right_sb        reduce using rule 131 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
+    multiply        reduce using rule 132 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
+    divide          reduce using rule 132 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
+    plus            reduce using rule 132 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
+    minus           reduce using rule 132 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
+    lt              reduce using rule 132 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
+    gt              reduce using rule 132 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
+    ne              reduce using rule 132 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
+    ge              reduce using rule 132 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
+    le              reduce using rule 132 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
+    et              reduce using rule 132 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
+    and             reduce using rule 132 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
+    or              reduce using rule 132 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
+    right_par       reduce using rule 132 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
+    semicolon       reduce using rule 132 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
+    comma           reduce using rule 132 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
+    right_sb        reduce using rule 132 (LLAMADA_F -> left_par nt_pushPOper nt_startERA LLAMADAF_AUX nt_verificaUltimo right_par nt_popPOper nt_pushGoSub nt_asignarRet .)
 
 
 state 368
 
-    (141) nt_asignarRet -> empty .
+    (142) nt_asignarRet -> empty .
 
-    multiply        reduce using rule 141 (nt_asignarRet -> empty .)
-    divide          reduce using rule 141 (nt_asignarRet -> empty .)
-    plus            reduce using rule 141 (nt_asignarRet -> empty .)
-    minus           reduce using rule 141 (nt_asignarRet -> empty .)
-    lt              reduce using rule 141 (nt_asignarRet -> empty .)
-    gt              reduce using rule 141 (nt_asignarRet -> empty .)
-    ne              reduce using rule 141 (nt_asignarRet -> empty .)
-    ge              reduce using rule 141 (nt_asignarRet -> empty .)
-    le              reduce using rule 141 (nt_asignarRet -> empty .)
-    et              reduce using rule 141 (nt_asignarRet -> empty .)
-    and             reduce using rule 141 (nt_asignarRet -> empty .)
-    or              reduce using rule 141 (nt_asignarRet -> empty .)
-    right_par       reduce using rule 141 (nt_asignarRet -> empty .)
-    semicolon       reduce using rule 141 (nt_asignarRet -> empty .)
-    comma           reduce using rule 141 (nt_asignarRet -> empty .)
-    right_sb        reduce using rule 141 (nt_asignarRet -> empty .)
+    multiply        reduce using rule 142 (nt_asignarRet -> empty .)
+    divide          reduce using rule 142 (nt_asignarRet -> empty .)
+    plus            reduce using rule 142 (nt_asignarRet -> empty .)
+    minus           reduce using rule 142 (nt_asignarRet -> empty .)
+    lt              reduce using rule 142 (nt_asignarRet -> empty .)
+    gt              reduce using rule 142 (nt_asignarRet -> empty .)
+    ne              reduce using rule 142 (nt_asignarRet -> empty .)
+    ge              reduce using rule 142 (nt_asignarRet -> empty .)
+    le              reduce using rule 142 (nt_asignarRet -> empty .)
+    et              reduce using rule 142 (nt_asignarRet -> empty .)
+    and             reduce using rule 142 (nt_asignarRet -> empty .)
+    or              reduce using rule 142 (nt_asignarRet -> empty .)
+    right_par       reduce using rule 142 (nt_asignarRet -> empty .)
+    semicolon       reduce using rule 142 (nt_asignarRet -> empty .)
+    comma           reduce using rule 142 (nt_asignarRet -> empty .)
+    right_sb        reduce using rule 142 (nt_asignarRet -> empty .)
 
 WARNING: 
 WARNING: Conflicts:

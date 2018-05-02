@@ -66,47 +66,6 @@ def p_PROGRAMA(p):
     '''
     PROGRAMA : program id nt_pushJmpMain semicolon PROGRAMA_VARS nt_cambiarScope PROGRAMA_FUNC nt_cambiarScope main nt_ambienteMain CUERPO nt_endQuad
     '''
-    print('ok\n')
-    print("Tabla de funciones: ")
-    for a in dicFunciones:
-        print('Funcion %s : ' % a)
-        print("\t id : %s" % dicFunciones[a]['id'])
-        print("\t tipo : %s" % dicFunciones[a]['tipo'])
-        print("\t inicio : %s" % dicFunciones[a]['inicio'])
-        print("\t dirRet : %s" % dicFunciones[a]['dirRet'])
-        print('\t pars : %s' % dicFunciones[a]['pars'])
-
-        print("\t vars :")
-        for b in dicFunciones[a]['vars']:
-            print("\t\t %s" % dicFunciones[a]['vars'][b])
-        print('\t Temps: %s' % dicFunciones[a]['temps'])
-        print('\t cantVar: %s' % dicFunciones[a]['cantVar'])
-            
-    print(" \n\n")
-    print("Tabla de variables globales: ")
-    for a in dicVarGlobales:
-        print("%s : %s" % (a, dicVarGlobales[a]))
-    print(" \n\n")
-    print("Tabla de variables en main: ")
-    for a in dicVarLocales:
-        print("%s : %s" % (a, dicVarLocales[a]))
-    print(" \n\n")
-    print("Temporales en el main: ")
-    for a in dicTemporales:
-        print(a, dicTemporales[a])
-    print(" \n\n")
-    print("Tabla de Constantes Usados")
-    for a in dicConstantes:
-        print(a, dicConstantes[a])
-    print(" \n\n")
-    print("Cantidad Vars usadas en main")
-    abcd = calcularTam(dicVarLocales, dicTemporales)
-    print(abcd)
-    print("\n\n")
-    print("Cuadruplos:")
-    for a in dicQuadruplos:
-        print("%s: %s" % (a, dicQuadruplos[a]))
-
 
 
 def p_nt_cambiarScope(p):
@@ -355,7 +314,6 @@ def p_CUERPOFUNC_ESTATUTO(p):
                         | empty
     '''
 
-# -------------ALOMEJOR NO VAMOS A UTILIZAR ESTA --------------------
 def p_CUERPORETORNO(p):
     '''
     CUERPORETORNO : left_cb CUERPORETORNO_AUX right_cb
@@ -373,7 +331,6 @@ def p_CUERPORETORNO_CF_AUX(p):
                          | empty
     '''
 
-#-------------- TERMINA PARTE QUE ALOMJER SE OMITE ----------------
 
 def p_RETORNO(p):
     '''
@@ -433,8 +390,6 @@ def p_FUNC(p):
 
 
     AgregarDicFunc2(idFunc, dLocales, dTemps)
-
-    #AgregarDicFunc(idFunc, funcActual, parametros, dLocales, funcQuad, dTemps, dirmem)
 
     
     dicVarLocales.clear()
@@ -680,7 +635,6 @@ def p_LECTURA(p):
     LECTURA : cread left_par id nt_leer right_par semicolon
     '''
 
-#-------------- FUNCIONALIDAD INPUT LISTAS?? ----------------
 def p_nt_leer(p):
     '''
     nt_leer : empty
@@ -838,7 +792,7 @@ def p_EXPRESION_NOT (p):
                 | empty
     '''
 
-def p_EXPRESION_B (p):
+def p_EXPRESION_B(p):
 	'''
 	EXPRESION_B : and nt_pushPOper EXPRESION
 	           | or nt_pushPOper EXPRESION
@@ -1013,9 +967,28 @@ def p_FACTOR(p):
 
 def p_FACTOR_AUX(p):
     '''
-    FACTOR_AUX : id nt_pushPilaO
+    FACTOR_AUX : id nt_pushPilaO nt_verificaVar
                 | id nt_verificaFuncId LLAMADA_F
     '''
+
+def p_nt_verificaVar(p):
+    '''
+    nt_verificaVar : empty
+    '''
+    global dicVarGlobales
+    global dicVarLocales
+
+    simbolo = p[-2]
+    if simbolo in dicVarGlobales.keys():
+        if dicVarGlobales[simbolo]['struct'] == 'list':
+            print("Error, la lista '%s' tiene que tener corchetes con una expression que se evalue a uno de sus indices!" % simbolo)
+            exit()
+    elif simbolo in dicVarLocales.keys():
+        if dicVarLocales[simbolo]['struct'] == 'list':
+            print("Error, la lista '%s' tiene que tener corchetes con una expression que se evalue a uno de sus indices!" % simbolo)
+            exit()
+
+
 
 def p_nt_verificaFuncId(p):
     '''
@@ -1167,7 +1140,7 @@ def p_nt_asignarRet(p):
 
 def p_LISTA(p):
     '''
-    LISTA : id nt_verificarVarDim left_sb EXP nt_pushVer right_sb nt_quadsAcceso
+    LISTA : id nt_verificarVarDim left_sb EXP nt_pushVer right_sb
     '''
 
 def p_nt_verificaVarDim(p):
@@ -1261,21 +1234,6 @@ def p_nt_pushVer(p):
         pOper.pop()
     else:
         print("Error, tipo de variable a verificar no es entero!")
-
-
-
-def p_nt_quadsAcceso(p):
-    '''
-    nt_quadsAcceso : empty
-    '''
-    global pilaO
-    global pOper
-    global tCont
-    global quadCont
-    global dicQuadruplos
-    global dicTemporales
-    global dicVarLocales
-    global dicVarGlobales
 
 
 
@@ -1621,49 +1579,7 @@ yacc.yacc();
 
 
 data = """
-program compilador;
-    var float A1;
-    void funcionTest(int x, int y, int z){
-        list int lista[12];
-        var int a;
-        list int lista2[5], lista3[4];
-        var int b, c, d;
-        
-    }
 
-    int fib(int n){
-        var int ret;
-        ret = n;
-        if(ret <= 1){
-            ret = ret;
-        }
-        else {
-            ret = fib(ret-1) + fib(ret-2);
-        }
-        return ret + 1;
-    }
-
-    void nada(){
-        A1 = A1 + 19;
-        cwrite(A1);
-
-    }
-
-main{
-    list int a[10];
-    var bool h;
-    h = True;
-    cwrite(h);
-    h = !h;
-    cwrite(h);
-    A1 = 0;
-    a[0] = 1;
-    a[1]=3;
-    cwrite(a);
-    cwrite(a[0]);
-    cwrite(a[1]);
-
-}
           """
 yacc.parse(data)
 

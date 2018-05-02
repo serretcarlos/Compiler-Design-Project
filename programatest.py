@@ -100,6 +100,110 @@ main{
 }
           """
 
+int factorial(int n){
+        var int ret;
+        ret = n;
+        if(ret == 0){
+            ret = 1;
+        }
+        else{
+            ret = ret*factorial(ret - 1);
+        }
+        return ret;
+    }
+
+int fact(int n){
+        var int ret, cont;
+        ret = 1;
+        cont =1;
+        while(n>1){
+            cont = cont + 1;
+            ret = ret * (cont);
+            n=n-1;
+        }
+        return ret;
+    }
+
+void sort(){
+        list int v[7];
+        var int cont, temp, i, j;
+        cont = 0;
+        i = 0;
+        j = 0;
+        v[0] = 64;
+        v[1] = 34;
+        v[2] = 25;
+        v[3] = 12;
+        v[4] = 22;
+        v[5] = 11;
+        v[6] = 90;
+        cwrite("arreglo andtes de bubble sort");
+        while(cont < 7){
+            cwrite(v[cont]);
+            cont = cont + 1;
+        }
+
+        while(i < 7-1){
+            j = 0;
+            while(j < 7-i-1){
+                if(v[j]>v[j+1]){
+                    temp = v[j];
+                    v[j] = v[j+1];
+                    v[j+1] = temp;
+                }
+                j = j +1;
+            }
+            i = i + 1;
+        }
+        cwrite("arreglo despues de bubble sort");
+        cont = 0;
+        while(cont < 7){
+            cwrite(v[cont]);
+            cont = cont + 1;
+        }
+
+    }
+
+program compilador;
+    list int vB[10];
+
+    int find(int n){
+        var int cont, indice;
+        var bool encontro;
+        encontro = False;
+        cont = 0;
+        while(cont < 10){
+            if(vB[cont] == n){
+                encontro = True;
+                indice = cont;
+            }
+            cont = cont + 1;
+        }
+
+        if(!encontro){
+            indice = -1;
+        }
+  
+        return indice;
+    }
+
+main{
+    var int a;
+    vB[0] = 1;
+    vB[1] = 153;
+    vB[2] = 89;
+    vB[3] = 4;
+    vB[4] = 19;
+    vB[5] = 100;
+    vB[6] = 56;
+    vB[7] = 17;
+    vB[8] = 0;
+    vB[9] = 14;
+
+    a = find(100);
+    cwrite(a);
+}
+
     print('ok\n')
     print("Tabla de funciones: ")
     for a in dicFunciones:
