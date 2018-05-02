@@ -464,7 +464,7 @@ Blockly.Blocks['variable_types'] = {
     var text_name = block.getFieldValue('name');
     var number_fields = block.getFieldValue('fields');
     // TODO: Assemble JavaScript into code variable.
-    var code = 'list '+ dropdown_type + ' ' + text_name +'('+number_fields+');\n';
+    var code = 'list '+ dropdown_type + ' ' + text_name +'['+number_fields+'];\n';
     return code;
   };
 
