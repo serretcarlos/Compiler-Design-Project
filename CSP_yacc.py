@@ -66,47 +66,6 @@ def p_PROGRAMA(p):
     '''
     PROGRAMA : program id nt_pushJmpMain semicolon PROGRAMA_VARS nt_cambiarScope PROGRAMA_FUNC nt_cambiarScope main nt_ambienteMain CUERPO nt_endQuad
     '''
-    print('ok\n')
-    print("Tabla de funciones: ")
-    for a in dicFunciones:
-        print('Funcion %s : ' % a)
-        print("\t id : %s" % dicFunciones[a]['id'])
-        print("\t tipo : %s" % dicFunciones[a]['tipo'])
-        print("\t inicio : %s" % dicFunciones[a]['inicio'])
-        print("\t dirRet : %s" % dicFunciones[a]['dirRet'])
-        print('\t pars : %s' % dicFunciones[a]['pars'])
-
-        print("\t vars :")
-        for b in dicFunciones[a]['vars']:
-            print("\t\t %s" % dicFunciones[a]['vars'][b])
-        print('\t Temps: %s' % dicFunciones[a]['temps'])
-        print('\t cantVar: %s' % dicFunciones[a]['cantVar'])
-            
-    print(" \n\n")
-    print("Tabla de variables globales: ")
-    for a in dicVarGlobales:
-        print("%s : %s" % (a, dicVarGlobales[a]))
-    print(" \n\n")
-    print("Tabla de variables en main: ")
-    for a in dicVarLocales:
-        print("%s : %s" % (a, dicVarLocales[a]))
-    print(" \n\n")
-    print("Temporales en el main: ")
-    for a in dicTemporales:
-        print(a, dicTemporales[a])
-    print(" \n\n")
-    print("Tabla de Constantes Usados")
-    for a in dicConstantes:
-        print(a, dicConstantes[a])
-    print(" \n\n")
-    print("Cantidad Vars usadas en main")
-    abcd = calcularTam(dicVarLocales, dicTemporales)
-    print(abcd)
-    print("\n\n")
-    print("Cuadruplos:")
-    for a in dicQuadruplos:
-        print("%s: %s" % (a, dicQuadruplos[a]))
-
 
 
 def p_nt_cambiarScope(p):
@@ -355,7 +314,6 @@ def p_CUERPOFUNC_ESTATUTO(p):
                         | empty
     '''
 
-# -------------ALOMEJOR NO VAMOS A UTILIZAR ESTA --------------------
 def p_CUERPORETORNO(p):
     '''
     CUERPORETORNO : left_cb CUERPORETORNO_AUX right_cb
@@ -373,7 +331,6 @@ def p_CUERPORETORNO_CF_AUX(p):
                          | empty
     '''
 
-#-------------- TERMINA PARTE QUE ALOMJER SE OMITE ----------------
 
 def p_RETORNO(p):
     '''
@@ -433,8 +390,6 @@ def p_FUNC(p):
 
 
     AgregarDicFunc2(idFunc, dLocales, dTemps)
-
-    #AgregarDicFunc(idFunc, funcActual, parametros, dLocales, funcQuad, dTemps, dirmem)
 
     
     dicVarLocales.clear()
@@ -680,7 +635,6 @@ def p_LECTURA(p):
     LECTURA : cread left_par id nt_leer right_par semicolon
     '''
 
-#-------------- FUNCIONALIDAD INPUT LISTAS?? ----------------
 def p_nt_leer(p):
     '''
     nt_leer : empty
@@ -838,7 +792,7 @@ def p_EXPRESION_NOT (p):
                 | empty
     '''
 
-def p_EXPRESION_B (p):
+def p_EXPRESION_B(p):
 	'''
 	EXPRESION_B : and nt_pushPOper EXPRESION
 	           | or nt_pushPOper EXPRESION
@@ -1625,70 +1579,7 @@ yacc.yacc();
 
 
 data = """
-program compilador;
-    var float A1;
-    void funcionTest(int x, int y, int z){
-        list int lista[12];
-        var int a;
-        list int lista2[5], lista3[4];
-        var int b, c, d;
-        
-    }
 
-int fibo(int n ) {
-  var int previous, current, cont, new_current;
-  previous =  0;
-  current =  1;
-  cont =  2;
-  if ( n <= 1) {
-    current =  n;
-  }
-  else {
-    while( cont <= n) {
-      new_current =  previous + current;
-      previous =  current;
-      current =  new_current;
-      cont =  cont + 1;
-    }
-  }
-  return current;
-}
-
-    int fib(int n){
-        var int ret;
-        ret = n;
-        if(ret <= 1){
-            ret = ret;
-        }
-        else {
-            ret = fib(ret-1) + fib(ret-2);
-        }
-        return ret;
-    }
-
-    void nada(){
-        A1 = A1 + 19;
-        cwrite(A1);
-
-    }
-
-main{
-    list int a[10];
-    var int b;
-    var bool h;
-    h = True;
-    cwrite(h);
-    h = !h;
-    cwrite(h);
-    A1 = 0;
-    b = 9;
-    a[0] = fib(b + 2);
-    a[1]=fibo(10);
-    b = a + 10;
-    cwrite(a[0]);
-    cwrite(a[1]);
-
-}
           """
 yacc.parse(data)
 

@@ -277,6 +277,10 @@ def inicializarMaquinaVirtual(idPrograma, dicQuadruplos, dicFunciones, dicVarGlo
 			opIzq = getValor(opIzq, exeStack)
 			opDer = getValor(opDer, exeStack)
 
+			if opDer == 0:
+				print("Error, no se puede dividir por cero!")
+				exit()
+
 			division = opIzq / opDer
 			guardarValDir(division, resultado, exeStack)
 
