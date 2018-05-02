@@ -17,6 +17,10 @@
   <script src="../blocks.js"></script>
   <script src="../en.js"></script>
   <script src="../FileSaver.js"></script>
+  <link href="introjs.css" rel="stylesheet">
+  <link href="introjs-flattener.css" rel="stylesheet">
+  
+  <script src="intro.js"></script>  
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script>
 
@@ -56,14 +60,14 @@
 
         <div class="masthead clearfix">
           <div class="inner">
-            <h3 class="masthead-brand">SuperPadre</h3>
+            <h3 class="masthead-brand"  data-step="1" data-intro="Esto es SuperPadre, donde podrás aprender a programar con bloques.">SuperPadre</h3>
             <nav>
               <ul class="nav masthead-nav">
                 <li class="active">
                   <a href="#">Inicio</a>
                 </li>
                 <li>
-                  <a href="#">Acerca de</a>
+                  <a onclick="javascript:introJs().start();" href="javascript:void(0);">Manual</a>
                 </li>
                 <!--<li><a href="#">Contact</a></li>-->
               </ul>
@@ -72,20 +76,20 @@
         </div>
 
         <div class="inner cover">
-          <button onclick="showCode()" class="btn btn-default">Ver código</button>
-          <button onclick="getCode()" class="btn btn-default">Descargar código</button>
-          <button onclick="getBlocks()" class="btn btn-default">Descargar bloques</button>
+          <button onclick="showCode()" class="btn btn-default"  data-step="3" data-intro="Haz clic aquí para ver el código SuperPadre generado generado a través de tus bloques.">Ver código</button>
+          <button onclick="getCode()" class="btn btn-default" data-step="4" data-intro="Haz clic aquí para descargar el código SuperPadre generado generado a través de tus bloques. Compilalo con nuestra herramienta en https://github.com/serretcarlos/Compiler-Design-Project">Descargar código</button>
+          <button onclick="getBlocks()" class="btn btn-default" data-step="5" data-intro="Este botón descargará un archivo que podrás usar más adelante para continuar tu trabajo realizado.">Descargar bloques</button>
           <!--<input id="blockfile" name="blocks" type="file">-->
-          <label class="btn btn-default">
+          <label class="btn btn-default" data-step="6" data-intro="Aquí es donde haces clic para importar los archivos que descargas en el paso anterior.">
             Importar
             <input id="blockfile" type="file" hidden>
           </label>
-          <button onclick="importBlocks()" class="btn btn-default">Cargar bloques importados</button>
+          <button onclick="importBlocks()" class="btn btn-default" data-step="7" data-intro="Después de cargar el archivo en el paso anterior, haces clic aquí y listo!">Cargar bloques importados</button>
           <hr>
-          <div id="blocklyDiv" style="height: 480px; width: 750px;"></div>
+          <div id="blocklyDiv" style="height: 480px; width: 750px;"  data-step="2" data-intro="Aquí es donde sucede la magia. Simplemente arrastra los bloques para comenzar a programar."></div>
 
           <xml id="toolbox" style="display: none">
-              <category name="Programa">
+              <category name="Programa" >
                 <block type="program"></block>
                 <block type="main"></block>
                 <block type="write"></block>
