@@ -1,0 +1,25 @@
+﻿program fibonacci;
+int fibo(int n ) {
+  var int previous, current, cont, new_current;
+  previous =  0;
+  current =  1;
+  cont =  2;
+  if ( n <= 1) {
+    current =  n;
+  }
+  else {
+    while( cont <= n) {
+      new_current =  previous + current;
+      previous =  current;
+      current =  new_current;
+      cont =  cont + 1;
+    }
+  }
+  return current;
+}
+main (){
+  var int n;
+  cread(n)
+  n = fibo(n);
+  cwrite(n);
+}

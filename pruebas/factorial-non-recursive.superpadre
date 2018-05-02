@@ -1,0 +1,18 @@
+﻿program factor;
+int factorial(int n ) {
+  var int result, cont;
+  result =  1;
+  cont =  1;
+  while( n > 1) {
+    cont =  cont + 1;
+    result =  result * cont;
+    n =  n - 1;
+
+  }return  result;
+}
+main (){
+  var int n;
+  cread(n)
+  n = factorial(n);
+  cwrite(n);
+}

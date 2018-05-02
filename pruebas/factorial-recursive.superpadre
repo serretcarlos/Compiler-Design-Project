@@ -1,0 +1,17 @@
+﻿program factor;
+int factorial(int n ) {
+  var int result;
+  if ( n == 0) {
+    result =  1;
+  }
+  else {
+    result =  result *factorial(result- 1);
+  }
+  return  result;
+}
+main (){
+  var int n;
+  cread(n)
+  n = factorial(n);
+  cwrite(n);
+}
