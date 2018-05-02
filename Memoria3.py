@@ -103,9 +103,6 @@ class ExecutionStack:
 
 	def getValorMapaMem(self, scope, tipo, llave, direccion):
 		valor = self.mapaMem[scope][tipo][llave]
-		'''if valor == None:
-			print("Error, variable con scope %s y de tipo %s con direccion %s no inicializada en nombre func: %s!" % (scope, tipo, direccion, self.nombre))
-			exit()'''
 		return valor
 
 	def guardaValMapaMem(self, valor, scope, tipo, llave):
