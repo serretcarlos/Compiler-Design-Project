@@ -1,6 +1,7 @@
 ﻿program factor;
 int factorial(int n ) {
   var int result;
+  result =  n;
   if ( n == 0) {
     result =  1;
   }
@@ -8,10 +9,11 @@ int factorial(int n ) {
     result =  result *factorial(result- 1);
   }
   return  result;
+
 }
-main (){
+main{
   var int n;
-  cread(n);
-  n = factorial(n);
-  cwrite(n);
+  n = factorial(10);
+  cwrite( n);
+
 }

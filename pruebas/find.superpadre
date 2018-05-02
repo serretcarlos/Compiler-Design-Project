@@ -1,36 +1,35 @@
 ﻿program compilador;
 list int vB[10];
-int find(int n ) {
+int find(int n){
   var int cont, indice;
-  var boolean encontro;
-  cont =  0;
-  encontro =  False ;
-  while( cont < 10) {
+  var bool encontro;
+  cont = 0;
+  encontro = False;
+  while(cont < 10) {
     if (vB[cont]  == n) {
-      encontro =  True ;
-      indice =  cont;
+      encontro = True;
+      indice = cont;
     }
-    cont =  cont + 1;
+    cont = cont + 1;
   }
-  if ( ! encontro) {
-    indice =  - 1;
+  if (!encontro) {
+    indice = -1;
   }
-  return  indice;
+  return indice;
 
 }
-main (){
+main{
   var int a;
-  vB[0] =  1;
-  vB[1] =  153;
-  vB[2] =  89;
-  vB[3] =  4;
-  vB[4] =  19;
-  vB[5] =  100;
-  vB[6] =  56;
-  vB[7] =  17;
-  vB[8] =  0;
-  vB[9] =  14;
+  vB[0] = 1;
+  vB[1] = 153;
+  vB[2] = 89;
+  vB[3] = 4;
+  vB[4] = 19;
+  vB[5] = 100;
+  vB[6] = 56;
+  vB[7] = 17;
+  vB[8] = 0;
+  vB[9] = 14;
   a = find(100);
-  cwrite( a);
-
+  cwrite(a);
 }

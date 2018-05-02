@@ -7,11 +7,12 @@ int fibo(int n ) {
   else {
     result = fibo(n- 1) + fibo(n- 2);
   }
+  return  result;
+
 }
-main (){
+main{
   var int n;
-  cread( n);
-  n = fibo(n);
+  n = fibo(10);
   cwrite( n);
 
 }

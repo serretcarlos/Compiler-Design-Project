@@ -15,11 +15,12 @@ int fibo(int n ) {
       cont =  cont + 1;
     }
   }
-  return current;
+  return  current;
+
 }
-main (){
+main{
   var int n;
-  cread(n);
-  n = fibo(n);
-  cwrite(n);
+  n = fibo(10);
+  cwrite( n);
+
 }

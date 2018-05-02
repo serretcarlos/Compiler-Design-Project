@@ -7,12 +7,13 @@ int factorial(int n ) {
     cont =  cont + 1;
     result =  result * cont;
     n =  n - 1;
+  }
+  return  result;
 
-  }return  result;
 }
-main (){
+main{
   var int n;
-  cread(n);
-  n = factorial(n);
-  cwrite(n);
+  n = factorial(10);
+  cwrite( n);
+
 }
