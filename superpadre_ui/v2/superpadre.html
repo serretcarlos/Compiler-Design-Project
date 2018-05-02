@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="../../favicon.ico">
+
+  <title>Compilador Super Padre</title>
+  <script src="../blockly_compressed.js"></script>
+  <script src="../blocks_compressed.js"></script>
+  <script src="../javascript_compressed.js"></script>
+  <script src="../blocks.js"></script>
+  <script src="../en.js"></script>
+  <script src="../FileSaver.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous">
+
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <link href="ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="cover.css" rel="stylesheet">
+
+  <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+  <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+  <script src="ie-emulation-modes-warning.js"></script>
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+  <style>
+    [hidden] {
+      display: none !important;
+    }
+  </style>
+
+  <div class="site-wrapper">
+
+    <div class="site-wrapper-inner">
+
+      <div class="cover-container">
+
+        <div class="masthead clearfix">
+          <div class="inner">
+            <h3 class="masthead-brand">SuperPadre</h3>
+            <nav>
+              <ul class="nav masthead-nav">
+                <li class="active">
+                  <a href="#">Inicio</a>
+                </li>
+                <li>
+                  <a href="#">Acerca de</a>
+                </li>
+                <!--<li><a href="#">Contact</a></li>-->
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <div class="inner cover">
+          <button onclick="showCode()" class="btn btn-default">Ver código</button>
+          <button onclick="getCode()" class="btn btn-default">Descargar código</button>
+          <button onclick="getBlocks()" class="btn btn-default">Descargar bloques</button>
+          <!--<input id="blockfile" name="blocks" type="file">-->
+          <label class="btn btn-default">
+            Importar
+            <input id="blockfile" type="file" hidden>
+          </label>
+          <button onclick="importBlocks()" class="btn btn-default">Cargar bloques importados</button>
+          <hr>
+          <div id="blocklyDiv" style="height: 480px; width: 750px;"></div>
+
+          <xml id="toolbox" style="display: none">
+              <category name="Programa">
+                <block type="program"></block>
+                <block type="main"></block>
+                <block type="write"></block>
+                <block type="read"></block>
+                <block type="return"></block>
+              </category>
+              <category name="Ciclos">
+                <block type="while"></block>
+              </category>
+              <category name="Condiciones">
+                <block type="if"></block>
+                <block type="else_if"></block>
+                <block type="else"></block>
+              </category>
+              <category name="Funciones">
+                <block type="new_function"></block>
+                <block type="call_function"></block>
+                <block type="assign_function"></block>
+              </category>
+              <category name="Variables">
+                <block type="variable_types"></block>
+                <block type="var_new"></block>
+                <block type="var_action"></block>
+                <!--<block type="var_call"></block>-->
+                <block type="var_assign"></block>
+                <block type="true"></block>
+                <block type="false"></block>
+                <block type="parameter"></block>
+                <block type="value_input"></block>
+                <block type="string_input"></block>
+              </category>
+              <category name="Listas">
+                <block type="lists"></block>
+                <block type="field_assign"></block>
+                <block type="access_index"></block>
+              </category>
+              <category name="Operadores matemáticos">
+                <block type="relate_two"></block>
+                <block type="plus"></block>
+                <block type="minus"></block>
+                <block type="multiply"></block>
+                <block type="division"></block>
+                <block type="left_par"></block>
+                <block type="right_par"></block>
+              </category>
+              <category name="Operadores lógicos">
+                <block type="greater_than"></block>
+                <block type="less_than"></block>
+                <block type="less_equal"></block>
+                <block type="greater_equal"></block>
+                <block type="not_equal"></block>
+                <block type="equal"></block>
+                <block type="and"></block>
+                <block type="or"></block>
+                <block type="not"></block>
+              </category>
+            </xml>
+        </div>
+
+        <div class="mastfoot">
+          <div class="inner">
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script>
+    window.jQuery || document.write(
+      '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"><\/script>')
+  </script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <script src="ie10-viewport-bug-workaround.js"></script>
+  <script>
+    var demoWorkspace = Blockly.inject('blocklyDiv', {
+      media: '../media/',
+      toolbox: document.getElementById('toolbox')
+    });
+    Blockly.Xml.domToWorkspace(document.getElementById('startBlocks'),
+      demoWorkspace);
+
+    function showCode() {
+      // Generate JavaScript code and display it.
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+      alert(code);
+    }
+
+    function getCode() {
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+      var fileName = 'program';
+      var blob = new Blob([code], {
+        type: "text/plain;charset=utf-8"
+      });
+      saveAs(blob, fileName + ".superpadre");
+    }
+
+    function getBlocks() {
+      var output = document.getElementById('importExport');
+      var xml = Blockly.Xml.workspaceToDom(demoWorkspace);
+      var xml_text = Blockly.Xml.domToText(xml);
+      var blob = new Blob([xml_text], {
+        type: "text/plain;charset=utf-8"
+      });
+      saveAs(blob, "program.xml");
+    }
+
+    function importBlocks() {
+      var fileInput = document.getElementById('blockfile');
+      var file = fileInput.files[0];
+      var xml_text;
+      var xml;
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        xml_text = reader.result;
+        xml = Blockly.Xml.textToDom(xml_text);
+        Blockly.Xml.domToWorkspace(xml, demoWorkspace);
+      }
+      reader.readAsText(file);
+    }
+  </script>
+
+</body>
+
+</html>
