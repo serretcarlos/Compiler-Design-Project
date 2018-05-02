@@ -6,7 +6,7 @@ Blockly.Blocks['new_function'] = {
     init: function() {
       this.appendValueInput("params")
           .setCheck(null)
-          .appendField(new Blockly.FieldDropdown([["void","void"], ["int","int"], ["float","float"], ["string","string"], ["boolean","boolean"]]), "func_type")
+          .appendField(new Blockly.FieldDropdown([["void","void"], ["int","int"], ["float","float"], ["string","string"], ["bool","bool"]]), "func_type")
           .appendField(new Blockly.FieldTextInput("name of function"), "func_name")
           .appendField("(");
       this.appendDummyInput()
@@ -293,7 +293,7 @@ Blockly.Blocks['program'] = {
   Blockly.Blocks['main'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField("main( )");
+          .appendField("main");
       this.appendStatementInput("program")
           .setCheck(null);
       this.setPreviousStatement(true, null);
@@ -306,7 +306,7 @@ Blockly.Blocks['program'] = {
 
   Blockly.JavaScript['main'] = function(block) {
     var statements_program = Blockly.JavaScript.statementToCode(block, 'program');
-    var code = 'main (){\n' + statements_program + '\n}';
+    var code = 'main{\n' + statements_program + '\n}';
     return code;
   };
 
@@ -318,7 +318,7 @@ Blockly.Blocks['variable_types'] = {
     init: function() {
       this.appendDummyInput()
           .appendField("vars")
-          .appendField(new Blockly.FieldDropdown([["int","int"], ["float","float"], ["string","string"], ["boolean","boolean"]]), "vars_types");
+          .appendField(new Blockly.FieldDropdown([["int","int"], ["float","float"], ["string","string"], ["bool","bool"]]), "vars_types");
       this.appendStatementInput("variables")
           .setCheck(null);
       this.setPreviousStatement(true);
@@ -428,7 +428,7 @@ Blockly.Blocks['variable_types'] = {
     init: function() {
       this.appendValueInput("NAME")
           .setCheck(null)
-          .appendField(new Blockly.FieldDropdown([["int","int"], ["string","string"], ["float","float"], ["boolean","boolean"]]), "type")
+          .appendField(new Blockly.FieldDropdown([["int","int"], ["string","string"], ["float","float"], ["bool","bool"]]), "type")
           .appendField(new Blockly.FieldTextInput("parameter name"), "par_name");
       this.setInputsInline(false);
       this.setOutput(true);
@@ -450,7 +450,7 @@ Blockly.Blocks['variable_types'] = {
     init: function() {
       this.appendDummyInput()
           .appendField("list")
-          .appendField(new Blockly.FieldDropdown([["int","int"], ["string","string"], ["float","float"], ["boolean","boolean"]]), "type")
+          .appendField(new Blockly.FieldDropdown([["int","int"], ["string","string"], ["float","float"], ["bool","bool"]]), "type")
           .appendField(new Blockly.FieldTextInput("list name"), "name")
           .appendField(new Blockly.FieldNumber(0, 0), "fields");
       this.setInputsInline(true);
